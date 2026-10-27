@@ -1,0 +1,42 @@
+{
+  "source_revision": "39ee15e29706150d7d4f60ba617aa99d2027eed7",
+  "source_worktree_clean": true,
+  "filtering_patch_applied": false,
+  "qt_or_canvas_created": false,
+  "interpretation": "Bug reproduced; no fix implemented.",
+  "python": "3.13.2",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "xarray": "2026.9.0"
+  },
+  "observations": {
+    "deletion_only": {
+      "missing_point_flag_first": true,
+      "missing_point_flag_second": null,
+      "edited_variable_present_first": true,
+      "edited_variable_present_second": false,
+      "finite_point_flag_first": false,
+      "finite_point_flag_second": null,
+      "positions_and_confidence_unchanged": true
+    },
+    "deletion_and_move": {
+      "missing_point_flag_first": true,
+      "missing_point_flag_second": false,
+      "edited_variable_present_first": true,
+      "edited_variable_present_second": true,
+      "finite_point_flag_first": true,
+      "finite_point_flag_second": true,
+      "positions_and_confidence_unchanged": true
+    },
+    "never_detected": {
+      "missing_point_flag_first": null,
+      "missing_point_flag_second": null,
+      "edited_variable_present_first": false,
+      "edited_variable_present_second": false,
+      "finite_point_flag_first": null,
+      "finite_point_flag_second": null,
+      "positions_and_confidence_unchanged": true
+    }
+  }
+}

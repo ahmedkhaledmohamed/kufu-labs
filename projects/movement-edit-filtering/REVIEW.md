@@ -1,6 +1,6 @@
 # movement filtering contribution review package
 
-Status: local technical verification complete; ready for maintainer design review, not a claim of merge readiness. No upstream fork, PR, or message has been created. The approved patch is unchanged. Publication requires its applicable full-diff and exact-commit approval.
+Status: local technical verification complete; ready for maintainer design review, not a claim of merge readiness. The approved [public design question](https://github.com/neuroinformatics-unit/movement/issues/1027#issuecomment-6431299925) has been posted; no upstream fork, patch push, or PR has been created. The approved patch is unchanged. Publication requires its applicable full-diff and exact-commit approval.
 
 ## Task, baseline, and scope
 

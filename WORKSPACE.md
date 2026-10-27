@@ -37,3 +37,7 @@ No pushes or new PRs have occurred for this branch yet. Prepare the full diff an
 3. Present the complete publication diff and exact contribution-record result for approval; only then push and create the private lab PR. Keep PR #3 and earlier Personal pointer PR independent.
 4. The next implementation candidate is read-only SLEAP host instance/skeleton/score mapping on constructed data. Select and verify the actual released host boundary before implementation; real recordings or researcher studies require their own applicable authorisation.
 5. Preserve all previous upstream checkouts and approved patches. No outreach, public comments, external accounts/forks, paid compute, deployment or merges are included.
+
+## Deletion diagnostic record
+
+The independent [deleted-point provenance reproduction](projects/movement-edit-filtering/DELETION-PROVENANCE.md), executable reproducer and result accompany the filtering review. They document a separate second-export provenance defect; they do not modify the approved confidence-filter patch or claim a fix. This reconciliation retains the current hub handoff alongside those diagnostic artifacts.
