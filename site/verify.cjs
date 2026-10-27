@@ -122,7 +122,18 @@ const url = (p) => new URL(p, base).href;
         exact: true,
       }),
     });
-    await board.getByRole("button", { name: "Show related problems" }).click();
+    // The select exists in the HTML before app.js applies the query. Exercise a
+    // slow script load so a navigation-commit-only assertion cannot pass by luck.
+    const delayedApp = async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      await route.fallback();
+    };
+    await page.route("**/site/app.js", delayedApp);
+    await Promise.all([
+      page.waitForURL(url("problems.html?source=sleap"), { waitUntil: "load" }),
+      board.getByRole("button", { name: "Show related problems" }).click(),
+    ]);
+    await page.unroute("**/site/app.js", delayedApp);
     assert.equal(new URL(page.url()).pathname.endsWith("/problems.html"), true);
     assert.equal(await page.locator("#sourceFilter").inputValue(), "sleap");
     assert.ok(await page.locator("#problem-pairwise-overlap").isVisible());
@@ -163,10 +174,15 @@ const url = (p) => new URL(p, base).href;
       new URL(page.url()).pathname.endsWith("/explorations.html"),
       true,
     );
-    await page
-      .getByRole("link", { name: "Problem and evidence", exact: true })
-      .first()
-      .click();
+    await Promise.all([
+      page.waitForURL(url("problems.html#problem-pairwise-overlap"), {
+        waitUntil: "load",
+      }),
+      page
+        .getByRole("link", { name: "Problem and evidence", exact: true })
+        .first()
+        .click(),
+    ]);
     assert.equal(new URL(page.url()).pathname.endsWith("/problems.html"), true);
     assert.equal(
       await page.locator("#problem-pairwise-overlap").getAttribute("open"),

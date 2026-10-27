@@ -35,3 +35,9 @@ Remaining gates: exact-commit approval for the CLI fix; updated PR/CI and protec
 ## Validation discipline
 
 A runnable browser or ephemeral CI example establishes execution. Pinned host checks establish only the tested integration semantics. Resolving the original researcher problem requires the stated workflow outcome evidence. No adoption, researcher time saving, biological correctness or full upstream resolution is claimed. The next scientific feature candidate remains read-only host-native SLEAP instance/skeleton/score mapping, not a generic hosted code runner.
+
+## Production verification continuation
+
+PR #5 merged at `39979b927345a619bf37dd5eb779195ec4ac2cc1`. Main run 40558190385 passed scientific and local browser checks, then correctly withheld promotion because a deployed source-board assertion raced external script loading. The staged site applied the expected query after load. The isolated `fix/wait-for-source-page` branch corrects document-readiness waits and retains strict outcomes plus controlled script latency; it does not bypass CI or change scientific calculations. Current live job/PR/deployment state must be read from GitHub/Vercel, not inferred from this historical handoff.
+
+Ahmed's later instruction is that future authorised goals should proceed without additional approval pauses. Continue within each agreed scope, retain reviewable diffs and sanitized contribution records, and preserve explicit boundaries around outreach, spending, new accounts and data access.
