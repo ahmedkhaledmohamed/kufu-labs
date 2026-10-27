@@ -18,9 +18,11 @@ Deliver independent navigation pages, meaningful CI/CD, runnable demonstrations 
 
 PR #4 is merged at main `902dd4ccea229bac16e110ef1fad8b5b72bcfa8e`. The delivery branch `feat/lab-pages-and-delivery` started from that refreshed main in isolated worktree `scientific-lab-delivery`. Existing source checkouts and draft research worktrees are preserved.
 
-Ahmed requested merging all currently open lab PRs. PR #3 is the remaining one; GitHub reports a WORKSPACE conflict after the hub merge. Prepared resolution `6d79e5ce799ec484c25b33a7800608d723d9cacd` on `fix/reconcile-diagnostic-pr` preserves the current hub handoff and diagnostic files. That resolution is incorporated into the delivery branch locally. It has not been pushed or merged remotely; its changed exact commit still requires the full-diff approval required by AGENTS.md.
+PR #3 is merged at `ee2f51fcebb363dc8b3eb8125dcbd688649cc847`, including the approved conflict resolution `6d79e5ce799ec484c25b33a7800608d723d9cacd`. [Delivery PR #5](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/5) is open at the originally approved `2751a4e34bb9445b09b59a422459f7c460c635b2` snapshot.
 
-The delivery implementation is local pending its own complete-diff/contribution-record/exact-commit approval. Once authorised, push PR #3's resolution, merge that existing PR, submit the delivery PR, verify actual GitHub CI, and obtain explicit merge authorisation for that resulting PR unless Ahmed supplies it with the exact-snapshot review. Production deployment is already authorised; the pipeline must release only tested current main. Do not bypass this chain with a manual deployment.
+The [first cloud run](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40511509142) passed the Linux scientific and browser jobs. Deployment stopped before uploading because a fresh Vercel CLI profile tried to read user metadata with a project-only token. A local fix supplies only the already verified team mapping in a temporary private CLI profile; the actual changed helper passed with a fresh ten-minute project-only credential. No broader credential permissions or protection changes were needed. The fix is local pending renewed exact-commit approval; do not push a changed commit under the previous approval.
+
+After the approved update, rerun actual cloud CI, inspect the protected preview, merge PR #5 only with the applicable explicit authorisation and successful checks, then wait for main's tested production promotion and verify the production alias. Production deployment remains authorised, but not a shortcut around the CI gate.
 
 ## Actual verification versus remaining work
 
@@ -28,7 +30,7 @@ Local multi-page/browser checks pass: five distinct URLs, current navigation sta
 
 The Vercel project exists in verified personal scope `ahmed-khaled-mohameds-projects`; Authentication covers all deployments including production. A 90-day project-scoped deployment token and project-specific verification credential are stored in encrypted GitHub Secrets; no values are committed or printed. Automatic Git connection is disabled to preserve the CI deployment gate. No site has been deployed by this branch yet.
 
-Remaining gates: full local checks and review snapshot; exact-commit approvals; actual PR/CI runs; explicitly authorised merge; main pipeline deployment and promotion; verify the protected production alias and artifact identity. Keep the goal active until those cloud/runtime requirements are proved. A successful local test is not completion of CI/CD.
+Remaining gates: exact-commit approval for the CLI fix; updated PR/CI and protected-preview verification; explicitly authorised merge; main pipeline deployment and promotion; verify the protected production alias and artifact identity. Keep the goal active until those cloud/runtime requirements are proved. A successful local test is not completion of CI/CD.
 
 ## Validation discipline
 

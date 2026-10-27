@@ -1,6 +1,6 @@
 # Lab delivery and runnable demonstrations
 
-Implementation status: local branch `feat/lab-pages-and-delivery`, started from merged PR #4 main `902dd4ccea229bac16e110ef1fad8b5b72bcfa8e`. The prepared PR #3 conflict resolution is incorporated locally; its remote update/merge still requires approval of that exact changed commit. The new delivery pipeline has not yet run on GitHub or deployed this branch. Do not describe local tests as a successful cloud release.
+Publication history: PR #4 provided the approved hub baseline, and PR #3's diagnostic resolution is now merged. [PR #5](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/5) contains the delivery implementation. Its [initial cloud run](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40511509142) passed the Linux scientific and browser jobs, then stopped at Vercel's user lookup before any upload. The project-scoped CLI fix described below is prepared and locally verified; its updated cloud run is still a release gate. Do not equate these local checks with a deployed preview or production release.
 
 ## Runtime and navigation
 
@@ -39,6 +39,8 @@ Reports/screenshots/traces are private GitHub Actions artifacts retained for 14 
 ## Vercel configuration
 
 Verified target: personal scope `ahmed-khaled-mohameds-projects`, project `scientific-software-lab`. `site/deployment-config.json` contains non-secret identity constraints; the deployment script checks them before mutations. Vercel Authentication is configured for **All Deployments**, covering production and preview. No paid protection add-on, new account or custom domain is used. Implicit Git linking is disabled so a separate integration cannot bypass the CI promotion gate.
+
+A verified CLI limitation ([upstream #17506](https://github.com/vercel/vercel/issues/17506)) makes a fresh CLI profile request user/team metadata even when its project-scoped token can access the project. The delivery script creates a temporary private CLI profile containing only the already verified team-ID mapping, passes it to every Vercel command and removes it afterward. It stores no token in that profile, grants no broader access, and retains the server-side token restrictions plus explicit project/owner/protection checks. A short-lived project token confirmed direct project access and CLI access with that mapping; the original PR run's scientific and browser checks passed before its deployment preflight exposed this limitation. The updated cloud run remains the release gate.
 
 GitHub Secrets contains a project-scoped `VERCEL_TOKEN` (90-day lifetime, rotate before expiry) and a project-specific `VERCEL_AUTOMATION_BYPASS_SECRET` for browser verification. Values are never placed in source, process arguments, logs or browser traces. Vercel CLI telemetry is disabled. Use secret rotation to replace credentials; do not weaken protection to make a check pass.
 

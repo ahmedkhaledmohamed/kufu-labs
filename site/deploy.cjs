@@ -1,12 +1,33 @@
 // Promote only the tested prebuilt static artifact, with verified owner/protection.
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
 const assert = require("node:assert/strict");
 const root = path.resolve(__dirname, "..");
 const config = require("./deployment-config.json");
 const cli = path.join(root, "node_modules/.bin/vercel");
+// Vercel CLI 65 resolves --scope through /v2/user unless the team mapping is cached.
+// A project token cannot read user/team resources (upstream issue #17506).
+// Only verified non-secret scope metadata is cached. The project API still
+// enforces the token, and target() checks the actual owner and protection.
+const cliProfile = process.env.VERCEL_TOKEN
+  ? fs.mkdtempSync(path.join(os.tmpdir(), "lab-vercel-cli-"))
+  : null;
+if (cliProfile)
+  fs.writeFileSync(
+    path.join(cliProfile, "config.json"),
+    JSON.stringify({
+      currentTeam: config.teamId,
+      cachedTeamIds: { [config.scope]: config.teamId },
+    }),
+  );
+const cliContextArgs = [
+  "--scope",
+  config.scope,
+  ...(cliProfile ? ["--global-config", cliProfile] : []),
+];
 const env = {
   ...process.env,
   VERCEL_TELEMETRY_DISABLED: "1",
@@ -23,8 +44,7 @@ const api = (endpoint, method = "GET", data) =>
         endpoint,
         "--method",
         method,
-        "--scope",
-        config.scope,
+        ...cliContextArgs,
         "--raw",
         ...(data ? ["--input", "-"] : []),
       ],
@@ -132,8 +152,7 @@ function target() {
     "deploy",
     "--prebuilt",
     "--yes",
-    "--scope",
-    config.scope,
+    ...cliContextArgs,
     "--meta",
     `sourceCommit=${manifest.source_commit}`,
   ];
@@ -190,11 +209,11 @@ function target() {
       manifest.source_commit,
       "Refuse to promote a stale main build",
     );
-    execFileSync(
-      cli,
-      ["promote", deployment, "--yes", "--scope", config.scope],
-      { cwd: root, env, stdio: "inherit" },
-    );
+    execFileSync(cli, ["promote", deployment, "--yes", ...cliContextArgs], {
+      cwd: root,
+      env,
+      stdio: "inherit",
+    });
   }
   let productionUrl = null;
   if (mode === "production") {
@@ -240,7 +259,11 @@ function target() {
   console.log(
     `${mode === "production" ? "Promoted" : "Verified preview"}: ${deployment}`,
   );
-})().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+})()
+  .catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  })
+  .finally(() => {
+    if (cliProfile) fs.rmSync(cliProfile, { recursive: true, force: true });
+  });
