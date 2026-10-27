@@ -49,3 +49,7 @@ After the reviewed PR is published, inspect the actual GitHub jobs and fix obser
 ## What validation establishes
 
 Execution proves that the selected software runs with stated inputs. Host-contract checks establish the tested integration semantics and preserved invariants. Problem resolution additionally requires comparison with the original workflow and its defined success criterion, with authorised researcher evidence when appropriate. These statuses remain separate on the Validation page. Outreach stays deferred.
+
+## Deployed navigation verification
+
+Main run 40558190385 passed scientific and local browser verification, then stopped before promotion when the deployed source-board check read a select before the external application script had applied its query. A controlled delayed-script probe on that exact staged artifact reproduced an empty initial value and the correct `sleap` value after document load. The verifier now waits for the destination URL and completed load before the unchanged outcome assertions. It deliberately delays that script request for the source-board scenario to retain a regression check. This changes test readiness, not the application, accepted outcomes or deployment gate.
