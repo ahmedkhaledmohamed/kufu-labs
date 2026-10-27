@@ -25,3 +25,7 @@ weights/
 *.ome.tiff
 *.pth
 *.pt
+
+.vercel/
+dist/
+artifacts/

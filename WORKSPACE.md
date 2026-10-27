@@ -1,43 +1,37 @@
 # Scientific software lab workspace
 
-## Current goal
+## Active goal
 
-Build a main lab hub connecting every current exploration to an evidence-backed problem board, source directories and a validation ledger; verify whether local contributions actually address the original reported needs. The autonomous goal is active. Outreach remains deferred. No recordings/model weights, paid services, new accounts or public deployment are authorised.
+Deliver independent navigation pages, meaningful CI/CD, runnable demonstrations and protected Vercel production for the scientific-software lab. The approved production target is Ahmed's personal Vercel scope; outreach, new accounts, paid add-ons, model weights and research recordings remain outside this goal.
 
 ## Entry points
 
-| Focus | Read first |
+| Task | Entry |
 | --- | --- |
-| Browse the lab | [Hub](index.html), then [hub maintenance](site/README.md) |
-| Inspect the demo | [Pairwise overlap inspector](projects/overlap-inspector/README.md) |
-| Continue the movement contribution | [Project](projects/movement-edit-filtering/README.md) and [review evidence](projects/movement-edit-filtering/REVIEW.md) |
-| Assess a new lead | [Catalogue](site/catalog.json), [discovery record](research/opportunity-discovery/README.md), [audit](research/opportunity-discovery/AUDIT.md) |
-| Understand the selected pose-review task | [Research](research/pose-review-validation/README.md) and [proposed outcome study](research/pose-review-validation/PILOT.md) |
-| Review resolution claims | Hub validation ledger and [validation review](site/VALIDATION.md) |
+| Browse the lab | [Home](index.html), [explorations/demos](explorations.html), [problems](problems.html), [sources](sources.html), [validation](validation.html) |
+| Build, run and deploy | [Delivery guide](site/DELIVERY.md), [hub maintenance](site/README.md) |
+| Verify the pose inspector | [Project record](projects/overlap-inspector/README.md) and its pinned oracle generator |
+| Verify movement filtering | [Project](projects/movement-edit-filtering/README.md), [widget replay](projects/movement-edit-filtering/verify_workflow.py), [negative deletion reproduction](projects/movement-edit-filtering/DELETION-PROVENANCE.md) |
+| Evaluate resolution claims | [Validation review](site/VALIDATION.md) and the website's separate execution/integration/problem-resolution descriptions |
 
-## Branch and publication state
+## Source and publication state
 
-Working branch: `feat/lab-hub-and-evidence`, isolated worktree `scientific-lab-hub`, based on freshly fetched main `78375803a4326b2a26d725568bea84b95a169e35` on 27 October 2026. Lab PRs #1 and #2 are merged. [PR #3](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3) remains open at `d89bab59eee2626e46899d36dad9be8eaa70b05e`; it contains the separate deletion diagnostic and earlier outreach status. Do not duplicate or merge it implicitly.
+PR #4 is merged at main `902dd4ccea229bac16e110ef1fad8b5b72bcfa8e`. The delivery branch `feat/lab-pages-and-delivery` started from that refreshed main in isolated worktree `scientific-lab-delivery`. Existing source checkouts and draft research worktrees are preserved.
 
-The hub branch carries a copy of the completed uncommitted overlap demo and the three unpublished pose-review research records. Original worktrees remain intact. Historical research-only/defer statements are explicitly distinguished from the later authorised technical demo; no participant study has occurred. The earlier unsent recruitment materials are archived and do not grant outreach permission.
+PR #3 is merged at `ee2f51fcebb363dc8b3eb8125dcbd688649cc847`, including the approved conflict resolution `6d79e5ce799ec484c25b33a7800608d723d9cacd`. [Delivery PR #5](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/5) is open at the originally approved `2751a4e34bb9445b09b59a422459f7c460c635b2` snapshot.
 
-No pushes or new PRs have occurred for this branch yet. Prepare the full diff and contribution record, obtain exact-commit approval, mark the commit and submit the requested PR. No self-merge.
+The [first cloud run](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40511509142) passed the Linux scientific and browser jobs. Deployment stopped before uploading because a fresh Vercel CLI profile tried to read user metadata with a project-only token. A local fix supplies only the already verified team mapping in a temporary private CLI profile; the actual changed helper passed with a fresh ten-minute project-only credential. No broader credential permissions or protection changes were needed. The fix is local pending renewed exact-commit approval; do not push a changed commit under the previous approval.
 
-## Validation finding
+After the approved update, rerun actual cloud CI, inspect the protected preview, merge PR #5 only with the applicable explicit authorisation and successful checks, then wait for main's tested production promotion and verify the production alias. Production deployment remains authorised, but not a shortcut around the CI gate.
 
-- movement: the optional explicit-edit filter distinguishes corrections from other NaN-score predictions locally. This is one part of issue #1027, not an end-to-end resolution of its whole provenance request. The pinned real-widget/model-event replay is rerun for this review; no canvas/mouse workflow or researcher benefit is claimed.
-- Overlap inspector: one pinned tensor filter is demonstrated on seven frozen synthetic cases. It is not in SLEAP and cannot yet inspect arbitrary real host instances. The original task is not claimed solved.
-- Deleted-point flags: repeated export loses provenance while positions remain missing. Reproduced, not fixed; artifacts live in PR #3 and issue #1174.
-- Other candidates: retain evidence, existing alternatives and a concrete next validation question. Avoid building broad products without a current baseline failure.
+## Actual verification versus remaining work
 
-## Next work and boundaries
+Local multi-page/browser checks pass: five distinct URLs, current navigation state, 25 problems, 15 source boards, four exploration entries, two runnable demonstration entries, compound filters/reset, cross-page deep links/source navigation, separate pose-demo tab and mobile layout. The real movement widget/model replay again passes its eleven invariants while retaining deletion-flag loss as an unfixed negative finding. The full frozen-pose browser boundary checks also pass.
 
-1. Finish local hub checks: search/filter/deep links, evidence/detail records, readable research pages, source-board navigation, mobile layout, demo entry/return and validation ledger.
-2. Re-run bounded pinned technical checks and document negative findings. Do not upgrade a problem to solved because a demo works or an issue is open/closed.
-3. Present the complete publication diff and exact contribution-record result for approval; only then push and create the private lab PR. Keep PR #3 and earlier Personal pointer PR independent.
-4. The next implementation candidate is read-only SLEAP host instance/skeleton/score mapping on constructed data. Select and verify the actual released host boundary before implementation; real recordings or researcher studies require their own applicable authorisation.
-5. Preserve all previous upstream checkouts and approved patches. No outreach, public comments, external accounts/forks, paid compute, deployment or merges are included.
+The Vercel project exists in verified personal scope `ahmed-khaled-mohameds-projects`; Authentication covers all deployments including production. A 90-day project-scoped deployment token and project-specific verification credential are stored in encrypted GitHub Secrets; no values are committed or printed. Automatic Git connection is disabled to preserve the CI deployment gate. No site has been deployed by this branch yet.
 
-## Deletion diagnostic record
+Remaining gates: exact-commit approval for the CLI fix; updated PR/CI and protected-preview verification; explicitly authorised merge; main pipeline deployment and promotion; verify the protected production alias and artifact identity. Keep the goal active until those cloud/runtime requirements are proved. A successful local test is not completion of CI/CD.
 
-The independent [deleted-point provenance reproduction](projects/movement-edit-filtering/DELETION-PROVENANCE.md), executable reproducer and result accompany the filtering review. They document a separate second-export provenance defect; they do not modify the approved confidence-filter patch or claim a fix. This reconciliation retains the current hub handoff alongside those diagnostic artifacts.
+## Validation discipline
+
+A runnable browser or ephemeral CI example establishes execution. Pinned host checks establish only the tested integration semantics. Resolving the original researcher problem requires the stated workflow outcome evidence. No adoption, researcher time saving, biological correctness or full upstream resolution is claimed. The next scientific feature candidate remains read-only host-native SLEAP instance/skeleton/score mapping, not a generic hosted code runner.
