@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/talmolab/sleap-nn",
+  "revision": "a2b97fe0a7d908813f0d555df284307fd5060fd5",
+  "sha256": {
+    "sleap_nn/inference/filters.py": "4b9c7c5ec06468cd2f8352139eeb265c54d74b82e0848463db446b87bda306c3",
+    "sleap_nn/inference/outputs.py": "d5efd621bb3addcf101c442c7a1b061da2c22d6aa195314b8cadd2b38d426796",
+    "sleap_nn/inference/preprocess_info.py": "df74ab8d64501834efaa71e50ec3e16ce9c7d1dcf018c536b833bf40514ba54f",
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  }
+}

@@ -1,31 +1,39 @@
 # Scientific software lab workspace
 
+## Current goal
+
+Build a main lab hub connecting every current exploration to an evidence-backed problem board, source directories and a validation ledger; verify whether local contributions actually address the original reported needs. The autonomous goal is active. Outreach remains deferred. No recordings/model weights, paid services, new accounts or public deployment are authorised.
+
 ## Entry points
 
 | Focus | Read first |
 | --- | --- |
-| Continue the movement contribution | [Project status](projects/movement-edit-filtering/README.md), then [pilot and results](projects/movement-edit-filtering/PILOT.md) |
-| Explore a new problem | [Research record](research/opportunity-discovery/README.md) and [existing-tool audit](research/opportunity-discovery/AUDIT.md) |
-| Reconsider priorities | [Investigation plan](research/opportunity-discovery/PLAN.md) |
+| Browse the lab | [Hub](index.html), then [hub maintenance](site/README.md) |
+| Inspect the demo | [Pairwise overlap inspector](projects/overlap-inspector/README.md) |
+| Continue the movement contribution | [Project](projects/movement-edit-filtering/README.md) and [review evidence](projects/movement-edit-filtering/REVIEW.md) |
+| Assess a new lead | [Catalogue](site/catalog.json), [discovery record](research/opportunity-discovery/README.md), [audit](research/opportunity-discovery/AUDIT.md) |
+| Understand the selected pose-review task | [Research](research/pose-review-validation/README.md) and [proposed outcome study](research/pose-review-validation/PILOT.md) |
+| Review resolution claims | Hub validation ledger and [validation review](site/VALIDATION.md) |
 
-Read only the selected task and its applicable instructions. Refresh mutable issue, PR, and upstream revision information before relying on it. Keep working implementation checkouts separate from the lab repository.
+## Branch and publication state
 
-## Current status
+Working branch: `feat/lab-hub-and-evidence`, isolated worktree `scientific-lab-hub`, based on freshly fetched main `78375803a4326b2a26d725568bea84b95a169e35` on 27 October 2026. Lab PRs #1 and #2 are merged. [PR #3](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3) remains open at `d89bab59eee2626e46899d36dad9be8eaa70b05e`; it contains the separate deletion diagnostic and earlier outreach status. Do not duplicate or merge it implicitly.
 
-Private lab [migration PR #1](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/1) is open at the approved 15-file snapshot. The initial README-only main bootstrap is preserved. Original Personal copies remain until the destination migration is merged and a reviewed pointer change replaces the old entry. The migration manifest is an immutable record of that approved snapshot, not a checksum claim for later edited project documents.
+The hub branch carries a copy of the completed uncommitted overlap demo and the three unpublished pose-review research records. Original worktrees remain intact. Historical research-only/defer statements are explicitly distinguished from the later authorised technical demo; no participant study has occurred. The earlier unsent recruitment materials are archived and do not grant outreach permission.
 
-The approved movement patch is unchanged. Its earlier 97 targeted synthetic cases and full pinned pre-commit results were reused. A new fresh-worktree demonstration now passes the real Qt-widget/model-event load → edit/remove → save → reload → filter boundary; four existing pose-conversion cases also pass. No canvas or mouse gestures were tested. See the [review package](projects/movement-edit-filtering/REVIEW.md) for evidence and the observed loss of deleted-point flags on second export.
+No pushes or new PRs have occurred for this branch yet. Prepare the full diff and contribution record, obtain exact-commit approval, mark the commit and submit the requested PR. No self-merge.
 
-## Working handoff
+## Validation finding
 
-Local branch: `research/movement-workflow-verification`, isolated worktree `scientific-software-lab-workflow`. It began from main while migration PR #1 was pending, with the approved migration tree overlaid for local work. The new review-package changes remain uncommitted and unpushed; compare them against `research/lab-migration`, not against the README-only bootstrap.
+- movement: the optional explicit-edit filter distinguishes corrections from other NaN-score predictions locally. This is one part of issue #1027, not an end-to-end resolution of its whole provenance request. The pinned real-widget/model-event replay is rerun for this review; no canvas/mouse workflow or researcher benefit is claimed.
+- Overlap inspector: one pinned tensor filter is demonstrated on seven frozen synthetic cases. It is not in SLEAP and cannot yet inspect arbitrary real host instances. The original task is not claimed solved.
+- Deleted-point flags: repeated export loses provenance while positions remain missing. Reproduced, not fixed; artifacts live in PR #3 and issue #1174.
+- Other candidates: retain evidence, existing alternatives and a concrete next validation question. Avoid building broad products without a current baseline failure.
 
-A second pinned movement worktree, `movement-workflow-replay`, was created from upstream main at the audited revision and received the exact approved patch. The verifier imports that source explicitly and checks its baseline/patch before execution. The original approved implementation worktree and published migration snapshot remain intact.
+## Next work and boundaries
 
-## Next actions and boundaries
-
-1. Review the unpublished package, executable demonstration, result, and upstream PR draft. A maintainer can assess API scope and coordinate semantics; no maintainer has been contacted.
-2. After Ahmed merges migration PR #1, refresh main and base a new publication branch on it, carrying only the review-package delta. Follow full-diff, contribution-record, and exact-commit approval before any push or PR.
-3. Seek separately authorised upstream design review; do not claim #1027 is fully addressed. Consider a separate report for deletion-provenance loss if maintainers want one.
-4. Full host CI, rendered GUI interaction, recording-dependent tests, and researcher validation remain future gates. Do not download recordings or expand scope merely to turn these into passing claims.
-5. Replace the Personal entry with a reviewed destination pointer only after migration verification/merge. No merge, outreach, paid service, account/fork creation, or new publication is authorised by the autonomous verification goal.
+1. Finish local hub checks: search/filter/deep links, evidence/detail records, readable research pages, source-board navigation, mobile layout, demo entry/return and validation ledger.
+2. Re-run bounded pinned technical checks and document negative findings. Do not upgrade a problem to solved because a demo works or an issue is open/closed.
+3. Present the complete publication diff and exact contribution-record result for approval; only then push and create the private lab PR. Keep PR #3 and earlier Personal pointer PR independent.
+4. The next implementation candidate is read-only SLEAP host instance/skeleton/score mapping on constructed data. Select and verify the actual released host boundary before implementation; real recordings or researcher studies require their own applicable authorisation.
+5. Preserve all previous upstream checkouts and approved patches. No outreach, public comments, external accounts/forks, paid compute, deployment or merges are included.

@@ -1,0 +1,31 @@
+{
+  "browser": "156.0.8078.48",
+  "node": "22.22.2",
+  "playwright": "1.64.0-alpha-1790635538000",
+  "problems": 25,
+  "sourceBoards": 15,
+  "explorations": 4,
+  "researchPages": 14,
+  "localLinks": 129,
+  "viewports": [
+    "1440x1100",
+    "390x844"
+  ],
+  "pageErrors": [],
+  "httpRequests": 0,
+  "checks": [
+    "search and compound filters",
+    "empty and reset state",
+    "deep-link opening",
+    "evidence details",
+    "source-board filter",
+    "all exploration links",
+    "readable research tables",
+    "demo control and browser return",
+    "validation scope",
+    "desktop/mobile screenshot review",
+    "mobile horizontal overflow",
+    "all local document links",
+    "standalone offline browsing"
+  ]
+}
