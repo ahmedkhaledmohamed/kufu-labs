@@ -1,4 +1,4 @@
-# Scientific software lab instructions
+# Kufu Labs instructions
 
 ## Task scope
 

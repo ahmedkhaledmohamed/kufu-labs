@@ -185,8 +185,8 @@
           "url": "https://github.com/neuroinformatics-unit/movement/issues/1174"
         },
         {
-          "title": "Reproduction artifacts in private lab PR #3",
-          "url": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3"
+          "title": "Reproduction artifacts in lab PR #3",
+          "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/pull/3"
         }
       ],
       "boards": [
@@ -958,16 +958,17 @@
       "head_sha": "fd6c634c09369ecc0bc428f1a8bf00eeb6aa10d3"
     },
     "lab-3": {
-      "html_url": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3",
+      "html_url": "https://github.com/ahmedkhaledmohamed/kufu-labs/pull/3",
       "title": "Record deletion-provenance reproduction and maintainer review status",
-      "state": "open",
+      "state": "closed",
       "state_reason": null,
       "updated_at": "2026-10-27T01:40:48Z",
       "closed_at": null,
       "merged_at": null,
       "comments": 1,
       "draft": false,
-      "head_sha": "d89bab59eee2626e46899d36dad9be8eaa70b05e"
+      "head_sha": "6d79e5ce799ec484c25b33a7800608d723d9cacd",
+      "merged": true
     }
   },
   "demonstrations": [
@@ -983,8 +984,8 @@
       "href": "projects/overlap-inspector/index.html",
       "record": "projects/overlap-inspector/README.md",
       "result": "projects/overlap-inspector/verification.json",
-      "implementation": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/tree/main/projects/overlap-inspector",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/blob/main/projects/overlap-inspector/verify-browser.cjs"
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/tree/main/projects/overlap-inspector",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/overlap-inspector/verify-browser.cjs"
     },
     {
       "id": "movement",
@@ -998,9 +999,9 @@
       "href": null,
       "record": "projects/movement-edit-filtering/PILOT.md",
       "result": "site/validation-results.json",
-      "implementation": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/blob/main/projects/movement-edit-filtering/movement-pilot.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/blob/main/projects/movement-edit-filtering/verify_workflow.py"
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/movement-pilot.patch",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_workflow.py"
     }
   ],
-  "verificationRuns": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/workflows/lab-delivery.yml"
+  "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"
 }

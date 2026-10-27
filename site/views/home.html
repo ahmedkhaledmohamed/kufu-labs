@@ -1,65 +1,91 @@
-<h1>Scientific software explorations</h1>
-<p class="intro">
-  A working lab for following a reported problem through evidence, software and
-  validation.
-</p>
-<div class="portfolio">
-  <section>
-    <h2>Browse the lab</h2>
-    <div class="exploration">
-      <h3>
-        <a href="explorations.html">Explorations and runnable demonstrations</a>
-      </h3>
-      <p>
-        Open the pose inspector, reproduce a filtering workflow, or read an
-        investigation.
-      </p>
-    </div>
-    <div class="exploration">
-      <h3><a href="problems.html">Problem and evidence board</a></h3>
-      <p>
-        Compare documented gaps, existing tools and the next validation
-        question.
-      </p>
-    </div>
-    <div class="exploration">
-      <h3><a href="sources.html">Source boards</a></h3>
-      <p>Find original issue trackers, priorities and challenge directories.</p>
-    </div>
-    <div class="exploration">
-      <h3><a href="validation.html">Validation results</a></h3>
-      <p>See what runs, what was checked and what remains unresolved.</p>
-    </div>
-  </section>
-  <aside class="verdict">
-    <h2>No end-to-end resolution established yet</h2>
+<section class="kufu-intro" aria-labelledby="kufuTitle">
+  <div>
+    <h1 id="kufuTitle">Kufu Labs</h1>
+    <p class="kufu-meaning">
+      <span lang="ja">工夫</span> <span>Kufū · practical ingenuity</span>
+    </p>
+    <p class="intro">
+      Kufu is a Japanese word for devising better ways to do something. We take
+      that as a working principle: understand a real need, make a focused
+      improvement, and check whether it helps.
+    </p>
+    <p class="kufu-definition">
+      <a
+        href="https://www.kanjipedia.jp/kotoba/0002126000"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Meaning of 工夫 in Kanjipedia</a
+      >
+    </p>
+  </div>
+  <div class="kufu-purpose">
+    <h2>Why this lab exists</h2>
     <p>
-      The movement patch addresses a filtering subproblem locally. The overlap
-      inspector demonstrates a possible inspection workflow. Deleted-point
-      provenance loss is reproduced and unfixed.
+      To build free tools that remove specific obstacles from research work. The
+      aim is to help people spend more time on their questions and less time
+      working around software.
     </p>
     <p>
-      Technical checks do not establish adoption, researcher benefit or
-      scientific correctness.
+      We begin with reported needs and existing tools. A small contribution that
+      helps someone is a worthwhile result.
     </p>
-    <a href="#validation">Read the validation ledger</a>
-  </aside>
-</div>
-<details class="scope">
-  <summary>Coverage, freshness and maintenance</summary>
-  <p id="maintenance"></p>
+  </div>
+</section>
+<figure class="kufu-figure" aria-labelledby="kufuFigureTitle">
+  <h2 id="kufuFigureTitle">How we put practical ingenuity to work</h2>
+  <ol class="kufu-flow">
+    <li>
+      <svg viewBox="0 0 160 110" aria-hidden="true" focusable="false">
+        <circle cx="50" cy="28" r="14" />
+        <path
+          d="M22 88v-18c0-17 13-28 28-28s28 11 28 28v18M90 19h49v43h-22l-15 12v-12H90z"
+        />
+        <path d="M106 32h18M106 43h12" class="kufu-accent" />
+      </svg>
+      <h3>Understand the need</h3>
+      <p>
+        Find the person, their task and the obstacle. Check how existing tools
+        handle it.
+      </p>
+    </li>
+    <li>
+      <svg viewBox="0 0 160 110" aria-hidden="true" focusable="false">
+        <rect x="20" y="15" width="120" height="78" rx="4" />
+        <path
+          d="M20 34h120M33 24h2m8 0h2M57 49l-15 14 15 14m46-28 15 14-15 14"
+        />
+        <path d="M87 44L74 82" class="kufu-accent" />
+      </svg>
+      <h3>Build a focused improvement</h3>
+      <p>
+        Make the smallest useful tool or change. Keep it close to the workflow
+        it serves.
+      </p>
+    </li>
+    <li>
+      <svg viewBox="0 0 160 110" aria-hidden="true" focusable="false">
+        <path
+          d="M33 14h77l20 20v62H33zM110 14v20h20M48 49h31M48 63h23M48 77h31"
+        />
+        <path d="M91 64l9 9 18-23" class="kufu-accent" />
+      </svg>
+      <h3>Test whether it helps</h3>
+      <p>
+        Compare with the starting point. Separate software that runs from a
+        problem that improves.
+      </p>
+    </li>
+  </ol>
+  <figcaption>
+    Evidence can send us back to the problem, change the approach, or tell us to
+    stop. Building something is a step; helping someone is the outcome we seek.
+  </figcaption>
+</figure>
+<section class="kufu-principles" aria-labelledby="kufuPrinciplesTitle">
+  <h2 id="kufuPrinciplesTitle">What we want to contribute</h2>
   <p>
-    The board is a curated aggregation of the lab’s named candidates, not a live
-    feed or exhaustive list of unsolved science. Source-board access notes
-    distinguish a readable page, a JavaScript shell, a blocked fetch and an
-    earlier audit. An open issue, closed issue or active challenge alone never
-    establishes whether the underlying need is resolved.
+    Useful software, readable implementations and reproducible examples that
+    others can inspect, adapt and improve. We keep the original problem and the
+    limits of each result visible, and give existing work its credit.
   </p>
-  <p>
-    Source records and validation criteria are maintained in
-    <a href="site/catalog.json">catalog.json</a>. Generated documentation keeps
-    historical research decisions visible; the current project handoff takes
-    precedence. Private lab PR #3 holds the separate deletion diagnostic and
-    remains independent of this branch.
-  </p>
-</details>
+</section>

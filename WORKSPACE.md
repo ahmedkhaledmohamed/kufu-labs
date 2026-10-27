@@ -1,37 +1,31 @@
-# Scientific software lab workspace
+# Kufu Labs workspace
 
-## Active goal
+## Current task
 
-Deliver independent navigation pages, meaningful CI/CD, runnable demonstrations and protected Vercel production for the scientific-software lab. The approved production target is Ahmed's personal Vercel scope; outreach, new accounts, paid add-ons, model weights and research recordings remain outside this goal.
+Prepare Kufu Labs for a renamed public GitHub repository, with explicit licensing and a Home page that explains the lab rather than duplicating its navigation. The selected name is Kufu Labs, from Japanese 工夫 (kufū), practical ingenuity. The repository has been renamed to `ahmedkhaledmohamed/kufu-labs` and remains private. Required main-branch checks and admin enforcement were verified after the rename.
 
 ## Entry points
 
-| Task | Entry |
-| --- | --- |
-| Browse the lab | [Home](index.html), [explorations/demos](explorations.html), [problems](problems.html), [sources](sources.html), [validation](validation.html) |
-| Build, run and deploy | [Delivery guide](site/DELIVERY.md), [hub maintenance](site/README.md) |
-| Verify the pose inspector | [Project record](projects/overlap-inspector/README.md) and its pinned oracle generator |
-| Verify movement filtering | [Project](projects/movement-edit-filtering/README.md), [widget replay](projects/movement-edit-filtering/verify_workflow.py), [negative deletion reproduction](projects/movement-edit-filtering/DELETION-PROVENANCE.md) |
-| Evaluate resolution claims | [Validation review](site/VALIDATION.md) and the website's separate execution/integration/problem-resolution descriptions |
+- [Home](index.html): meaning, purpose and the practical-ingenuity figure.
+- [Explorations](explorations.html): project implementations, runnable examples and limits.
+- [Problems](problems.html), [sources](sources.html) and [validation](validation.html): the evidence catalogue and outcome assessment.
+- [Delivery](site/DELIVERY.md): CI/CD, artifact identity and protected deployment.
+- [Licensing](README.md#licensing): default MIT terms and preserved GPL/BSD exceptions.
 
-## Source and publication state
+## Verified baseline
 
-PRs #3–#7 are merged; no lab PR remains open at this checkpoint. Current main is `16e4cdb65ff79c614b7201a0349d986e5706c018`. The isolated `fix/empty-promotion-response` branch starts from that refreshed commit. Existing research worktrees are preserved.
+Main `10b5e2c139adc693f774792b41ffa85bacd37b69` includes merged PRs #1–#9. Run 40577617957 passed scientific, build/browser and protected Vercel deployment checks. The site is live at the existing protected production URL; its source and sampled asset hashes match the exact CI artifact. Independent desktop/mobile checks passed the inspector navigation, comparison, 182 local links and blocked unauthenticated requests. The earlier deployment goal is complete.
 
-Main run [40572525361](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40572525361) passed scientific, local browser and deployed browser verification. The project promotion API accepted the request, but its empty successful response caused the helper to fail JSON parsing before recording success. Read-only server inspection confirmed that the current production target is ready and matches merged main; `lastAliasRequest` is absent.
+## Public-release preparation
 
-## Actual verification versus remaining work
+The isolated `feat/public-lab-preparation` worktree started from that refreshed baseline. A pattern scan of 22 reachable commits/144 blobs, all 11 Actions logs and PR discussion records found no matches to the checked credential, internal-host or private-path patterns. This is a bounded pattern audit, not a guarantee against every secret format. No raw logs or secret values are committed.
 
-Production is live at [the protected lab](https://scientific-software-lab-ahmed-khaled-mohameds-projects.vercel.app). Independent read-only verification matched its current production source commit to main and four served asset hashes to the exact CI artifact. Desktop/mobile browser checks passed across five pages, 25 problems, 15 source boards, four explorations, two demonstration entries, 16 research pages and 180 local links, without page errors. Unauthenticated hub, catalogue and demo requests were blocked. Vercel Authentication remains enabled for all deployments.
+The intended public release retains existing project licences, upstream notices, scientific source pins and unchanged numerical behaviour. GitHub Actions history/artifacts follow repository visibility. The Vercel project ID, owner and authentication remain unchanged; making the repository public does not remove site protection.
 
-The focused local fix accepts an empty successful mutation response while rejecting empty required reads, and observes the current production target's exact deployment ID, ready state and source commit instead of requiring optional job metadata. Eleven simulated full-helper cases passed, covering both empty/JSON mutation responses, absent job metadata and the existing failure gates. Real cloud CI with this final fix remains unverified.
+The earlier `feat/home-lab-overview` draft is superseded by this Kufu meaning/purpose/figure Home; do not publish that draft.
 
-Remaining gates: approve the exact diff/commit for publication; open the fix PR; verify cloud checks; explicitly authorised merge; wait for a green main release and repeat the independent production audit. The website is verified live, but the CI/CD goal remains unfinished until the release job itself passes. No manual promotion, credential broadening, outreach or recordings were used.
+Remaining steps: finish local checks and exact-diff/commit review; publish and merge through a PR with successful checks; verify the Kufu production branding and Home; audit the final publication state; change the authorised repository visibility and confirm unauthenticated GitHub access. Preserve earlier research worktrees. No outreach, new accounts, spending, recordings or model-weight downloads are authorised.
 
-## Validation discipline
+## Scientific claims
 
-A runnable browser or ephemeral CI example establishes execution. Pinned host checks establish only the tested integration semantics. Resolving the original researcher problem requires the stated workflow outcome evidence. No adoption, researcher time saving, biological correctness or full upstream resolution is claimed. The next scientific feature candidate remains read-only host-native SLEAP instance/skeleton/score mapping, not a generic hosted code runner.
-
-## Continuation authority
-
-Ahmed asked future authorised goals to continue without additional goal-approval pauses. Repository publication instructions still require exact-diff/exact-commit approval and an explicitly authorised merge. PR #7 was approved and merged; its approval does not cover this new response-handling fix. Prepare the reviewable change before requesting the final publication approval. Preserve boundaries around outreach, spending, new accounts and data access.
+The pose inspector uses constructed inputs and unchanged upstream filtering. It is not yet integrated into SLEAP. The movement patch addresses a local filtering subproblem; repeated-export deletion provenance remains an unfixed finding. Researcher benefit, adoption and end-to-end problem resolution remain unmeasured.
