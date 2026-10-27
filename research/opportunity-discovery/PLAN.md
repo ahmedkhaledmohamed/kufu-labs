@@ -104,7 +104,7 @@ Completed for the approved technical pilot: reproduced baseline and failing new-
 - Choose verification appropriate to the change and host-project requirements. Avoid tests that merely mirror implementation.
 - Record negative results and limitations. Preserve the experiment if it establishes that the proposed feature is unnecessary.
 
-Technical portion completed: optional edit-aware filtering, input validation, usage example, 15 new acceptance cases and 82 existing synthetic regressions passed. Native save/reload, lint, formatting, and targeted type checks passed. The two recording-dependent filtering cases, full CI, GUI verification, and external workflow evaluation remain unrun.
+Technical portion completed: optional edit-aware filtering, input validation, usage example, 15 new acceptance cases and 82 existing synthetic regressions passed. Native save/reload, lint, formatting, and targeted type checks passed. A subsequent offscreen Qt-widget/model-event demonstration passed in a fresh pinned worktree, with four existing conversion cases also passing. The two recording-dependent filtering cases, full CI, rendered GUI interaction, and external workflow evaluation remain unrun.
 
 ## Phase 6: Decide whether to continue
 
@@ -114,6 +114,6 @@ Public release requires a suitable licence, portable outputs, documented support
 
 ## Handoff and next gate
 
-The approved local movement pilot is technically complete. Review its [full patch](../../projects/movement-edit-filtering/movement-pilot.patch), [results and commands](../../projects/movement-edit-filtering/PILOT.md), and [environment inventory](../../projects/movement-edit-filtering/movement-pilot-environment.json). Implementation branch: `feat/explicit-edit-filtering`, in the sibling worktree `movement-filter-provenance`. No commit or publication has occurred. The code demonstrates provenance-sensitive filtering on constructed data, not improved biological results or measured researcher benefit.
+The approved local movement pilot and subsequent programmatic widget-workflow verification are technically complete. The [review package](../../projects/movement-edit-filtering/REVIEW.md) contains a reproducible demonstration, exact-version result, upstream draft, and maintainer questions. Review its [full patch](../../projects/movement-edit-filtering/movement-pilot.patch), [results and commands](../../projects/movement-edit-filtering/PILOT.md), and [environment inventory](../../projects/movement-edit-filtering/movement-pilot-environment.json). Implementation branch: `feat/explicit-edit-filtering`, in the sibling worktree `movement-filter-provenance`. No commit or publication has occurred. The code demonstrates provenance-sensitive filtering on constructed data, not improved biological results or measured researcher benefit.
 
 Before any new push, show the full repository diff, run the required contribution-record process, obtain approval of the exact change/commit, and mark it with the gate. The research PR remains at the initially approved snapshot unless separately updated. Do not merge it. Next steps are a publication decision and separately authorised maintainer/workflow review; Phase 6 cannot claim adoption or user validation yet.

@@ -12,7 +12,7 @@ Private workspace for scientific-software research, reproducible experiments, up
 
 | Project | Current evidence | Next step |
 | --- | --- | --- |
-| [movement edit-aware filtering](projects/movement-edit-filtering/README.md) | Local patch; 97 targeted synthetic tests passed; no real-workflow validation | Review the full change, complete remaining host checks, then decide on upstream review |
+| [movement edit-aware filtering](projects/movement-edit-filtering/README.md) | Unchanged local patch; 97 filtering cases plus four conversion cases passed; real Qt-widget/model-event demonstration passed; no researcher validation | Review the [local package](projects/movement-edit-filtering/REVIEW.md) and decide on upstream design review |
 
 ## Repository structure
 
