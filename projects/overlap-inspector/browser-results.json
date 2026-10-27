@@ -1,0 +1,32 @@
+{
+  "browser": "156.0.8078.48",
+  "viewportChecks": [
+    "1360x1100",
+    "390x844"
+  ],
+  "boundaryViews": 168,
+  "pageErrors": [],
+  "httpRequests": 0,
+  "checks": [
+    "default suppression",
+    "metric switch",
+    "directional score reversal",
+    "exact equality and just below boundary",
+    "three-instance context",
+    "bounding-box toggle",
+    "pair selection",
+    "tied scores",
+    "missing/unavailable",
+    "zero area",
+    "invalid threshold recovery",
+    "keyboard slider",
+    "all oracle boundary states",
+    "mobile overflow",
+    "source disclosure",
+    "offline file launch"
+  ],
+  "playwright": "1.64.0-alpha-1790635538000",
+  "node": "22.22.2",
+  "launch": "isolated headless Chrome, standalone file URL",
+  "runner_maximum_resident_bytes": 249528320
+}

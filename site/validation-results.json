@@ -1,0 +1,50 @@
+{
+  "reviewed": "2026-10-27",
+  "movement_workflow_replay": {
+    "source_revision": "39ee15e29706150d7d4f60ba617aa99d2027eed7",
+    "approved_patch_sha256": "85c1aa943993758c09ab16a1a96a1ddbfa8195fd9c8713aaaa5adcebc0c4e9c7",
+    "scope": "real Qt widgets and napari model events; no rendered canvas",
+    "checks": {
+      "implementation_matches_approved_patch": true,
+      "real_loader_and_saver_buttons": true,
+      "move_callback_creates_edit_flag_and_nan_confidence": true,
+      "removal_stays_missing": true,
+      "originally_missing_point_stays_missing": true,
+      "corrected_xy_and_time_coordinates_preserved": true,
+      "reload_restores_moved_point_edit_flag": true,
+      "explicit_policy_keeps_correction_drops_unknown": true,
+      "legacy_policies_cannot_distinguish_two_nan_scores": true,
+      "input_dataset_not_mutated": true,
+      "filtering_decisions_survive_second_gui_export": true
+    },
+    "deleted_point_edit_flag_after_first_export": true,
+    "deleted_point_edit_flag_after_second_export": false,
+    "netcdf_bytes": {
+      "original.nc": 10715,
+      "reexported.nc": 11274,
+      "edited.nc": 11274
+    },
+    "elapsed_seconds": 4.526,
+    "peak_rss_bytes": 410976256,
+    "python": "3.13.2",
+    "platform": "darwin"
+  },
+  "overlap_reference": {
+    "revision": "a2b97fe0a7d908813f0d555df284307fd5060fd5",
+    "python": "3.13.2",
+    "torch": "2.14.1",
+    "numpy": "2.5.4",
+    "attrs": "26.1.0",
+    "device": "cpu",
+    "dtype": "float32",
+    "cases": 7,
+    "filter_runs": 498,
+    "interior_and_adjacent_probes": 330,
+    "source_sha256": {
+      "sleap_nn/inference/filters.py": "4b9c7c5ec06468cd2f8352139eeb265c54d74b82e0848463db446b87bda306c3",
+      "sleap_nn/inference/outputs.py": "d5efd621bb3addcf101c442c7a1b061da2c22d6aa195314b8cadd2b38d426796",
+      "sleap_nn/inference/preprocess_info.py": "df74ab8d64501834efaa71e50ec3e16ce9c7d1dcf018c536b833bf40514ba54f",
+      "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    }
+  }
+}

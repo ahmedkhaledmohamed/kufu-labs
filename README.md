@@ -1,25 +1,32 @@
 # Scientific software lab
 
-Private workspace for scientific-software research, reproducible experiments, upstream contributions, and early MVPs. Start with [WORKSPACE.md](WORKSPACE.md) for current work and decisions.
+Private lab for scientific-software explorations, reproducible experiments, upstream contributions and small demonstrations.
 
-## Research
+**Open [the lab hub](index.html)** for the exploration directory, searchable problem/evidence board, source-board links and validation ledger. The hub runs as a standalone local file without accounts, hosted services or runtime dependencies. Alternatively serve the repository locally:
 
-- [Opportunity discovery](research/opportunity-discovery/README.md): problem boards, candidate ideas, evidence, integration routes, and tradeoffs.
-- [Comparative audit](research/opportunity-discovery/AUDIT.md): microscopy, behavioural neuroscience, and biomedical evidence retrieval.
-- [Investigation plan](research/opportunity-discovery/PLAN.md): completed work and remaining validation gates.
+```sh
+python3 -m http.server 8878 --bind 127.0.0.1
+```
 
-## Projects
+Then visit `http://127.0.0.1:8878`. Start with [WORKSPACE.md](WORKSPACE.md) for the current working handoff and [site/README.md](site/README.md) to maintain or verify the hub.
 
-| Project | Current evidence | Next step |
+## Explorations
+
+| Exploration | Current evidence | Remaining validation |
 | --- | --- | --- |
-| [movement edit-aware filtering](projects/movement-edit-filtering/README.md) | Unchanged local patch; 97 filtering cases plus four conversion cases passed; real Qt-widget/model-event demonstration passed; no researcher validation | Review the [local package](projects/movement-edit-filtering/REVIEW.md) and decide on upstream design review |
+| [Pairwise overlap inspector](projects/overlap-inspector/README.md) | Offline synthetic demo checked against a pinned sleap-nn tensor filter | Real host instance/skeleton/score integration and researcher workflow benefit |
+| [movement edit-aware filtering](projects/movement-edit-filtering/README.md) | Local patch; 97 earlier synthetic filtering cases and a real Qt-widget/model-event replay | API acceptance, rendered host interaction and real-workflow benefit; separate deletion-provenance defect remains |
+| [Pose-review task research](research/pose-review-validation/README.md) | Existing-tool audit and one specific pairwise-score request | Proposed outcome study is unrun; outreach is deferred |
+| [Opportunity discovery](research/opportunity-discovery/README.md) | Named candidates, existing tools, source boards and comparative audit | Most ideas lack a demonstrated remaining gap |
 
-## Repository structure
+The board aggregates 25 named candidates from these records, including deferred concepts and competing work, with 15 source boards/directories. It is a curated snapshot, not an exhaustive census or a live feed. No end-to-end user problem is claimed resolved.
 
-`research/` holds sourced investigations and cross-project decisions. `projects/<name>/` holds each project's scope, reproducibility record, source or upstream patch, and results. Add an MVP's code in its project directory when it has an approved task; do not introduce a shared build framework before projects need one.
+## Structure and boundaries
 
-Upstream projects keep their own Git history and implementation worktrees. Record a pinned revision, patch, provenance, and result here rather than vendoring their entire source trees. An independently maintained product can later split into its own repository while leaving its research history linked here.
+`research/` preserves sourced investigations and decisions. `projects/<name>/` keeps each contribution, executable check, source pin and limits. `site/catalog.json` is the maintained hub catalogue; `site/build.py` generates the root website and safe, readable copies of the Markdown research records. Keep upstream implementation checkouts separate.
 
-Keep recordings, model weights, environments, credentials, and generated caches outside version control. Small constructed fixtures may live beside a project's code. Verify data and model reuse terms separately from software licences.
+The [separate open PR #3](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3) contains the deletion diagnostic and earlier publication status. Its files are not duplicated by this change. Research originals and modified implementation worktrees are preserved.
 
-The lab is private by design. Private storage does not authorise patient-data collection, external messaging, paid services, public release, or merging. Follow the applicable project instructions and existing approval boundaries.
+No recordings, model weights, environments, patient information or credentials belong in the repository. Dataset, model and software licences are independent. A passing check does not establish scientific correctness, adoption, clinical utility or researcher benefit.
+
+Private storage does not authorise outreach, new accounts, spending, public deployment or merging. The current work prepares a private lab PR; publication still follows full-diff/contribution-record/exact-commit approval. No merge is authorised.
