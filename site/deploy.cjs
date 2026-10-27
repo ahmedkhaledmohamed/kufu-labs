@@ -156,7 +156,8 @@ function target() {
     "--meta",
     `sourceCommit=${manifest.source_commit}`,
   ];
-  // Production-target deployment is staged without a domain, then promoted only after verification.
+  // Skip custom domain assignment; Vercel can still assign generated aliases.
+  // Only main may request explicit production promotion after remote verification.
   if (mode === "production" || !project.targets?.production)
     args.push("--prod", "--skip-domain");
   const raw = execFileSync(cli, args, {
@@ -209,11 +210,47 @@ function target() {
       manifest.source_commit,
       "Refuse to promote a stale main build",
     );
-    execFileSync(cli, ["promote", deployment, "--yes", ...cliContextArgs], {
-      cwd: root,
-      env,
-      stdio: "inherit",
-    });
+    const details = api("/v13/deployments/" + new URL(deployment).host);
+    const deploymentId = details.id || details.uid;
+    assert.ok(deploymentId, "Missing deployment identity");
+    assert.equal(details.projectId, config.projectId);
+    assert.equal(details.ownerId, config.teamId);
+    assert.equal(details.target, "production");
+    assert.equal(details.readyState, "READY");
+    assert.equal(details.meta?.sourceCommit, manifest.source_commit);
+    // `promote` resolves user/team metadata even with a cached scope. Use its
+    // documented project endpoint with the same project-scoped credential.
+    api(
+      `/v10/projects/${config.projectId}/promote/${deploymentId}`,
+      "POST",
+      {},
+    );
+    const deadline = Date.now() + 180_000;
+    let completed = false;
+    while (Date.now() < deadline) {
+      const state = target().lastAliasRequest;
+      if (state?.toDeploymentId === deploymentId) {
+        assert.notEqual(
+          state.jobStatus,
+          "failed",
+          "Production promotion failed",
+        );
+        assert.notEqual(
+          state.jobStatus,
+          "skipped",
+          "Production promotion skipped",
+        );
+        if (state.jobStatus === "succeeded") {
+          completed = true;
+          break;
+        }
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    assert.ok(
+      completed,
+      "Production promotion did not complete within 3 minutes",
+    );
   }
   let productionUrl = null;
   if (mode === "production") {
