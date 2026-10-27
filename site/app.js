@@ -226,6 +226,12 @@ if ($("explorationList")) {
       document.createTextNode(" · "),
       link("Problem and evidence", `problems.html#problem-${x.problem}`),
     );
+    const demo = CATALOG.demonstrations.find((d) => d.id === x.id);
+    if (demo)
+      refs.append(
+        document.createTextNode(" · "),
+        link("Code implementation", demo.implementation),
+      );
     article.append(refs);
     $("explorationList").append(article);
   }
@@ -257,6 +263,8 @@ if ($("demoList"))
       actions.append(open);
     }
     actions.append(
+      link("Code implementation", d.implementation),
+      link("Verification code", d.verificationCode),
       link("Reproduction and source record", record(d.record)),
       link("Recorded result", d.result),
       link("Verification runs", CATALOG.verificationRuns),

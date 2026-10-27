@@ -14,6 +14,12 @@ Open [index.html](index.html) directly in a browser. The complete dataset and fi
 
 Controls include pair selection, metric, continuous threshold, score-order permutations, a tied-score example, and bounding-box visibility. Pose inputs are fixed so every displayed result can be traced to the actual pinned numerical code.
 
+## Existing output and inspector contribution
+
+The comparison uses the same constructed input, selected metric, threshold and score order on both sides. The first side shows the pinned filter output states; the inspector side explains the selected pair and exposes the pose overlay, pair measurements and exact boundary. The filtering algorithm and returned poses do not change. This is an inspection capability, not a filtering fix, a screenshot comparison with SLEAP, or completed SLEAP GUI integration.
+
+The demo retains links to all five lab pages and its implementation/verification code. The hub browser check exercises each return route; the standalone browser check verifies that both comparison views agree with the displayed states at all 168 boundaries.
+
 ## Reference implementation
 
 Reference: [sleap-nn tensor FilterPipeline](https://github.com/talmolab/sleap-nn/blob/a2b97fe0a7d908813f0d555df284307fd5060fd5/sleap_nn/inference/filters.py), revision `a2b97fe0a7d908813f0d555df284307fd5060fd5`. Motivation: [SLEAP request #2816](https://github.com/talmolab/sleap/issues/2816). This supports one pinned main-branch tensor processing path, not a claim about all released SLEAP pipelines. The legacy NumPy overlap path can use a different OKS argument order.

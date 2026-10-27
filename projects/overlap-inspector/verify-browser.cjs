@@ -69,6 +69,8 @@ const {pathToFileURL}=require('node:url');
       await page.locator('#thresholdNumber').fill(String(row.lower));
       await page.locator('#thresholdNumber').press('Tab');
       assert.deepEqual(await page.locator('#states strong').allTextContents(),row.states);
+      assert.equal(await page.locator('#baselineResult').textContent(),row.states.map((s,i)=>String.fromCharCode(65+i)+': '+s).join(' · '));
+      assert.equal(await page.locator('#inspectionComparison').textContent(),await page.locator('#explanation').textContent());
       boundaryViews++;
      }
     }
@@ -89,7 +91,7 @@ const {pathToFileURL}=require('node:url');
   // Runtime performs no HTTP requests, including fonts/CDNs.
   assert.equal(requests.filter(u=>/^https?:/.test(u)).length,0);
   assert.deepEqual(errors,[]);
-  const report={browser:await browser.version(),viewportChecks:['1360x1100','390x844'],boundaryViews,pageErrors:errors,httpRequests:0,checks:['default suppression','metric switch','directional score reversal','exact equality and just below boundary','three-instance context','bounding-box toggle','pair selection','tied scores','missing/unavailable','zero area','invalid threshold recovery','keyboard slider','all oracle boundary states','mobile overflow','source disclosure','offline file launch']};
+  const report={browser:await browser.version(),viewportChecks:['1360x1100','390x844'],boundaryViews,pageErrors:errors,httpRequests:0,checks:['default suppression','metric switch','directional score reversal','exact equality and just below boundary','three-instance context','bounding-box toggle','pair selection','tied scores','missing/unavailable','zero area','invalid threshold recovery','keyboard slider','all oracle boundary states','comparison agrees at every oracle boundary','mobile overflow','source disclosure','offline file launch']};
   fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify(report,null,2));
  } finally {await browser.close();}
