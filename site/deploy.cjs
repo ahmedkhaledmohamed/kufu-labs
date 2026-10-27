@@ -35,28 +35,30 @@ const env = {
   VERCEL_ORG_ID: config.teamId,
   VERCEL_PROJECT_ID: config.projectId,
 };
-const api = (endpoint, method = "GET", data) =>
-  JSON.parse(
-    execFileSync(
-      cli,
-      [
-        "api",
-        endpoint,
-        "--method",
-        method,
-        ...cliContextArgs,
-        "--raw",
-        ...(data ? ["--input", "-"] : []),
-      ],
-      {
-        cwd: root,
-        env,
-        input: data ? JSON.stringify(data) : undefined,
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    ),
+const api = (endpoint, method = "GET", data) => {
+  const raw = execFileSync(
+    cli,
+    [
+      "api",
+      endpoint,
+      "--method",
+      method,
+      ...cliContextArgs,
+      "--raw",
+      ...(data ? ["--input", "-"] : []),
+    ],
+    {
+      cwd: root,
+      env,
+      input: data ? JSON.stringify(data) : undefined,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    },
   );
+  if (raw.trim()) return JSON.parse(raw);
+  assert.notEqual(method, "GET", "Empty response from a required API read");
+  return null;
+};
 function target() {
   const p = api("/v9/projects/" + config.projectId);
   assert.equal(p.id, config.projectId);
@@ -228,7 +230,8 @@ function target() {
     const deadline = Date.now() + 180_000;
     let completed = false;
     while (Date.now() < deadline) {
-      const state = target().lastAliasRequest;
+      const current = target();
+      const state = current.lastAliasRequest;
       if (state?.toDeploymentId === deploymentId) {
         assert.notEqual(
           state.jobStatus,
@@ -240,10 +243,17 @@ function target() {
           "skipped",
           "Production promotion skipped",
         );
-        if (state.jobStatus === "succeeded") {
-          completed = true;
-          break;
-        }
+      }
+      // lastAliasRequest may be absent even after a successful promotion.
+      // Check the authoritative current production target instead.
+      const production = current.targets?.production;
+      if (
+        production?.id === deploymentId &&
+        production.readyState === "READY" &&
+        production.meta?.sourceCommit === manifest.source_commit
+      ) {
+        completed = true;
+        break;
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
