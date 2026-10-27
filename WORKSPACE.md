@@ -2,7 +2,9 @@
 
 ## Current task
 
-Prepare Kufu Labs for a renamed public GitHub repository, with explicit licensing and a Home page that explains the lab rather than duplicating its navigation. The selected name is Kufu Labs, from Japanese 工夫 (kufū), practical ingenuity. The repository has been renamed to `ahmedkhaledmohamed/kufu-labs` and remains private. Required main-branch checks and admin enforcement were verified after the rename.
+Use https://kufu-labs.vercel.app as the canonical production address and ensure future CI releases verify that exact host. The repository is public at `ahmedkhaledmohamed/kufu-labs`. Kufu Labs means practical ingenuity, from Japanese 工夫 (kufū).
+
+The new domain is verified and attached to the existing production deployment. The old short production address has a verified 308 redirect to it. The team-scoped legacy alias continues serving the current artifact during the CI transition. Independent source/hash, Home figure, desktop/mobile navigation and blocked unauthenticated-access checks passed. Project identity and protection remain unchanged.
 
 ## Entry points
 
@@ -16,15 +18,13 @@ Prepare Kufu Labs for a renamed public GitHub repository, with explicit licensin
 
 Main `10b5e2c139adc693f774792b41ffa85bacd37b69` includes merged PRs #1–#9. Run 40577617957 passed scientific, build/browser and protected Vercel deployment checks. The site is live at the existing protected production URL; its source and sampled asset hashes match the exact CI artifact. Independent desktop/mobile checks passed the inspector navigation, comparison, 182 local links and blocked unauthenticated requests. The earlier deployment goal is complete.
 
-## Public-release preparation
+## Release state and remaining work
 
-The isolated `feat/public-lab-preparation` worktree started from that refreshed baseline. A pattern scan of 22 reachable commits/144 blobs, all 11 Actions logs and PR discussion records found no matches to the checked credential, internal-host or private-path patterns. This is a bounded pattern audit, not a guarantee against every secret format. No raw logs or secret values are committed.
+PR #10 merged at `1fb72e3f81dc6184e1d7a40cf9871808b69419cb`. Main run 40598637899 passed all three jobs, promoted the tested Kufu site, and passed an independent production audit. Public repository and license access were verified anonymously. The earlier standalone Home proposal is superseded by the released Kufu meaning/purpose/figure page.
 
-The intended public release retains existing project licences, upstream notices, scientific source pins and unchanged numerical behaviour. GitHub Actions history/artifacts follow repository visibility. The Vercel project ID, owner and authentication remain unchanged; making the repository public does not remove site protection.
+The isolated `fix/kufu-production-url` branch starts from that refreshed main. Its code change selects and verifies the configured canonical production host rather than the first alias returned by Vercel. Finish exact-diff/commit review, PR checks and an explicitly authorised merge, then verify the next real main release at the canonical domain and enable the team-scoped legacy alias redirect to Kufu. The live URL and redirects already work; the pipeline selection change is local pending publication.
 
-The earlier `feat/home-lab-overview` draft is superseded by this Kufu meaning/purpose/figure Home; do not publish that draft.
-
-Remaining steps: finish local checks and exact-diff/commit review; publish and merge through a PR with successful checks; verify the Kufu production branding and Home; audit the final publication state; change the authorised repository visibility and confirm unauthenticated GitHub access. Preserve earlier research worktrees. No outreach, new accounts, spending, recordings or model-weight downloads are authorised.
+No outreach, new accounts, spending, recordings or model-weight downloads are authorised. Preserve existing research worktrees and project/upstream licence notices.
 
 ## Scientific claims
 

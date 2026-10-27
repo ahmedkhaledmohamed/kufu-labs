@@ -15,6 +15,8 @@ These are specific reported needs, not evidence that they affect most researcher
 
 ## Explore and run
 
+Live site: [kufu-labs.vercel.app](https://kufu-labs.vercel.app/) (Vercel sign-in).
+
 Open [Home](index.html), [Explorations](explorations.html), [Problems](problems.html), [Sources](sources.html) or [Validation](validation.html). Each tab is an independent page; the interactive pose demo can open in a separate browser tab. Exploration entries describe the runtime, constructed inputs, launch command, expected result and verification limits.
 
 Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm run build` and `npm test`. Serve the reviewed package with `python3 -m http.server 8879 --bind 127.0.0.1 --directory dist`. See [delivery](site/DELIVERY.md) for pinned scientific checks, the protected Vercel pipeline and retained evidence; [WORKSPACE.md](WORKSPACE.md) records actual publication/deployment state.

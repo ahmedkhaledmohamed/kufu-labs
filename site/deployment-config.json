@@ -4,5 +4,6 @@
   "teamId": "team_mYj0n6dGGxhV4nKkJbZCu6WT",
   "scope": "ahmed-khaled-mohameds-projects",
   "repository": "ahmedkhaledmohamed/kufu-labs",
+  "productionHostname": "kufu-labs.vercel.app",
   "protection": "all"
 }

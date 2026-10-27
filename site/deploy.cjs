@@ -265,11 +265,20 @@ function target() {
   let productionUrl = null;
   if (mode === "production") {
     const details = api("/v13/deployments/" + new URL(deployment).host);
-    const aliases = api(
-      "/v2/deployments/" + (details.id || details.uid) + "/aliases",
-    ).aliases;
-    assert.ok(aliases?.length, "Promotion did not assign a production domain");
-    productionUrl = "https://" + aliases[0].alias;
+    const aliasEndpoint =
+      "/v2/deployments/" + (details.id || details.uid) + "/aliases";
+    const aliasDeadline = Date.now() + 60_000;
+    let assigned = false;
+    while (Date.now() < aliasDeadline) {
+      const aliases = api(aliasEndpoint).aliases;
+      if (aliases?.some((a) => a.alias === config.productionHostname)) {
+        assigned = true;
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    assert.ok(assigned, "Configured production domain was not assigned");
+    productionUrl = "https://" + config.productionHostname;
     execFileSync(process.execPath, [path.join(root, "site/verify.cjs")], {
       cwd: root,
       env: {
