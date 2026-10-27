@@ -1,0 +1,47 @@
+{
+  "source_snapshot": "Approved initial research plus subsequent local audit and pilot results, 26 October 2026",
+  "files": [
+    {
+      "source": "Personal/projects/scientific-software/README.md",
+      "destination": "research/opportunity-discovery/README.md",
+      "original_sha256": "9ebe014f815ab835cd097869ce7a163322d1dd7021669fa550e7386304ff95a3",
+      "destination_sha256": "76f55ce5f84b3ea850c20ade63f487e965ed70f69984e5cbd6b6b5a5f24c01bc"
+    },
+    {
+      "source": "Personal/projects/scientific-software/AUDIT.md",
+      "destination": "research/opportunity-discovery/AUDIT.md",
+      "original_sha256": "f561cd87454995917e3b2a598e8f017f8f28d7a898e2eef5839dac4e922c9d7c",
+      "destination_sha256": "8eae660a44a2e9bd51521687bf88db5a6f0c76e5962a013fda9bcf9f1f9516d1"
+    },
+    {
+      "source": "Personal/projects/scientific-software/PLAN.md",
+      "destination": "research/opportunity-discovery/PLAN.md",
+      "original_sha256": "e30c106c70572c8d4ec78aadc784ff2c4ff0a9571f4e5ff0aa404ab13494aa7f",
+      "destination_sha256": "abdd15604006eb50922e1eedfa08af5188af0f489e3add9a65ce8c31089b86db"
+    },
+    {
+      "source": "Personal/projects/scientific-software/PILOT.md",
+      "destination": "projects/movement-edit-filtering/PILOT.md",
+      "original_sha256": "e2a8c054b9db7e7fd8a5ff91dc9ecd9cc3907d614d832b4ebe0b3f254035f088",
+      "destination_sha256": "62a3b95c31e52043e7b0157675110511acd5e7baf8a85bccc4f5912b3d7efe61"
+    },
+    {
+      "source": "Personal/projects/scientific-software/movement-pilot.patch",
+      "destination": "projects/movement-edit-filtering/movement-pilot.patch",
+      "original_sha256": "85c1aa943993758c09ab16a1a96a1ddbfa8195fd9c8713aaaa5adcebc0c4e9c7",
+      "destination_sha256": "85c1aa943993758c09ab16a1a96a1ddbfa8195fd9c8713aaaa5adcebc0c4e9c7"
+    },
+    {
+      "source": "Personal/projects/scientific-software/movement-pilot-environment.json",
+      "destination": "projects/movement-edit-filtering/movement-pilot-environment.json",
+      "original_sha256": "e5809f8b240978fbee1798bfb409b395388455c0388971e9745489f73ef6894d",
+      "destination_sha256": "6860ce29afb13ecc2f858e6ccd1ff235305f60ecf34515e27d7ae5f2640f2122"
+    }
+  ],
+  "link_changes": "Relative Markdown links updated for the destination layout; original source files preserved until publication is verified.",
+  "content_changes": [
+    "Relative Markdown links repaired for the new layout.",
+    "Pilot results updated to record the subsequently passing full upstream pre-commit checks.",
+    "Repository entry points and upstream attribution added; no datasets or model weights copied."
+  ]
+}

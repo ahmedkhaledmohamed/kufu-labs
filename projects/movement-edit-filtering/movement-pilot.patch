@@ -1,0 +1,254 @@
+diff --git a/movement/filtering.py b/movement/filtering.py
+index 7e91de4..abe5313 100644
+--- a/movement/filtering.py
++++ b/movement/filtering.py
+@@ -17,13 +17,16 @@ def filter_by_confidence(
+     threshold: float = 0.6,
+     keep_points_with_nan_confidence: bool = True,
+     print_report: bool = False,
++    *,
++    edited: xr.DataArray | None = None,
+ ) -> xr.DataArray:
+     """Drop data points below a certain confidence threshold.
+ 
+     Data points with an associated confidence value below the threshold are
+     converted to NaN. Data points with a missing (NaN) confidence value are
+     kept by default, but this can be changed via
+-    ``keep_points_with_nan_confidence``.
++    ``keep_points_with_nan_confidence``. Points explicitly marked in
++    ``edited`` are kept regardless of their confidence.
+ 
+     Parameters
+     ----------
+@@ -40,12 +43,19 @@ def filter_by_confidence(
+     print_report
+         Whether to print a report on the number of NaNs in the dataset
+         before and after filtering. Default is ``False``.
++    edited
++        Optional boolean array identifying manually edited points to keep,
++        regardless of confidence. It must have the same dimensions as
++        ``confidence``. Each dimension must have unique, explicitly labelled
++        coordinates matching ``data`` and ``confidence`` in the same order.
++        Missing positions remain missing. If omitted, only confidence and
++        ``keep_points_with_nan_confidence`` determine which points to keep.
+ 
+     Returns
+     -------
+     xarray.DataArray
+-        The data where points with a confidence value below the
+-        user-defined threshold have been converted to NaNs.
++        The filtered data, with points failing the confidence criterion
++        converted to NaNs unless explicitly marked as edited.
+ 
+     Notes
+     -----
+@@ -65,10 +75,50 @@ def filter_by_confidence(
+     by default. Set ``keep_points_with_nan_confidence=False`` to drop them
+     instead.
+ 
++    To retain explicitly edited points while dropping other points with
++    missing confidence, pass the dataset's ``edited`` variable and set
++    ``keep_points_with_nan_confidence=False``. An edit flag records a manual
++    correction, not a guarantee of biological correctness. This function
++    does not modify confidence scores or edit flags.
++
++    Examples
++    --------
++    Filter a dataset saved after proofreading with the napari plugin:
++
++    >>> position_filtered = filter_by_confidence(
++    ...     ds.position,
++    ...     ds.confidence,
++    ...     keep_points_with_nan_confidence=False,
++    ...     edited=ds.edited,
++    ... )
++
+     """
+     keep = confidence >= threshold
+     if keep_points_with_nan_confidence:
+         keep = keep | confidence.isnull()
++    if edited is not None:
++        if edited.dtype != bool:
++            raise logger.error(TypeError("edited must be a boolean array."))
++        if set(edited.dims) != set(confidence.dims):
++            raise logger.error(
++                ValueError(
++                    "edited must have the same dimensions as confidence."
++                )
++            )
++        for dim in confidence.dims:
++            for array in (data, confidence, edited):
++                if (
++                    dim not in array.indexes
++                    or not array.indexes[dim].is_unique
++                ):
++                    raise logger.error(
++                        ValueError(
++                            f"Dimension {dim!r} must have unique labelled "
++                            "coordinates in data, confidence and edited."
++                        )
++                    )
++        xr.align(data, confidence, edited, join="exact", copy=False)
++        keep = keep | edited
+     data_filtered = data.where(keep)
+     if print_report:
+         print(report_nan_values(data, "input"))
+diff --git a/tests/test_unit/test_filtering_edited.py b/tests/test_unit/test_filtering_edited.py
+new file mode 100644
+index 0000000..5537b02
+--- /dev/null
++++ b/tests/test_unit/test_filtering_edited.py
+@@ -0,0 +1,153 @@
++import numpy as np
++import pytest
++import xarray as xr
++
++from movement.filtering import filter_by_confidence
++from movement.io import save_dataset
++
++
++@pytest.fixture
++def proofread_poses():
++    """Include corrected, unscored, low-score and removed pose points."""
++    confidence = xr.DataArray(
++        np.full((4, 2, 2), 0.9),
++        dims=("time", "keypoint", "individual"),
++        coords={
++            "time": np.arange(4) / 30,
++            "keypoint": ["nose", "tail"],
++            "individual": ["mouse_0", "mouse_1"],
++        },
++    )
++    position = (
++        xr.ones_like(confidence)
++        .expand_dims(space=["x", "y"], axis=1)
++        .copy(deep=True)
++    )
++    edited = xr.zeros_like(confidence, dtype=bool)
++    confidence[0, 0, 0] = np.nan
++    edited[0, 0, 0] = True
++    confidence[0, 1, 1] = np.nan
++    confidence[1, 0, 0] = 0.1
++    edited[1, 0, 0] = True
++    confidence[1, 1, 1] = 0.1
++    position[2, :, 0, 0] = np.nan
++    confidence[2, 0, 0] = np.nan
++    edited[2, 0, 0] = True
++    confidence[2, 1, 1] = 0.6
++    return xr.Dataset(
++        {"position": position, "confidence": confidence, "edited": edited},
++        attrs={"ds_type": "poses", "fps": 30, "source_software": "manual"},
++    )
++
++
++@pytest.mark.parametrize("keep_nan", [True, False])
++def test_filter_uses_explicit_edit_provenance(proofread_poses, keep_nan):
++    ds = proofread_poses
++    original = ds.copy(deep=True)
++    result = filter_by_confidence(
++        ds.position,
++        ds.confidence,
++        keep_points_with_nan_confidence=keep_nan,
++        edited=ds.edited,
++    )
++    expected = ds.position.copy(deep=True)
++    expected[1, :, 1, 1] = np.nan
++    if not keep_nan:
++        expected[0, :, 1, 1] = np.nan
++    xr.testing.assert_equal(result, expected)
++    xr.testing.assert_identical(ds, original)
++
++
++@pytest.mark.parametrize("keep_nan", [True, False])
++def test_filter_without_edits_preserves_legacy_policy(
++    proofread_poses, keep_nan
++):
++    ds = proofread_poses
++    expected = ds.position.copy(deep=True)
++    expected[1, :, 0, 0] = np.nan
++    expected[1, :, 1, 1] = np.nan
++    if not keep_nan:
++        expected[0, :, 0, 0] = np.nan
++        expected[0, :, 1, 1] = np.nan
++    result = filter_by_confidence(
++        ds.position, ds.confidence, 0.6, keep_nan, False
++    )
++    xr.testing.assert_equal(result, expected)
++    result_with_false_edits = filter_by_confidence(
++        ds.position,
++        ds.confidence,
++        keep_points_with_nan_confidence=keep_nan,
++        edited=xr.zeros_like(ds.edited),
++    )
++    xr.testing.assert_equal(result_with_false_edits, expected)
++
++
++@pytest.mark.parametrize("dtype", [int, float, object])
++def test_filter_rejects_non_boolean_edits(proofread_poses, dtype):
++    ds = proofread_poses
++    with pytest.raises(TypeError, match="boolean"):
++        filter_by_confidence(
++            ds.position, ds.confidence, edited=ds.edited.astype(dtype)
++        )
++
++
++@pytest.mark.parametrize(
++    "invalid_mask",
++    [
++        "missing_dim",
++        "extra_dim",
++        "shifted",
++        "reversed",
++        "duplicate",
++        "unlabelled",
++    ],
++)
++def test_filter_rejects_ambiguous_edit_alignment(
++    proofread_poses, invalid_mask
++):
++    ds = proofread_poses
++    edited = ds.edited
++    if invalid_mask == "missing_dim":
++        edited = edited.isel(individual=0, drop=True)
++    elif invalid_mask == "extra_dim":
++        edited = edited.expand_dims(view=["camera_0"])
++    elif invalid_mask == "shifted":
++        edited = edited.assign_coords(time=edited.time + 1)
++    elif invalid_mask == "reversed":
++        edited = edited.isel(individual=slice(None, None, -1))
++    elif invalid_mask == "duplicate":
++        edited = edited.assign_coords(individual=["mouse_0", "mouse_0"])
++    else:
++        edited = edited.drop_vars("time")
++    with pytest.raises(ValueError):
++        filter_by_confidence(ds.position, ds.confidence, edited=edited)
++
++
++def test_filter_rejects_position_confidence_misalignment(proofread_poses):
++    ds = proofread_poses
++    position = ds.position.assign_coords(time=ds.time + 1)
++    with pytest.raises(ValueError):
++        filter_by_confidence(position, ds.confidence, edited=ds.edited)
++
++
++def test_filter_edits_round_trip_native_netcdf(proofread_poses, tmp_path):
++    ds = proofread_poses
++    path = tmp_path / "proofread.nc"
++    save_dataset(ds, path)
++    with xr.open_dataset(path) as stored:
++        restored = stored.load()
++    xr.testing.assert_identical(restored, ds)
++    before = filter_by_confidence(
++        ds.position,
++        ds.confidence,
++        keep_points_with_nan_confidence=False,
++        edited=ds.edited,
++    )
++    after = filter_by_confidence(
++        restored.position,
++        restored.confidence,
++        keep_points_with_nan_confidence=False,
++        edited=restored.edited,
++    )
++    xr.testing.assert_equal(before, after)
++    assert path.stat().st_size < 1_000_000
