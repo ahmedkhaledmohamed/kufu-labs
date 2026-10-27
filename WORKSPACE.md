@@ -16,28 +16,22 @@ Deliver independent navigation pages, meaningful CI/CD, runnable demonstrations 
 
 ## Source and publication state
 
-PR #4 is merged at main `902dd4ccea229bac16e110ef1fad8b5b72bcfa8e`. The delivery branch `feat/lab-pages-and-delivery` started from that refreshed main in isolated worktree `scientific-lab-delivery`. Existing source checkouts and draft research worktrees are preserved.
+PRs #3–#6 are merged; no lab PR remains open at this checkpoint. Current main is `f08e1f007cfb009afab2d94497539025038506d3`. The isolated `fix/project-scoped-promotion` branch starts from that refreshed commit. Existing source checkouts and draft research worktrees are preserved.
 
-PR #3 is merged at `ee2f51fcebb363dc8b3eb8125dcbd688649cc847`, including the approved conflict resolution `6d79e5ce799ec484c25b33a7800608d723d9cacd`. [Delivery PR #5](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/5) is open at the originally approved `2751a4e34bb9445b09b59a422459f7c460c635b2` snapshot.
-
-The [first cloud run](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40511509142) passed the Linux scientific and browser jobs. Deployment stopped before uploading because a fresh Vercel CLI profile tried to read user metadata with a project-only token. A local fix supplies only the already verified team mapping in a temporary private CLI profile; the actual changed helper passed with a fresh ten-minute project-only credential. No broader credential permissions or protection changes were needed. The fix is local pending renewed exact-commit approval; do not push a changed commit under the previous approval.
-
-After the approved update, rerun actual cloud CI, inspect the protected preview, merge PR #5 only with the applicable explicit authorisation and successful checks, then wait for main's tested production promotion and verify the production alias. Production deployment remains authorised, but not a shortcut around the CI gate.
+Main run [40570051300](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40570051300) passed scientific contracts, build/local browser checks and deployed browser checks, then failed during `vercel promote`: its user lookup is unavailable to the project-scoped token. Vercel's generated alias was assigned despite `autoAssignCustomDomains: false`; explicit promotion and production-target state were not completed. Authentication remains enabled for all deployments. Do not claim a completed production release or guaranteed absence of generated aliases before promotion.
 
 ## Actual verification versus remaining work
 
-Local multi-page/browser checks pass: five distinct URLs, current navigation state, 25 problems, 15 source boards, four exploration entries, two runnable demonstration entries, compound filters/reset, cross-page deep links/source navigation, separate pose-demo tab and mobile layout. The real movement widget/model replay again passes its eleven invariants while retaining deletion-flag loss as an unfixed negative finding. The full frozen-pose browser boundary checks also pass.
+Five independent pages, 25 problems, 15 source boards, four exploration entries, two demonstration entries, 16 research pages and 180 local links passed both local and deployed browser checks on merged main. The source-navigation load regression passed. The actual pinned scientific checks also passed; deletion-flag loss remains an unfixed negative finding.
 
-The Vercel project exists in verified personal scope `ahmed-khaled-mohameds-projects`; Authentication covers all deployments including production. A 90-day project-scoped deployment token and project-specific verification credential are stored in encrypted GitHub Secrets; no values are committed or printed. Automatic Git connection is disabled to preserve the CI deployment gate. No site has been deployed by this branch yet.
+The focused fix replaces only the high-level promotion command with Vercel's documented project API. It verifies deployment ownership/source/state, waits for that exact promotion to succeed and retains post-promotion browser/artifact/protection checks. Eight isolated simulated helper scenarios passed, including failure and timeout cases. No actual promotion with the changed helper has occurred.
 
-Remaining gates: exact-commit approval for the CLI fix; updated PR/CI and protected-preview verification; explicitly authorised merge; main pipeline deployment and promotion; verify the protected production alias and artifact identity. Keep the goal active until those cloud/runtime requirements are proved. A successful local test is not completion of CI/CD.
+Remaining gates: review the full exact diff and approve publication; open the fix PR; inspect cloud checks; explicitly authorised merge; wait for main CI to promote; independently verify source/asset identity, navigation/demos and blocked unauthenticated access on the production alias. Keep the existing goal unfinished until those actual requirements pass. No credential broadening, manual deployment, outreach or recordings are needed.
 
 ## Validation discipline
 
 A runnable browser or ephemeral CI example establishes execution. Pinned host checks establish only the tested integration semantics. Resolving the original researcher problem requires the stated workflow outcome evidence. No adoption, researcher time saving, biological correctness or full upstream resolution is claimed. The next scientific feature candidate remains read-only host-native SLEAP instance/skeleton/score mapping, not a generic hosted code runner.
 
-## Production verification continuation
+## Continuation authority
 
-PR #5 merged at `39979b927345a619bf37dd5eb779195ec4ac2cc1`. Main run 40558190385 passed scientific and local browser checks, then correctly withheld promotion because a deployed source-board assertion raced external script loading. The staged site applied the expected query after load. The isolated `fix/wait-for-source-page` branch corrects document-readiness waits and retains strict outcomes plus controlled script latency; it does not bypass CI or change scientific calculations. Current live job/PR/deployment state must be read from GitHub/Vercel, not inferred from this historical handoff.
-
-Ahmed's later instruction is that future authorised goals should proceed without additional approval pauses. Continue within each agreed scope, retain reviewable diffs and sanitized contribution records, and preserve explicit boundaries around outreach, spending, new accounts and data access.
+Ahmed asked future authorised goals to continue without additional goal-approval pauses. Repository publication instructions still require exact-diff/exact-commit approval and an explicitly authorised merge. The earlier navigation fix was approved and merged; that approval does not cover this new promotion fix. Prepare the reviewable change before requesting the final publication approval. Preserve boundaries around outreach, spending, new accounts and data access.
