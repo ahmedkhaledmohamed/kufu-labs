@@ -1,6 +1,19 @@
-# Scientific software lab
+# Kufu Labs
 
-Private lab for scientific-software explorations, reproducible experiments, upstream contributions and small demonstrations.
+**Kufu** (工夫, *kufū*) is Japanese for devising better ways to do something: practical ingenuity. [Dictionary source](https://www.kanjipedia.jp/kotoba/0002126000).
+
+An open-source lab for building and testing small tools around reported research-workflow problems. Each exploration connects an original problem report to an intended user, an implementation and evidence of what has actually improved.
+
+## Problems, people and expected value
+
+| Problem | Who encounters it | Original evidence | Current contribution | Expected value and remaining proof |
+| --- | --- | --- | --- | --- |
+| Choosing overlap-filter settings requires guessing pairwise similarity | People proofreading overlapping pose predictions in SLEAP | [SLEAP #2816](https://github.com/talmolab/sleap/issues/2816) asks to select two instances in the GUI and see their IoU/OKS scores | A browser inspector of seven constructed examples, with unchanged filter output and its explanation | Could reduce trial-and-error when choosing settings. It does not yet accept users' own poses or integrate into SLEAP; prevalence, time saved and better proofreading decisions are unmeasured. |
+| Keeping manually corrected poses while filtering unscored predictions | Users processing proofread movement pose datasets | [movement #1027](https://github.com/neuroinformatics-unit/movement/issues/1027) and the [pinned local investigation](projects/movement-edit-filtering/README.md) | A local explicit-edit filtering patch with reproducible Qt/model-event checks | Preserves a correction while dropping an unscored prediction in the tested workflow. The broader upstream request, rendered user interaction and practical user benefit remain unvalidated. |
+
+These are specific reported needs, not evidence that they affect most researchers or are the most important scientific problems. The overlap inspector adds visibility; it does not change the filtering algorithm. Technical execution, host integration and useful human outcomes are tracked separately.
+
+## Explore and run
 
 Open [Home](index.html), [Explorations](explorations.html), [Problems](problems.html), [Sources](sources.html) or [Validation](validation.html). Each tab is an independent page; the interactive pose demo can open in a separate browser tab. Exploration entries describe the runtime, constructed inputs, launch command, expected result and verification limits.
 
@@ -21,8 +34,17 @@ The board aggregates 25 named candidates from these records, including deferred 
 
 `research/` preserves sourced investigations and decisions. `projects/<name>/` keeps each contribution, executable check, source pin and limits. `site/catalog.json` is the maintained hub catalogue; `site/build.py` generates the root website and safe, readable copies of the Markdown research records. Keep upstream implementation checkouts separate.
 
-The [deletion diagnostic PR #3](https://github.com/ahmedkhaledmohamed/scientific-software-lab/pull/3) has a prepared conflict resolution preserving both the merged hub and its diagnostic records. Those records are incorporated locally for the delivery work; remote merge status is tracked in WORKSPACE.md. Research originals and modified implementation worktrees are preserved.
+The [deletion diagnostic](projects/movement-edit-filtering/DELETION-PROVENANCE.md) records an unfixed repeated-export provenance defect. The coordinate-filtering result and this remaining defect are kept separate. Source revisions, patches, commands and outcomes live with each project.
 
 No recordings, model weights, environments, patient information or credentials belong in the repository. Dataset, model and software licences are independent. A passing check does not establish scientific correctness, adoption, clinical utility or researcher benefit.
+
+## Licensing
+
+The lab's original code and documentation use the [MIT License](LICENSE), except where an existing project-specific licence or upstream notice applies:
+
+- The [pose overlap inspector](projects/overlap-inspector/COPYING), including its source and generated demo, remains GPL-3.0-only.
+- Upstream movement code included in the filtering patch retains its [BSD-3-Clause notice](projects/movement-edit-filtering/UPSTREAM-LICENSE). The lab's original integration and verification scripts use the default MIT licence.
+
+Retain the applicable project and upstream notices when redistributing. These software licences do not grant rights to recordings, model weights, external datasets or linked publications.
 
 Vercel production deployment is explicitly authorised in the personal scope, with Authentication protection for production and previews. The CI pipeline must verify the tested artifact and current main before promotion. Publication still follows full-diff/contribution-record/exact-commit approval and explicit PR merge authorisation. Outreach, new accounts, paid services and data/model downloads remain outside scope.

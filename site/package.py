@@ -34,7 +34,7 @@ def main():
             "DELIVERY.md",
         ]
     ]
-    files += [ROOT / "README.md", ROOT / "WORKSPACE.md"]
+    files += [ROOT / "README.md", ROOT / "WORKSPACE.md", ROOT / "LICENSE"]
     # Linked research/source artifacts are explicit, inert download types.
     tracked = (
         subprocess.check_output(
