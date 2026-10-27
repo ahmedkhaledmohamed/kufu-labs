@@ -169,6 +169,31 @@ const url = (p) => new URL(p, base).href;
       await demo.locator("#resultSummary").textContent(),
       /2 retained/,
     );
+    assert.match(
+      await demo.locator("#baselineResult").textContent(),
+      /A: retained/,
+    );
+    assert.equal(
+      await demo.locator("#inspectionComparison").textContent(),
+      await demo.locator("#explanation").textContent(),
+    );
+    for (const [name, destination] of [
+      ["Home", "index.html"],
+      ["Explorations", "explorations.html"],
+      ["Problems", "problems.html"],
+      ["Sources", "sources.html"],
+      ["Validation", "validation.html"],
+    ]) {
+      await Promise.all([
+        demo.waitForURL(url(destination), { waitUntil: "load" }),
+        demo
+          .getByRole("navigation", { name: "Lab navigation" })
+          .getByRole("link", { name, exact: true })
+          .click(),
+      ]);
+      assert.ok(await demo.locator("h1").first().isVisible());
+      await demo.goto(url("projects/overlap-inspector/index.html"));
+    }
     await demo.close();
     assert.equal(
       new URL(page.url()).pathname.endsWith("/explorations.html"),
@@ -290,6 +315,8 @@ const url = (p) => new URL(p, base).href;
         "source-board query navigation",
         "all exploration targets",
         "separate interactive demo tab",
+        "demo navigation back to all five lab pages",
+        "unchanged filter output and inspector explanation",
         "validation levels and limits",
         "all mobile pages without overflow",
         "local document links",
