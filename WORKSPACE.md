@@ -16,17 +16,17 @@ Deliver independent navigation pages, meaningful CI/CD, runnable demonstrations 
 
 ## Source and publication state
 
-PRs #3–#6 are merged; no lab PR remains open at this checkpoint. Current main is `f08e1f007cfb009afab2d94497539025038506d3`. The isolated `fix/project-scoped-promotion` branch starts from that refreshed commit. Existing source checkouts and draft research worktrees are preserved.
+PRs #3–#7 are merged; no lab PR remains open at this checkpoint. Current main is `16e4cdb65ff79c614b7201a0349d986e5706c018`. The isolated `fix/empty-promotion-response` branch starts from that refreshed commit. Existing research worktrees are preserved.
 
-Main run [40570051300](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40570051300) passed scientific contracts, build/local browser checks and deployed browser checks, then failed during `vercel promote`: its user lookup is unavailable to the project-scoped token. Vercel's generated alias was assigned despite `autoAssignCustomDomains: false`; explicit promotion and production-target state were not completed. Authentication remains enabled for all deployments. Do not claim a completed production release or guaranteed absence of generated aliases before promotion.
+Main run [40572525361](https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/runs/40572525361) passed scientific, local browser and deployed browser verification. The project promotion API accepted the request, but its empty successful response caused the helper to fail JSON parsing before recording success. Read-only server inspection confirmed that the current production target is ready and matches merged main; `lastAliasRequest` is absent.
 
 ## Actual verification versus remaining work
 
-Five independent pages, 25 problems, 15 source boards, four exploration entries, two demonstration entries, 16 research pages and 180 local links passed both local and deployed browser checks on merged main. The source-navigation load regression passed. The actual pinned scientific checks also passed; deletion-flag loss remains an unfixed negative finding.
+Production is live at [the protected lab](https://scientific-software-lab-ahmed-khaled-mohameds-projects.vercel.app). Independent read-only verification matched its current production source commit to main and four served asset hashes to the exact CI artifact. Desktop/mobile browser checks passed across five pages, 25 problems, 15 source boards, four explorations, two demonstration entries, 16 research pages and 180 local links, without page errors. Unauthenticated hub, catalogue and demo requests were blocked. Vercel Authentication remains enabled for all deployments.
 
-The focused fix replaces only the high-level promotion command with Vercel's documented project API. It verifies deployment ownership/source/state, waits for that exact promotion to succeed and retains post-promotion browser/artifact/protection checks. Eight isolated simulated helper scenarios passed, including failure and timeout cases. No actual promotion with the changed helper has occurred.
+The focused local fix accepts an empty successful mutation response while rejecting empty required reads, and observes the current production target's exact deployment ID, ready state and source commit instead of requiring optional job metadata. Eleven simulated full-helper cases passed, covering both empty/JSON mutation responses, absent job metadata and the existing failure gates. Real cloud CI with this final fix remains unverified.
 
-Remaining gates: review the full exact diff and approve publication; open the fix PR; inspect cloud checks; explicitly authorised merge; wait for main CI to promote; independently verify source/asset identity, navigation/demos and blocked unauthenticated access on the production alias. Keep the existing goal unfinished until those actual requirements pass. No credential broadening, manual deployment, outreach or recordings are needed.
+Remaining gates: approve the exact diff/commit for publication; open the fix PR; verify cloud checks; explicitly authorised merge; wait for a green main release and repeat the independent production audit. The website is verified live, but the CI/CD goal remains unfinished until the release job itself passes. No manual promotion, credential broadening, outreach or recordings were used.
 
 ## Validation discipline
 
@@ -34,4 +34,4 @@ A runnable browser or ephemeral CI example establishes execution. Pinned host ch
 
 ## Continuation authority
 
-Ahmed asked future authorised goals to continue without additional goal-approval pauses. Repository publication instructions still require exact-diff/exact-commit approval and an explicitly authorised merge. The earlier navigation fix was approved and merged; that approval does not cover this new promotion fix. Prepare the reviewable change before requesting the final publication approval. Preserve boundaries around outreach, spending, new accounts and data access.
+Ahmed asked future authorised goals to continue without additional goal-approval pauses. Repository publication instructions still require exact-diff/exact-commit approval and an explicitly authorised merge. PR #7 was approved and merged; its approval does not cover this new response-handling fix. Prepare the reviewable change before requesting the final publication approval. Preserve boundaries around outreach, spending, new accounts and data access.
