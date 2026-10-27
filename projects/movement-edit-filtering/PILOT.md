@@ -110,6 +110,12 @@ codespell movement/filtering.py tests/test_unit/test_filtering_edited.py
 git diff --check
 ```
 
+## Subsequent widget-workflow verification
+
+The unchanged patch has now been replayed in a fresh pinned worktree through real Qt loader/saver buttons and napari data callbacks, without a canvas. All 11 demonstration invariants passed, and four existing synthetic conversion cases passed. The [review package](REVIEW.md), [verifier](verify_workflow.py), and [result](workflow-result.json) record commands, versions, measured resource use, and remaining limits.
+
+A deleted point's edit flag changes from true to false after loading the first saved file and exporting again through the unchanged upstream conversion code. Its position stays missing and filtering decisions remain equal. Moved finite-point provenance survives. This is a separate lifecycle limitation, not a reason to claim complete provenance preservation or expand the filtering patch silently.
+
 ## Next decision
 
 Review the complete local change before any commit or publication. If accepted, prepare the contribution record and exact-commit approval required by the personal Git workflow, then arrange separately authorised upstream review. Maintainer acceptance, real-workflow benefit, full host CI, and GUI verification remain unestablished. This pilot supports a small technical contribution; it does not establish a scientific finding.
