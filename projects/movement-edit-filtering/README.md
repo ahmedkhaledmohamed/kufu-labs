@@ -3,6 +3,7 @@
 Use movement's existing boolean `edited` provenance to retain explicitly corrected pose points during confidence filtering, while allowing other unscored predictions to be dropped.
 
 - [Current review package and upstream draft](REVIEW.md)
+- [Independent deletion-provenance diagnostic and issue draft](DELETION-PROVENANCE.md) (local; no fix or new issue submitted)
 - [Executable widget-workflow demonstration](verify_workflow.py) and [observed result](workflow-result.json)
 - [Scope, implementation result, and reproduction commands](PILOT.md)
 - [Complete implementation patch](movement-pilot.patch)
@@ -22,4 +23,4 @@ Apply the patch to the pinned upstream revision in an isolated feature worktree;
 
 Keep the upstream source tree, virtual environment, caches, and generated data outside this repository. The lab stores the contribution and its evidence, not a separately maintained fork of the whole toolbox. Retain the upstream licence with this artifact.
 
-The unchanged implementation diff was approved for continuation. The local review package documents a separate upstream limitation: deleted-point flags are lost on a second GUI export, although positions remain missing and filtering decisions are unchanged. No commit, push, upstream PR, or maintainer outreach has occurred. Publication still follows the full-diff, contribution-record, and exact-commit approval process.
+The unchanged implementation diff was approved for continuation. The local review package documents a separate upstream limitation: deleted-point flags are lost on a second GUI export, although positions remain missing and filtering decisions are unchanged. The explicitly approved [design question](https://github.com/neuroinformatics-unit/movement/issues/1027#issuecomment-6431299925) has now been posted. No public fork, patch push, or upstream PR has been created. Further publication follows the full-diff, contribution-record, and exact-commit approval process; inspect maintainer feedback before expanding the implementation.
