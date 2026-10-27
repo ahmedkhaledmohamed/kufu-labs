@@ -1,27 +1,21 @@
 # Lab hub maintenance
 
-Open the root index.html directly or serve the repository with `python3 -m http.server 8878 --bind 127.0.0.1`. The website is local and static; it is not deployed. Search, filters, expanded evidence, source links and the overlap demonstration need no account or runtime service.
+The website has five independent pages: [Home](../index.html), [Explorations](../explorations.html), [Problems](../problems.html), [Sources](../sources.html) and [Validation](../validation.html). The exploration page includes runnable software entries and a separate-tab pose demo.
 
-## Maintain the board
+See [delivery and validation](DELIVERY.md) for the exact build, CI stages, artifact packaging, protected Vercel configuration, evidence retention and deployment gates. Source Markdown remains authoritative; generated research views show the recorded investigation rather than silently rewriting its historical findings.
 
-Edit catalog.json. Each problem has a stable ID, domain, work state, evidence description, reported need or concept, possible contribution, existing alternatives, integration route, limits, next validation action, primary references, source-board IDs, investigation record and evidence review date. Deferred concepts remain visible; source presence alone does not establish demand.
+## Maintain the catalogue
 
-Keep work state independent of resolution: a local patch, reproduced defect or technical demo must not become “solved” without the ledger’s stated outcome evidence. Review an issue’s original scope and linked implementations, not just open/closed state. Source-board records distinguish directory purpose from reachability and freshness.
+Edit catalog.json. Problems retain stable IDs, domain, work state, evidence description, need/concept, possible contribution, existing alternatives, integration route, limits, next action, primary references, source-board IDs, investigation record and review date. Work state is independent of resolution. Demonstration entries additionally state runtime, inputs, command, expected output, verification and limits.
 
-Run `python3 site/build.py` from the repository root. It uses Python’s standard library, validates IDs/references/local entry points, embeds the catalogue in the root page, and generates readable research pages under site/records. Raw HTML is escaped; the minimal renderer supports the Markdown constructs used here (headings, prose, links, code, simple tables and list items). Nested list formatting and full CommonMark extensions are not supported. Source Markdown remains authoritative. Rebuild after editing a linked record.
+Run `npm run build`; this generates the five pages, readable research records and a deployable `dist/` allowlist with a commit/file-hash manifest. The standard-library Markdown renderer escapes raw HTML and supports the headings, prose, links, code, simple tables and list items used here. It does not implement all CommonMark extensions. Generated pages must be rebuilt after edits to a linked record.
 
-No crawler or background refresh is installed. Refresh dated evidence deliberately, retain negative results, and record access failures without treating them as absent evidence. Catalogue links do not grant data licences or permission to register, download recordings, message others or publish.
+No background crawler is installed. Refresh dated evidence deliberately and retain blocked-fetch notes, competing work and negative findings. A board listing is not a licence, a current unmet need or permission to download data or contact anyone.
 
-## Verify
+## Checks
 
-`verify.cjs` uses an existing Playwright installation with a separate headless Chrome process. Set `PLAYWRIGHT_MODULE` to the package directory and `CHROME_PATH` to an installed Chrome binary if necessary, then run `node site/verify.cjs`. No dependency install or browser download is required by this repository. Evidence is written outside the repository by default; `HUB_OUTPUT` can override that directory.
+`npm run lint` checks maintained web/workflow source formatting. Python uses the recorded Ruff version. `npm test` verifies the packaged site with real browser interactions, every navigation page, filtering/reset, cross-page links, source navigation, demo popup, document targets and desktop/mobile overflow. It writes reports, screenshots and offline traces under ignored `.runs/`; it does not overwrite historical tracked result files.
 
-The recorded run passed: 25 problems, 15 source boards, four explorations, 14 rendered research pages and all local document links, with no page errors or HTTP requests. Desktop and mobile screenshots were inspected.
+`HUB_ROOT` selects another package directory and `HUB_URL` selects the corresponding authenticated deployment. In deployed mode, the test compares its build manifest with the tested local artifact. `VERCEL_AUTOMATION_BYPASS_SECRET` is consumed only through request headers; remote traces are disabled to keep that credential out of evidence artifacts. `CHROME_PATH` can select an existing local Chrome installation.
 
-The check exercises search and compound filtering, empty/reset states, problem deep links, disclosure contents, source-board filtering, every exploration, rendered research links, embedded demo controls and return navigation, source provenance, mobile layout and local link integrity. It checks that standalone-file browsing causes no HTTP requests and records JavaScript errors and screenshots.
-
-The overlap project separately retains its real numerical oracle generator and browser verification script. The movement project retains its pinned patch and real-widget replay. [Validation review](VALIDATION.md) explains what these do and do not prove; [verification.json](verification.json) records this hub’s actual check results.
-
-## Next steps and publication
-
-The next local validation candidate is a read-only host-native SLEAP instance/skeleton/score adapter on constructed data. It has not been implemented by the hub task. Researcher outreach remains deferred. The requested private-repository PR follows full-diff, contribution-record and exact-commit approval; no merge or public deployment is authorised.
+The [validation review](VALIDATION.md), [earlier hub result](verification.json), and [bounded software results](validation-results.json) distinguish historical checks from current CI execution. GitHub Actions is the authoritative source for cloud job status. No researcher benefit, biological correctness or completed upstream fix is inferred from green checks.

@@ -1,7 +1,15 @@
 {
+  "pages": [
+    "index",
+    "explorations",
+    "problems",
+    "sources",
+    "validation"
+  ],
+  "demonstrations": 2,
   "problems": 25,
   "boards": 15,
   "explorations": 4,
-  "research_pages": 14,
-  "catalog_sha256": "b0ca00537feb719243e4d2fa1eed43a630f1cb65d8d71681c35070241cde65e2"
+  "research_pages": 16,
+  "catalog_sha256": "c9817cd29ef50637eefaa839b69bd8437f17781b14f98821e8810c435a74acd4"
 }

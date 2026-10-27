@@ -1,0 +1,38 @@
+<h1>Problems and evidence</h1>
+<section id="problems" aria-labelledby="problemTitle">
+  <div class="sectionhead">
+    <h2 id="problemTitle">Problem board</h2>
+    <span
+      class="count"
+      id="problemCount"
+      role="status"
+      aria-live="polite"
+    ></span>
+  </div>
+  <p class="intro" id="coverage"></p>
+  <form class="filters" id="filters" role="search">
+    <label for="search"
+      >Search problems, evidence or tools<input
+        id="search"
+        type="search"
+        placeholder="Try provenance, microscopy, MNE…" /></label
+    ><label for="domain"
+      >Domain<select id="domain" aria-label="Domain"></select></label
+    ><label for="stage"
+      >Work state<select id="stage" aria-label="Work state"></select></label
+    ><label for="sourceFilter"
+      >Source board<select
+        id="sourceFilter"
+        aria-label="Source board"
+      ></select></label
+    ><button type="reset">Clear filters</button>
+  </form>
+  <div class="boardhead" aria-hidden="true">
+    <span>Problem / task</span><span>Domain</span><span>Work state</span
+    ><span>Evidence</span>
+  </div>
+  <div id="problemList"></div>
+  <p class="empty" id="empty" hidden>
+    No matching problems. Clear a filter or try a broader search term.
+  </p>
+</section>

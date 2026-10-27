@@ -27,6 +27,7 @@ def main():
         ROOT / "WORKSPACE.md",
         SITE / "README.md",
         SITE / "VALIDATION.md",
+        SITE / "DELIVERY.md",
     ]
     paths = {p.relative_to(ROOT).as_posix(): p for p in docs}
     data["documents"] = {name: "site/records/" + slug(name) for name in paths}
@@ -47,7 +48,14 @@ def main():
         assert e["record"] in paths and e["problem"] in ids
     for v in data["validation"]:
         assert v["problem"] in ids
+    for demo in data["demonstrations"]:
+        assert demo["record"] in paths
+        assert (ROOT / demo["result"]).is_file()
+        if demo["href"]:
+            assert (ROOT / demo["href"]).is_file()
     RECORDS.mkdir(exist_ok=True)
+    for generated in RECORDS.glob("*.html"):
+        generated.unlink()
 
     def href(raw, source):
         parsed = urlsplit(raw)
@@ -150,13 +158,28 @@ def main():
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace(
         "</", "<\\/"
     )
-    page = (
-        (SITE / "template.html")
-        .read_text()
-        .replace("/*__CATALOG__*/", "const CATALOG = " + payload + ";")
-    )
-    (ROOT / "index.html").write_text(page)
+    pages = {
+        "index": "Home",
+        "explorations": "Explorations",
+        "problems": "Problems",
+        "sources": "Sources",
+        "validation": "Validation",
+    }
+    template = (SITE / "template.html").read_text()
+    for filename, title in pages.items():
+        view = "home" if filename == "index" else filename
+        content = (SITE / "views" / f"{view}.html").read_text()
+        # Cross-page links are ordinary documents, never section navigation.
+        content = content.replace('href="#validation"', 'href="validation.html"')
+        page = (
+            template.replace("__TITLE__", title)
+            .replace("<!--__CONTENT__-->", content)
+            .replace("/*__CATALOG__*/", "const CATALOG = " + payload + ";")
+        )
+        (ROOT / f"{filename}.html").write_text(page)
     report = {
+        "pages": list(pages),
+        "demonstrations": len(data["demonstrations"]),
         "problems": len(ids),
         "boards": len(boards),
         "explorations": len(data["explorations"]),

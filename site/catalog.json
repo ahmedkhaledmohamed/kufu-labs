@@ -969,5 +969,34 @@
       "draft": false,
       "head_sha": "d89bab59eee2626e46899d36dad9be8eaa70b05e"
     }
-  }
+  },
+  "demonstrations": [
+    {
+      "id": "overlap",
+      "title": "Pairwise overlap inspector",
+      "runtime": "Browser: offline, no model or Python runtime needed.",
+      "inputs": "Seven fixed, clearly labelled synthetic pose examples with missing/degenerate nodes and two/three-instance contexts.",
+      "expected": "Changing metric, threshold or score order shows the retained/suppressed/unavailable instances for the pinned filter.",
+      "verification": "498 actual CPU FilterPipeline calls; browser checks cover all 168 decision boundaries. Build and browser results are separate evidence.",
+      "limits": "Frozen inputs; no SLEAP selection integration, arbitrary file input or proven researcher benefit.",
+      "command": "python3 -m http.server 8878 --bind 127.0.0.1\n# Open /projects/overlap-inspector/index.html",
+      "href": "projects/overlap-inspector/index.html",
+      "record": "projects/overlap-inspector/README.md",
+      "result": "projects/overlap-inspector/verification.json"
+    },
+    {
+      "id": "movement",
+      "title": "movement edit-aware filtering replay",
+      "runtime": "Python 3.13, pinned movement checkout plus approved patch; real Qt widgets in offscreen mode.",
+      "inputs": "Constructed pose Dataset only; moved, removed, missing and unscored points across individuals.",
+      "expected": "Explicit filtering keeps the correction and drops the unscored prediction; removed positions stay missing. Repeated export still loses deletion flags.",
+      "verification": "Pinned source/patch checks and eleven workflow invariants passed. The deletion-flag failure remains visible.",
+      "limits": "No rendered canvas/mouse test, accepted upstream API or researcher outcome study. Requires the pinned host environment; not executed inside this website.",
+      "command": "python projects/movement-edit-filtering/verify_workflow.py \\\n  --checkout /path/to/pinned-movement-with-approved-patch \\\n  --output /tmp/movement-workflow-result.json",
+      "href": null,
+      "record": "projects/movement-edit-filtering/PILOT.md",
+      "result": "site/validation-results.json"
+    }
+  ],
+  "verificationRuns": "https://github.com/ahmedkhaledmohamed/scientific-software-lab/actions/workflows/lab-delivery.yml"
 }
