@@ -12,11 +12,16 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--migrations", action="store_true")
+    parser.add_argument("--workflow", choices=["ingestion", "export"])
     parser.add_argument("--postgres-bin", type=Path, required=True)
     parser.add_argument("--clean-checkout", type=Path, required=True)
     parser.add_argument("--patched-checkout", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
+    args.output_dir = args.output_dir.resolve()
+    args.clean_checkout = args.clean_checkout.resolve()
+    args.patched_checkout = args.patched_checkout.resolve()
     binaries = args.postgres_bin.resolve()
     for name in ["postgres", "initdb", "pg_ctl", "createdb"]:
         assert (binaries / name).is_file(), name
@@ -86,6 +91,21 @@ def main():
                     env=env,
                     check=True,
                 )
+                if args.workflow:
+                    subprocess.run(
+                        [
+                            sys.executable,
+                            str(Path(__file__).with_name("verify.py")),
+                            "--checkout",
+                            str(checkout),
+                            "--expect",
+                            mode,
+                            "--output",
+                            str(args.output_dir / f"harmoniser-{mode}.json"),
+                        ],
+                        env=env,
+                        check=True,
+                    )
                 subprocess.run(
                     [
                         sys.executable,
@@ -100,6 +120,8 @@ def main():
                         str(sockets),
                         "--postgres-name",
                         mode,
+                        *(["--migrations"] if args.migrations else []),
+                        *(["--workflow", args.workflow] if args.workflow else []),
                     ],
                     env=env,
                     check=True,

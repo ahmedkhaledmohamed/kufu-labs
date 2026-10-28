@@ -971,8 +971,8 @@
     {
       "id": "zero-age-metadata",
       "title": "Zero-age metadata preservation",
-      "state": "Local component patch; service unvalidated",
-      "summary": "Retain a valid zero age instead of silently dropping the supplied annotation. Source-discovered defect; 28 constructed cases.",
+      "state": "Constructed workflow verified in CI",
+      "summary": "Preserve supplied zero age through SRA sample creation, PostgreSQL persistence and actual TSV/JSON metadata export.",
       "href": "projects/refinebio-zero-age/README.md",
       "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
       "problem": "zero-age-metadata"
@@ -1017,12 +1017,12 @@
     },
     {
       "problem": "zero-age-metadata",
-      "verdict": "Component preservation demonstrated; workflow benefit unvalidated",
-      "observed": "Harmoniser retains 16/16 zero-age variants after the patch versus 0/16 before; actual model metadata retains zero in a separate offline handoff replay. Five harmoniser and three model test methods pass. Selected save/reload and model metadata cases also pass on PostgreSQL 16.2, including the existing Sample metadata-key test.",
-      "baseline": "refine.bio 7b809b7; Python 3.10.16 and Django 3.2.18; minimal offline configuration.",
-      "remaining": "No production hooks, official migration validation, output-file generation, full Django suite, public affected-sample audit, upstream acceptance or user validation.",
+      "verdict": "Constructed metadata workflow preservation demonstrated; researcher benefit unvalidated",
+      "observed": "The real SRA creation and worker metadata path passed in Linux CI with 91 migrations per revision. Both zero cases change from empty to 0.000 in ALL, EXPERIMENT and SPECIES TSV output; positive/empty/unknown controls stay unchanged. Five existing export regressions pass per revision.",
+      "baseline": "refine.bio 7b809b7; upstream Linux base, R 3.4.4 and PostgreSQL 14.24; constructed metadata and ENA file-report responses.",
+      "remaining": "No live source ingestion, expression processing, dispatch/upload, cloud deletion, populated-database upgrades, full upstream suite, affected public-sample audit, acceptance or researcher benefit.",
       "criterion": "An explicit zero annotation survives supported ingestion, harmonisation and export without changing missing-value handling; workflow relevance independently assessed.",
-      "next": "Run the full upstream environment before claiming integration complete."
+      "next": "Review the pinned contribution and its integration limits; further usefulness assessment remains separate and outreach is deferred."
     }
   ],
   "sourceStatus": {
@@ -1145,12 +1145,12 @@
     {
       "id": "zero-age-metadata",
       "title": "Zero-age preservation component replay",
-      "runtime": "Local Python 3.10 and pinned Django dependencies; component/model replays and an optional disposable PostgreSQL 16.2 persistence fixture.",
-      "inputs": "28 constructed metadata cases, including 16 zero representations/key variants and positive/empty/unknown controls.",
-      "expected": "The baseline omits every zero age; the patched harmoniser retains all 16 while preserving the controls and other annotations.",
-      "verification": "28 harmoniser cases, 5 offline model cases and 5 PostgreSQL persistence cases per revision; targeted tests and the existing Sample metadata-key test pass. Full service and lab CI integration remain untested.",
-      "limits": "Source-discovered defect; no user report, full service test, affected public sample or measured research benefit. Not a maintained lab CI replay yet.",
-      "command": "python projects/refinebio-zero-age/verify_export.py --checkout /path/to/pinned-patched-refinebio --expect patched --output /tmp/zero-age-export.json",
+      "runtime": "Maintained Linux CI replay using the pinned upstream R 3.4.4 base and PostgreSQL 14.24; local ingestion/migration replay also passed on PostgreSQL 16.2.",
+      "inputs": "Five constructed SRA metadata cases through the actual worker path, plus 28 harmoniser cases; no research files or live API calls.",
+      "expected": "Both zero-age cases change from empty to 0.000 in actual TSV files; positive age remains 2.000 and empty/unknown stay empty in all three aggregation modes.",
+      "verification": "Actual TSV/JSON export and five existing metadata regressions per revision passed in CI run 40763058912, with 91 migrations, real startup registration, retained TSV text and independently checked file hashes.",
+      "limits": "Constructed workflow and pinned runtime only. No expression processing, scheduler/upload, populated-production upgrade, full upstream suite or measured researcher benefit.",
+      "command": "python projects/refinebio-zero-age/verify_postgres.py --workflow ingestion --postgres-bin /path/to/postgresql/bin --clean-checkout /path/to/pinned-clean-refinebio --patched-checkout /path/to/pinned-patched-refinebio --output-dir /tmp/zero-age-ingestion",
       "href": null,
       "record": "projects/refinebio-zero-age/README.md",
       "result": "projects/refinebio-zero-age/postgres-patched.json",

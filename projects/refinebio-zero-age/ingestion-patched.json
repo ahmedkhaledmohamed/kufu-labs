@@ -1,0 +1,59 @@
+{
+  "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
+  "expectation": "patched",
+  "python": "3.10.16",
+  "versions": {
+    "Django": "3.2.18",
+    "boto3": "1.26.71",
+    "django-computedfields": "0.2.1",
+    "elasticsearch-dsl": "6.4.0",
+    "psycopg2-binary": "2.9.5"
+  },
+  "sample_source_sha256": "6a01cfe15254b32fec5e25336150dfcddb1ab8f0dc5cfea16dc72639c686928d",
+  "cases": [
+    {
+      "input_age": "0",
+      "harmonized_age": 0.0,
+      "exported_age": "0.000",
+      "persisted_age": "0.000",
+      "csv_sanity_age": "0.000"
+    },
+    {
+      "input_age": "0.0",
+      "harmonized_age": 0.0,
+      "exported_age": "0.000",
+      "persisted_age": "0.000",
+      "csv_sanity_age": "0.000"
+    },
+    {
+      "input_age": "2",
+      "harmonized_age": 2.0,
+      "exported_age": "2.000",
+      "persisted_age": "2.000",
+      "csv_sanity_age": "2.000"
+    },
+    {
+      "input_age": "",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    },
+    {
+      "input_age": "unknown",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    }
+  ],
+  "model_test_methods_passed": 3,
+  "existing_sample_test_methods_passed": 1,
+  "postgres_version_number": 160002,
+  "official_migrations_applied": 91,
+  "workflow": "ingestion",
+  "worker_export": null,
+  "upstream_startup_hook_loaded": true,
+  "scope": "Real SRA Sample creation with constructed ENA file-report responses, official migrations and startup-hook registration, save/reload and model metadata; worker exporter not executed",
+  "not_validated": "Live service integration, S3 deletion execution, expression processing, dispatch/upload, populated-database upgrades, full upstream suite and researcher benefit"
+}

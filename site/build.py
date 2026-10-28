@@ -19,6 +19,56 @@ def slug(path):
     return path.removesuffix(".md").replace("/", "--") + ".html"
 
 
+def refinebio_comparison():
+    project = ROOT / "projects/refinebio-zero-age"
+    reports = [
+        json.loads((project / f"postgres-{mode}.json").read_text())
+        for mode in ["baseline", "patched"]
+    ]
+    links = '<a href="projects/refinebio-zero-age/postgres-baseline.json">Baseline result</a> · <a href="projects/refinebio-zero-age/postgres-patched.json">Patched result</a>'
+    if not all(report.get("worker_export") for report in reports):
+        return (
+            '<p id="zeroAgeWorkflowStatus">The retained results cover database preservation. The real worker export has not executed in these results; its Linux CI replay is being prepared.</p><p>'
+            + links
+            + "</p>"
+        )
+    tables = []
+    for mode, report in zip(["baseline", "patched"], reports):
+        assert report["expectation"] == mode and report["workflow"] == "export"
+        assert report["official_migrations_applied"] == 91
+        assert report["upstream_startup_hook_loaded"] is True
+        assert report["worker_export"]["existing_metadata_tests_passed"] == 5
+        assert len(report["cases"]) == 5
+        exports = report["worker_export"]["export_modes"]
+        assert [entry["aggregate_by"] for entry in exports] == [
+            "ALL",
+            "EXPERIMENT",
+            "SPECIES",
+        ]
+        ages = exports[0]["tsv_age_by_accession"]
+        assert all(entry["tsv_age_by_accession"] == ages for entry in exports)
+        tables.append(ages)
+    rows = []
+    for index, case in enumerate(reports[0]["cases"]):
+        assert reports[1]["cases"][index]["input_age"] == case["input_age"]
+        values = [
+            case["input_age"] or "(empty)",
+            *[table[f"constructed-{index}"] or "(empty)" for table in tables],
+        ]
+        rows.append(
+            "<tr>"
+            + "".join("<td>" + html.escape(value) + "</td>" for value in values)
+            + "</tr>"
+        )
+    return (
+        '<p id="zeroAgeWorkflowStatus">Actual SRA sample creation, official migrations and worker metadata export executed with constructed inputs. All three aggregation modes agree; five existing export regressions passed per revision.</p><table id="zeroAgeWorkflowComparison"><caption>Age in actual exported TSV files</caption><thead><tr><th>Input age</th><th>Baseline TSV</th><th>Patched TSV</th></tr></thead><tbody>'
+        + "".join(rows)
+        + "</tbody></table><p>"
+        + links
+        + "</p><p>Results include the unmodified TSV text. ENA file reports are constructed responses. No expression processing, dispatch, upload, live-data assessment or researcher benefit is established.</p>"
+    )
+
+
 def main():
     data = json.loads((SITE / "catalog.json").read_text())
     docs = sorted([*ROOT.glob("research/**/*.md"), *ROOT.glob("projects/**/*.md")])
@@ -169,6 +219,9 @@ def main():
     for filename, title in pages.items():
         view = "home" if filename == "index" else filename
         content = (SITE / "views" / f"{view}.html").read_text()
+        content = content.replace(
+            "<!--__ZERO_AGE_WORKFLOW__-->", refinebio_comparison()
+        )
         # Cross-page links are ordinary documents, never section navigation.
         content = content.replace('href="#validation"', 'href="validation.html"')
         page = (
