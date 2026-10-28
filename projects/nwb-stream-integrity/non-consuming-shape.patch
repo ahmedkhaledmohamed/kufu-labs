@@ -1,0 +1,126 @@
+diff --git a/src/nwbinspector/utils/_utils.py b/src/nwbinspector/utils/_utils.py
+index d9fda46..52f15df 100644
+--- a/src/nwbinspector/utils/_utils.py
++++ b/src/nwbinspector/utils/_utils.py
+@@ -3,6 +3,7 @@
+ import json
+ import os
+ import re
++from collections.abc import Iterator
+ from functools import lru_cache
+ from importlib import import_module
+ from importlib.metadata import version as importlib_version
+@@ -12,6 +13,7 @@ from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
+ import h5py
+ import numpy as np
+ from hdmf.backends.hdf5.h5_utils import H5Dataset
++from hdmf.data_utils import AbstractDataChunkIterator, DataIO
+ from numpy.typing import ArrayLike
+ from packaging import version
+ 
+@@ -202,7 +204,8 @@ def get_data_shape(data: Any, strict_no_data_load: bool = False) -> Optional[tup
+     """
+     Helper function used to determine the shape of the given array.
+ 
+-    Modified from hdmf.utils.get_data_shape to return shape instead of maxshape.
++    Prefer the current shape of stored arrays and the declared maxshape of chunk iterators.
++    Single-pass iterators are never advanced to infer their shape.
+ 
+     In order to determine the shape of nested tuples, lists, and sets, this function
+     recursively inspects elements along the dimensions, assuming that the data has a regular,
+@@ -226,18 +229,29 @@ def get_data_shape(data: Any, strict_no_data_load: bool = False) -> Optional[tup
+         Dimensions for which the size is unknown will be set to None.
+     """
+ 
+-    def __get_shape_helper(local_data: Any) -> tuple[int, ...]:
++    def __get_shape_helper(local_data: Any) -> Optional[tuple[int, ...]]:
++        if isinstance(local_data, (DataIO, AbstractDataChunkIterator, Iterator)):
++            return get_data_shape(local_data, strict_no_data_load=strict_no_data_load)
+         shape = list()
+         if hasattr(local_data, "__len__"):
+             shape.append(len(local_data))
+             if len(local_data):
+                 el = next(iter(local_data))
+                 if not isinstance(el, (str, bytes)):
+-                    shape.extend(__get_shape_helper(el))
++                    inner_shape = __get_shape_helper(el)
++                    if inner_shape is None:
++                        return None
++                    shape.extend(inner_shape)
+         return tuple(shape)
+ 
+     if hasattr(data, "shape") and data.shape is not None:
+         return data.shape
++    if isinstance(data, DataIO):
++        return get_data_shape(data.data, strict_no_data_load=strict_no_data_load)
++    if isinstance(data, AbstractDataChunkIterator):
++        return data.maxshape
++    if isinstance(data, Iterator):
++        return None
+     if isinstance(data, dict):
+         return None
+     if hasattr(data, "__len__") and not isinstance(data, (str, bytes)):
+diff --git a/tests/test_stream_shape.py b/tests/test_stream_shape.py
+new file mode 100644
+index 0000000..54f1fde
+--- /dev/null
++++ b/tests/test_stream_shape.py
+@@ -0,0 +1,58 @@
++from collections.abc import Iterator
++
++import h5py
++import numpy as np
++import pytest
++from hdmf.backends.hdf5 import H5DataIO
++from hdmf.data_utils import DataChunkIterator
++from hdmf_zarr import ZarrDataIO
++
++from nwbinspector.utils import get_data_shape
++
++
++@pytest.mark.parametrize("wrapper", [lambda x: x, H5DataIO, ZarrDataIO])
++@pytest.mark.parametrize("strict", [False, True])
++def test_chunk_shape_does_not_advance_stream(wrapper, strict):
++    values = np.arange(1, 1001, dtype="int16").reshape(500, 2)
++    stream = DataChunkIterator(values, buffer_size=100)
++    wrapped = wrapper(stream)
++    for _ in range(4):
++        assert get_data_shape(wrapped, strict_no_data_load=strict) == (500, 2)
++    first = next(stream)
++    np.testing.assert_array_equal(first.data, values[:100])
++
++
++class SinglePassWithLength(Iterator):
++    def __init__(self):
++        self.iterator = iter([[1, 2], [3, 4]])
++        self.reads = 0
++
++    def __len__(self):
++        return 2
++
++    def __next__(self):
++        self.reads += 1
++        return next(self.iterator)
++
++
++@pytest.mark.parametrize("nested", [False, True])
++def test_unknown_single_pass_shape_is_not_inferred_by_reading(nested):
++    stream = SinglePassWithLength()
++    assert get_data_shape([stream] if nested else stream) is None
++    assert stream.reads == 0
++    assert next(stream) == [1, 2]
++
++
++def test_stored_resizable_dataset_uses_current_shape(tmp_path):
++    with h5py.File(tmp_path / "shape.h5", "w") as file:
++        data = file.create_dataset("data", data=np.zeros((5, 3)), maxshape=(None, 3))
++        assert get_data_shape(data) == (5, 3)
++        assert get_data_shape(data, strict_no_data_load=True) == (5, 3)
++
++
++@pytest.mark.parametrize(
++    "data,expected",
++    [([], (0,)), ([[1, 2], [3, 4]], (2, 2)), (("a", "b"), (2,)), ({"x": 1}, None)],
++)
++def test_materialized_shapes_unchanged(data, expected):
++    assert get_data_shape(data) == expected

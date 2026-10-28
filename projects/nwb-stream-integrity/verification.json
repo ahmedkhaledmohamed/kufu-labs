@@ -1,0 +1,51 @@
+{
+  "upstream_commit": "e6d968a1e0a62aa8f6611f45f242196d9ce75ea5",
+  "patch_sha256": "05be9d6fec13e21452d0c95442f84dbdab7ca0bd67e96531af909edf6717cdb9",
+  "scope": "Local constructed-data experiment, not upstream acceptance or real-recording validation",
+  "focused_tests": {
+    "command": "NWBI_SKIP_NETWORK_TESTS=1 python -m pytest tests/test_stream_shape.py tests/unit_tests/test_time_series.py -q",
+    "passed": 61,
+    "warnings": 6
+  },
+  "broader_tests": {
+    "command": "NWBI_SKIP_NETWORK_TESTS=1 python -m pytest tests/unit_tests tests/test_stream_shape.py -q",
+    "passed": 343,
+    "skipped": 5,
+    "warnings": 19,
+    "elapsed_seconds": 2.55
+  },
+  "lint": {
+    "upstream_ruff": "passed",
+    "upstream_black": "passed"
+  },
+  "replay": {
+    "backends": [
+      "HDF5",
+      "Zarr"
+    ],
+    "iterator_types": [
+      "DataChunkIterator",
+      "GenericDataChunkIterator subclass"
+    ],
+    "row_counts": [
+      50,
+      100,
+      500
+    ],
+    "inspected_cases_per_revision": 12,
+    "uninspected_controls_per_revision": 12
+  },
+  "not_run": [
+    "Full upstream suite outside tests/unit_tests",
+    "Real recordings",
+    "Additional dependency versions",
+    "Upstream review",
+    "Researcher outcome study",
+    "Required lab CI execution gate for this replay"
+  ],
+  "patch_reapplication": {
+    "fresh_pinned_worktree": true,
+    "git_apply": "passed",
+    "full_round_trip_matrix": "passed"
+  }
+}

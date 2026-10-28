@@ -6,9 +6,9 @@ An open-source lab for building and testing small tools around reported research
 
 ## Research scope and candidate problems
 
-Kufu investigates scientific software gaps across domains. The current research includes microscopy, neuroscience, biomedical evidence, bioinformatics, accessibility and research methods. Pose tracking is the first implemented exploration; it does not define the lab's scope or determine the next project.
+Kufu investigates scientific software gaps across domains. The current research includes microscopy, neuroscience, biomedical evidence, bioinformatics, accessibility and research methods. Pose tracking was the first implemented exploration; it does not define the lab's scope or determine the next project.
 
-The [problem board](problems.html) contains 25 candidate tasks, including hypotheses and deferred ideas. The [source directory](sources.html) links 15 boards and directories where needs, priorities and challenges are reported. These are curated research snapshots, not an exhaustive list of unsolved problems or confirmation that each proposed tool is needed.
+The [problem board](problems.html) contains 26 candidate tasks, including hypotheses and deferred ideas. The [source directory](sources.html) links 16 boards and directories where needs, priorities and challenges are reported. These are curated research snapshots, not an exhaustive list of unsolved problems or confirmation that each proposed tool is needed.
 
 | Area and intended beneficiaries | Candidate task and possible value | Evidence and existing work | Next validation and integration route |
 | --- | --- | --- | --- |
@@ -23,6 +23,8 @@ The [problem board](problems.html) contains 25 candidate tasks, including hypoth
 These are candidate contributions, not demonstrated unmet needs of equal strength. Sources and comparisons were reviewed on 26–27 October 2026; current status must be rechecked before selecting new work. The [research record](research/opportunity-discovery/README.md) retains further candidates, alternatives and limitations.
 
 ## Implemented work and remaining proof
+
+- **[NWB stream preservation](projects/nwb-stream-integrity/README.md):** a local utility patch prevents pre-write inspection from consuming streamed data in the tested HDF5/Zarr workflows. The [detailed implementation and learning plan](research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) pairs this contribution with introductory neuroscience exercises and a Canadian organisation reading list. Real-recording coverage, dependency alternatives, upstream acceptance and researcher benefit remain unvalidated.
 
 - **[Pairwise overlap inspector](projects/overlap-inspector/README.md):** a browser inspector of seven constructed examples for people proofreading overlapping pose predictions. It shows unchanged filter output and its explanation. It could reduce trial-and-error when choosing settings, but does not accept users' own poses or integrate into SLEAP. Prevalence, time saved and better decisions are unmeasured.
 - **[movement edit-aware filtering](projects/movement-edit-filtering/README.md):** a local patch preserves an explicit correction while dropping an unscored prediction in the tested workflow. Reproducible Qt/model-event checks cover that subproblem. The broader upstream request, rendered user interaction and practical user benefit remain unvalidated.
@@ -41,12 +43,13 @@ Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm run build` and `np
 
 | Exploration | Current evidence | Remaining validation |
 | --- | --- | --- |
+| [NWB stream preservation](projects/nwb-stream-integrity/README.md) | Local patch and constructed HDF5/Zarr save/reload matrix | Dependency-design comparison, maintained CI replay, upstream review and real-workflow validation |
 | [Pairwise overlap inspector](projects/overlap-inspector/README.md) | Offline synthetic demo checked against a pinned sleap-nn tensor filter | Real host instance/skeleton/score integration and researcher workflow benefit |
 | [movement edit-aware filtering](projects/movement-edit-filtering/README.md) | Local patch; 97 earlier synthetic filtering cases and a real Qt-widget/model-event replay | API acceptance, rendered host interaction and real-workflow benefit; separate deletion-provenance defect remains |
 | [Pose-review task research](research/pose-review-validation/README.md) | Existing-tool audit and one specific pairwise-score request | Proposed outcome study is unrun; outreach is deferred |
 | [Opportunity discovery](research/opportunity-discovery/README.md) | Named candidates, existing tools, source boards and comparative audit | Most ideas lack a demonstrated remaining gap |
 
-The board aggregates 25 named candidates from these records, including deferred concepts and competing work, with 15 source boards/directories. It is a curated snapshot, not an exhaustive census or a live feed. No end-to-end user problem is claimed resolved.
+The board aggregates 26 named candidates from these records, including deferred concepts and competing work, with 16 source boards/directories. It is a curated snapshot, not an exhaustive census or a live feed. No end-to-end user problem is claimed resolved.
 
 ## Structure and boundaries
 
@@ -61,6 +64,7 @@ No recordings, model weights, environments, patient information or credentials b
 The lab's original code and documentation use the [MIT License](LICENSE), except where an existing project-specific licence or upstream notice applies:
 
 - The [pose overlap inspector](projects/overlap-inspector/COPYING), including its source and generated demo, remains GPL-3.0-only.
+- The [NWB Inspector patch](projects/nwb-stream-integrity/non-consuming-shape.patch) retains its [upstream licence and enhancement clause](projects/nwb-stream-integrity/UPSTREAM-LICENSE).
 - Upstream movement code included in the filtering patch retains its [BSD-3-Clause notice](projects/movement-edit-filtering/UPSTREAM-LICENSE). The lab's original integration and verification scripts use the default MIT licence.
 
 Retain the applicable project and upstream notices when redistributing. These software licences do not grant rights to recordings, model weights, external datasets or linked publications.

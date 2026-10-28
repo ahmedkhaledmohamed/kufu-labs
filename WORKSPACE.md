@@ -2,13 +2,15 @@
 
 ## Current task
 
-Broaden the lab overview to reflect the existing cross-domain investigation. Pose tracking is the first implemented exploration, not the lab's exclusive subject or an automatic priority for the next build. The README now separates candidate problems from implemented pilots; Home states the wider scope without duplicating the navigation. The [investigation plan](research/opportunity-discovery/PLAN.md#current-direction-compare-candidates-across-domains) defines the next comparison and its evidence requirements.
+Implement a bounded neuroinformatics contribution while preparing a gradual science-learning path. The [detailed plan](research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) covers candidate comparison, milestones, learning exercises and FirstPrinciples/Canadian organisation research. Neuroinformatics is an active interest, within the lab's wider cross-domain scope.
 
-Work is isolated on `docs/broaden-lab-overview` from main `5589a1830231ec1976362d1f822c7f17160bfc9e`. Publication requires full-diff/exact-commit approval, PR checks and explicit merge authorisation. PR #12 separately removes the duplicate Explorations callout; this change does not include or supersede it.
+The new [NWB stream-integrity experiment](projects/nwb-stream-integrity/README.md) reproduces Inspector #771 at pinned source and preserves all constructed values with a local patch. The actual HDF5/Zarr matrix covers 12 inspected and 12 uninspected cases per revision. The broader upstream unit run passed 343 tests and skipped 5. No recordings or model weights were downloaded. The new replay is not yet a required CI execution gate; that and dependency-design comparison are next.
 
-Local verification: `python3 site/build.py`, `python3 site/package.py`, Prettier on the Home template and the existing `site/verify.cjs` passed with Node 22.22.2, Playwright 1.64.1 and Chrome 156.0.8078.48. Browser checks covered five pages, 180 local links and desktop/mobile navigation with no page errors or external requests. Scientific execution checks were not rerun because this change only updates the overview and plan; sources were not freshly audited.
+Verification: the exported patch applied to a fresh pinned worktree and passed the full round-trip matrix. Ruff/Black passed on the upstream change, and Ruff passed on the lab runner. Site generation, packaging, formatting and desktop/mobile browser checks passed across five pages and 204 local links, with 26 problems, 16 boards and three runnable entries. No page errors or external browser requests occurred. The new code and pages remain local pending publication approval.
 
-The canonical production address is https://kufu-labs.vercel.app. PR #11 merged and main run 40602566469 passed all three delivery jobs. The canonical artifact and both legacy-address redirects were independently verified. Authentication protection remains enabled.
+Work is isolated on `research/neuroinformatics-plan` from main `f06a068c23d33e7a615a6048b17fb8b9aaa3efc2`; upstream implementation stays in a separate pinned worktree. No outreach, upstream PR or maintainer approval is claimed. Publication requires full-diff/exact-commit approval and an explicitly authorised merge. The upstream guide also requires issue approval before a PR.
+
+PRs #12 and #13 merged. Main run 40607757738 passed all three jobs, and independent production checks confirmed source, seven sampled asset hashes, desktop/mobile navigation, the broader overview, removed duplicate callout and blocked unauthenticated access at https://kufu-labs.vercel.app. No open PRs remained at that check.
 
 ## Entry points
 
