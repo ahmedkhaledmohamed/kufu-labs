@@ -2,9 +2,13 @@
 
 ## Current task
 
-Use https://kufu-labs.vercel.app as the canonical production address and ensure future CI releases verify that exact host. The repository is public at `ahmedkhaledmohamed/kufu-labs`. Kufu Labs means practical ingenuity, from Japanese 工夫 (kufū).
+Broaden the lab overview to reflect the existing cross-domain investigation. Pose tracking is the first implemented exploration, not the lab's exclusive subject or an automatic priority for the next build. The README now separates candidate problems from implemented pilots; Home states the wider scope without duplicating the navigation. The [investigation plan](research/opportunity-discovery/PLAN.md#current-direction-compare-candidates-across-domains) defines the next comparison and its evidence requirements.
 
-The new domain is verified and attached to the existing production deployment. The old short production address has a verified 308 redirect to it. The team-scoped legacy alias continues serving the current artifact during the CI transition. Independent source/hash, Home figure, desktop/mobile navigation and blocked unauthenticated-access checks passed. Project identity and protection remain unchanged.
+Work is isolated on `docs/broaden-lab-overview` from main `5589a1830231ec1976362d1f822c7f17160bfc9e`. Publication requires full-diff/exact-commit approval, PR checks and explicit merge authorisation. PR #12 separately removes the duplicate Explorations callout; this change does not include or supersede it.
+
+Local verification: `python3 site/build.py`, `python3 site/package.py`, Prettier on the Home template and the existing `site/verify.cjs` passed with Node 22.22.2, Playwright 1.64.1 and Chrome 156.0.8078.48. Browser checks covered five pages, 180 local links and desktop/mobile navigation with no page errors or external requests. Scientific execution checks were not rerun because this change only updates the overview and plan; sources were not freshly audited.
+
+The canonical production address is https://kufu-labs.vercel.app. PR #11 merged and main run 40602566469 passed all three delivery jobs. The canonical artifact and both legacy-address redirects were independently verified. Authentication protection remains enabled.
 
 ## Entry points
 
@@ -21,8 +25,6 @@ Main `10b5e2c139adc693f774792b41ffa85bacd37b69` includes merged PRs #1–#9. Run
 ## Release state and remaining work
 
 PR #10 merged at `1fb72e3f81dc6184e1d7a40cf9871808b69419cb`. Main run 40598637899 passed all three jobs, promoted the tested Kufu site, and passed an independent production audit. Public repository and license access were verified anonymously. The earlier standalone Home proposal is superseded by the released Kufu meaning/purpose/figure page.
-
-The isolated `fix/kufu-production-url` branch starts from that refreshed main. Its code change selects and verifies the configured canonical production host rather than the first alias returned by Vercel. Finish exact-diff/commit review, PR checks and an explicitly authorised merge, then verify the next real main release at the canonical domain and enable the team-scoped legacy alias redirect to Kufu. The live URL and redirects already work; the pipeline selection change is local pending publication.
 
 No outreach, new accounts, spending, recordings or model-weight downloads are authorised. Preserve existing research worktrees and project/upstream licence notices.
 
