@@ -60,18 +60,7 @@ def create_sample(index, value):
 
 def export_metadata(checkout, samples, output):
     from data_refinery_common.models import Dataset, Experiment
-    from data_refinery_workers.processors import smashing_utils
-    from rpy2.robjects import r
 
-    # Verify the real embedded runtime; do not stub R or load a substitute module.
-    r_version = str(r('paste(R.version$major, R.version$minor, sep=".")')[0])
-    assert r_version == "3.4.4", r_version
-    assert (
-        Path(smashing_utils.__file__).resolve()
-        == (
-            checkout / "workers/data_refinery_workers/processors/smashing_utils.py"
-        ).resolve()
-    )
     dataset = Dataset.objects.create(
         data={"CONSTRUCTED_EXPERIMENT": [sample.accession_code for sample in samples]},
         aggregate_by="ALL",
@@ -81,6 +70,18 @@ def export_metadata(checkout, samples, output):
     previous = Path.cwd()
     try:
         os.chdir(checkout / "workers")
+        from data_refinery_workers.processors import smashing_utils
+        from rpy2.robjects import r
+
+        # Verify the real embedded runtime; do not stub R or load a substitute module.
+        r_version = str(r('paste(R.version$major, R.version$minor, sep=".")')[0])
+        assert r_version == "3.4.4", r_version
+        assert (
+            Path(smashing_utils.__file__).resolve()
+            == (
+                checkout / "workers/data_refinery_workers/processors/smashing_utils.py"
+            ).resolve()
+        )
         for aggregate_by in ["ALL", "EXPERIMENT", "SPECIES"]:
             dataset.aggregate_by = aggregate_by
             dataset.save()
@@ -154,32 +155,34 @@ def run_export_regressions(checkout):
     import sys
     import unittest
 
-    sys.path.insert(0, str(checkout / "workers"))
-    import tests.utils
-
-    assert (
-        Path(tests.utils.__file__).resolve()
-        == (checkout / "workers/tests/utils.py").resolve()
-    )
-
-    spec = importlib.util.spec_from_file_location(
-        "upstream_metadata_tests", checkout / "workers/tests/processors/test_smasher.py"
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    selected = [
-        "test_columns",
-        "test_all_samples",
-        "test_experiment",
-        "test_unicode_writer",
-        "test_species",
-    ]
-    suite = unittest.TestSuite(
-        module.AggregationTestCase(method) for method in selected
-    )
     previous = Path.cwd()
     try:
+        # Both smasher and smashing_utils read container-relative assets at
+        # import time, so establish the host working directory before imports.
         os.chdir(checkout / "workers")
+        sys.path.insert(0, str(checkout / "workers"))
+        import tests.utils
+
+        assert (
+            Path(tests.utils.__file__).resolve()
+            == (checkout / "workers/tests/utils.py").resolve()
+        )
+        spec = importlib.util.spec_from_file_location(
+            "upstream_metadata_tests",
+            checkout / "workers/tests/processors/test_smasher.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        selected = [
+            "test_columns",
+            "test_all_samples",
+            "test_experiment",
+            "test_unicode_writer",
+            "test_species",
+        ]
+        suite = unittest.TestSuite(
+            module.AggregationTestCase(method) for method in selected
+        )
         result = unittest.TextTestRunner().run(suite)
     finally:
         os.chdir(previous)

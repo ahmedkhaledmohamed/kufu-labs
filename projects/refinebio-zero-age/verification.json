@@ -13,7 +13,7 @@
     "Public affected-sample audit",
     "Researcher outcome validation",
     "Upstream review",
-    "First execution of the prepared Linux worker-export gate",
+    "Actual worker export and selected metadata regressions",
     "Full upstream suite, populated-database upgrades and cloud deletion handler execution"
   ],
   "negative_controls": [
@@ -43,7 +43,7 @@
     "startup_hook": "Real CommonAppConfig loads and S3 pre-delete receiver registration checked; deletion not invoked",
     "sra_sample_creation": "Five cases per revision through real _generate_sample; fixture ENA file-report HTTP response, all other sockets blocked",
     "fresh_source_only_checkouts": "Passed preparation, hash checks, patch reapplication and both ingestion/harmoniser replays",
-    "worker_export": "Configured for Linux CI, not executed locally or remotely yet",
+    "worker_export": "No completed export; first two remote attempts stopped before writing actual exports",
     "model_and_existing_sample_tests": "Three new model methods on patched source and one existing method per revision pass"
   },
   "upstream_refresh": {
@@ -62,5 +62,13 @@
     "worker_image": "Dependency check failed: wheel 0.48.0 requires packaging >=24, upstream pins packaging 23.0",
     "exporter": "Not reached; no actual export result claimed",
     "local_correction": "Pin wheel 0.41.3; wheel/packaging 23.0 dependency resolution passed; new Docker/CI execution pending"
+  },
+  "second_remote_run": {
+    "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40761617775",
+    "head_commit": "42e1d9ad6964153919207152dea151b638bd3c67",
+    "worker_image": "Built successfully; pip check reports no broken requirements",
+    "workflow": "Reached baseline migration/ingestion and real worker import, then failed on a relative email-template path before export",
+    "local_correction": "Enter the upstream workers directory before importing either exporter or selected test module; actual export assertions and source patch unchanged",
+    "pending": "First execution of corrected importer, actual export and five selected worker regressions"
   }
 }
