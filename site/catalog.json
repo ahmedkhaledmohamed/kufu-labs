@@ -145,6 +145,24 @@
       "scope": "NWB validation, data integrity and conversion workflows.",
       "limit": "Individual reports do not establish prevalence; inspect linked dependency fixes and upstream contribution rules.",
       "access": "Issue #771, linked #760 and dependency PR #1606 reviewed 2026-10-27"
+    },
+    {
+      "id": "jupyterlab",
+      "title": "JupyterLab accessibility issues",
+      "url": "https://github.com/jupyterlab/jupyterlab/issues?q=is%3Aissue+is%3Aopen+label%3Atag%3AAccessibility",
+      "kind": "Reported software gaps",
+      "scope": "Notebook and research-tool keyboard/screen-reader tasks.",
+      "limit": "Inspect competing PRs and actual browser/assistive-technology context; an open issue alone does not establish wholly missing access.",
+      "access": "Selected reports and competing PRs reviewed 2026-10-27; constructed Chrome reproduction recorded"
+    },
+    {
+      "id": "refinebio",
+      "title": "refine.bio issues and source",
+      "url": "https://github.com/AlexsLemonade/refinebio/issues",
+      "kind": "Bioinformatics workflow evidence",
+      "scope": "Data reuse, metadata harmonisation and service operations.",
+      "limit": "Separate source-discovered component defects from reported needs and production availability.",
+      "access": "Pinned source and selected issues reviewed 2026-10-27"
     }
   ],
   "problems": [
@@ -425,10 +443,10 @@
       "evidence": "Study + existing tools",
       "need": "Incomplete metadata complicates reuse and comparison of biological studies.",
       "proposal": "Reconcile one lab’s required annotations with explicit source evidence.",
-      "baseline": "refine.bio harmonisation and MetaHQ already address related tasks.",
+      "baseline": "Current refine.bio source already retrieves BioSample metadata and harmonises fields; MetaHQ covers related annotation work.",
       "integration": "Dataset-specific adapter with provenance, not a generic explorer.",
-      "unknown": "Unpublished facts cannot be recovered by UI or inference; existing coverage untested.",
-      "next": "Find one required field absent from current harmonisation and evaluate recoverable evidence.",
+      "unknown": "Generic BioSample enrichment is not an established missing capability. A separate zero-age omission is source-discovered and component-tested, not user-validated.",
+      "next": "Review the bounded zero-age preservation finding and require workflow evidence before a broader enrichment tool.",
       "sources": [
         {
           "title": "GEO completeness study",
@@ -441,13 +459,17 @@
         {
           "title": "MetaHQ preprint",
           "url": "https://arxiv.org/abs/2602.07805"
+        },
+        {
+          "title": "Pinned BioSample gathering implementation",
+          "url": "https://github.com/AlexsLemonade/refinebio/blob/7b809b7cae8d8a16f635febda80ac0c7336de9d7/foreman/data_refinery_foreman/surveyor/sra.py"
         }
       ],
       "boards": [
-        "openchallenges"
+        "refinebio"
       ],
-      "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
+      "reviewed": "2026-10-27"
     },
     {
       "id": "accessible-science",
@@ -459,8 +481,8 @@
       "proposal": "Co-design one concrete task with an affected scientist or student.",
       "baseline": "Olli, Data Navigator and recent Jupyter accessibility changes cover parts of the space.",
       "integration": "One notebook/visualisation host extension or supported accessibility workflow.",
-      "unknown": "Historical findings must be retested; no user/task/current failure selected.",
-      "next": "Reproduce a specific current keyboard/screen-reader task before designing an adapter.",
+      "unknown": "Toolbar focus failure reproduced in JupyterLab 4.6.4, but existing PR #20265 addresses it. Ctrl+Space works in the tested file-browser context; screen-reader cases remain untested.",
+      "next": "Avoid competing fixes; assess the existing PR or find a remaining task with affected-user evidence.",
       "sources": [
         {
           "title": "Notebook accessibility study",
@@ -479,9 +501,11 @@
           "url": "https://blog.jupyter.org/posts/2026/jupyterlab-4-6-and-notebook-7-6-are-out/"
         }
       ],
-      "boards": [],
-      "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "boards": [
+        "jupyterlab"
+      ],
+      "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
+      "reviewed": "2026-10-27"
     },
     {
       "id": "discharge-handover",
@@ -872,6 +896,30 @@
       ],
       "record": "projects/nwb-stream-integrity/README.md",
       "reviewed": "2026-10-27"
+    },
+    {
+      "id": "zero-age-metadata",
+      "title": "Retain valid zero-valued age annotations",
+      "domain": "Bioinformatics",
+      "stage": "Local component patch",
+      "evidence": "Source-discovered defect + constructed replay",
+      "need": "Truthiness checks discard a supplied numeric zero during harmonisation and replace a zero again in model metadata output.",
+      "proposal": "Preserve zero at both the harmoniser and model-metadata boundaries without changing missing-value handling.",
+      "baseline": "refine.bio 7b809b7; actual Harmonizer under the declared Django 3.2.18 with a minimal offline configuration.",
+      "integration": "Existing sample harmonisation component; no new enrichment application.",
+      "unknown": "No affected public sample, frequency, full service integration or researcher benefit established.",
+      "next": "Review in the complete upstream environment before expanding or submitting the component patch.",
+      "sources": [
+        {
+          "title": "Pinned harmonisation source",
+          "url": "https://github.com/AlexsLemonade/refinebio/blob/7b809b7cae8d8a16f635febda80ac0c7336de9d7/foreman/data_refinery_foreman/surveyor/harmony.py"
+        }
+      ],
+      "boards": [
+        "refinebio"
+      ],
+      "record": "projects/refinebio-zero-age/README.md",
+      "reviewed": "2026-10-27"
     }
   ],
   "explorations": [
@@ -919,6 +967,15 @@
       "href": "projects/nwb-stream-integrity/README.md",
       "record": "research/opportunity-discovery/NEUROINFORMATICS-PLAN.md",
       "problem": "nwb-stream-integrity"
+    },
+    {
+      "id": "zero-age-metadata",
+      "title": "Zero-age metadata preservation",
+      "state": "Local component patch; service unvalidated",
+      "summary": "Retain a valid zero age instead of silently dropping the supplied annotation. Source-discovered defect; 28 constructed cases.",
+      "href": "projects/refinebio-zero-age/README.md",
+      "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
+      "problem": "zero-age-metadata"
     }
   ],
   "validation": [
@@ -954,9 +1011,18 @@
       "verdict": "Local data-preservation result; upstream adoption unvalidated",
       "observed": "12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 341 passed, 5 skipped.",
       "baseline": "NWB Inspector e6d968a, PyNWB 4.2.0, HDMF 6.2.0; constructed positive int16 arrays.",
-      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. Follow-up CI replay configuration is locally verified; its first remote run is pending.",
+      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. The required scientific CI replay and protected production delivery passed in main run 40613968067.",
       "criterion": "The supported inspection/save workflow preserves all input values without weakening checks, and the preferred design is independently reviewed.",
-      "next": "Review the existing-helper integration and run the configured CI replay."
+      "next": "Review the existing-helper integration and contribution package; upstream discussion remains deferred."
+    },
+    {
+      "problem": "zero-age-metadata",
+      "verdict": "Component preservation demonstrated; workflow benefit unvalidated",
+      "observed": "Harmoniser retains 16/16 zero-age variants after the patch versus 0/16 before; actual model metadata retains zero in a separate offline handoff replay. Five harmoniser and three model test methods pass. Selected save/reload and model metadata cases also pass on PostgreSQL 16.2, including the existing Sample metadata-key test.",
+      "baseline": "refine.bio 7b809b7; Python 3.10.16 and Django 3.2.18; minimal offline configuration.",
+      "remaining": "No production hooks, official migration validation, output-file generation, full Django suite, public affected-sample audit, upstream acceptance or user validation.",
+      "criterion": "An explicit zero annotation survives supported ingestion, harmonisation and export without changing missing-value handling; workflow relevance independently assessed.",
+      "next": "Run the full upstream environment before claiming integration complete."
     }
   ],
   "sourceStatus": {
@@ -1067,7 +1133,7 @@
       "runtime": "Local Python 3.13 with pinned NWB Inspector, PyNWB, HDMF and HDF5/Zarr dependencies.",
       "inputs": "Constructed two-channel positive int16 arrays: 50, 100 or 500 rows at 100 Hz. No recordings.",
       "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
-      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. Follow-up CI now runs the replay in the required scientific check; its first remote run is pending.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release.",
       "limits": "No uploaded data, hosted Python execution, real-recording evaluation, full version matrix or upstream acceptance.",
       "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
       "href": null,
@@ -1075,6 +1141,21 @@
       "result": "projects/nwb-stream-integrity/patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/non-consuming-shape.patch",
       "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/verify.py"
+    },
+    {
+      "id": "zero-age-metadata",
+      "title": "Zero-age preservation component replay",
+      "runtime": "Local Python 3.10 and pinned Django dependencies; component/model replays and an optional disposable PostgreSQL 16.2 persistence fixture.",
+      "inputs": "28 constructed metadata cases, including 16 zero representations/key variants and positive/empty/unknown controls.",
+      "expected": "The baseline omits every zero age; the patched harmoniser retains all 16 while preserving the controls and other annotations.",
+      "verification": "28 harmoniser cases, 5 offline model cases and 5 PostgreSQL persistence cases per revision; targeted tests and the existing Sample metadata-key test pass. Full service and lab CI integration remain untested.",
+      "limits": "Source-discovered defect; no user report, full service test, affected public sample or measured research benefit. Not a maintained lab CI replay yet.",
+      "command": "python projects/refinebio-zero-age/verify_export.py --checkout /path/to/pinned-patched-refinebio --expect patched --output /tmp/zero-age-export.json",
+      "href": null,
+      "record": "projects/refinebio-zero-age/README.md",
+      "result": "projects/refinebio-zero-age/postgres-patched.json",
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/preserve-zero.patch",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py"
     }
   ],
   "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"

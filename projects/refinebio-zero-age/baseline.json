@@ -1,0 +1,188 @@
+{
+  "input_kind": "Constructed metadata only; no repository samples, subjects or recordings",
+  "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
+  "harmony_source_sha256": "3a0f7579d8d2972852cda2e381e8664710a08a5a5223ee09e4749669db580d58",
+  "expectation": "baseline",
+  "python": "3.10.16",
+  "versions": {
+    "Django": "3.2.18",
+    "daiquiri": "3.2.1",
+    "requests": "2.28.2",
+    "retrying": "1.3.4"
+  },
+  "cases": [
+    {
+      "field": "age",
+      "input": 0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age",
+      "input": 0.0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age",
+      "input": "0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age",
+      "input": "0.0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age",
+      "input": "2",
+      "age_present": true,
+      "age": 2.0
+    },
+    {
+      "field": "age",
+      "input": "",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age",
+      "input": "unknown",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": 0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": 0.0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": "0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": "0.0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": "2",
+      "age_present": true,
+      "age": 2.0
+    },
+    {
+      "field": "Age",
+      "input": "",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "Age",
+      "input": "unknown",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": 0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": 0.0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": "0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": "0.0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": "2",
+      "age_present": true,
+      "age": 2.0
+    },
+    {
+      "field": "age (years)",
+      "input": "",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "age (years)",
+      "input": "unknown",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": 0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": 0.0,
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": "0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": "0.0",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": "2",
+      "age_present": true,
+      "age": 2.0
+    },
+    {
+      "field": "characteristics_age",
+      "input": "",
+      "age_present": false,
+      "age": null
+    },
+    {
+      "field": "characteristics_age",
+      "input": "unknown",
+      "age_present": false,
+      "age": null
+    }
+  ],
+  "zero_age_cases_retained": 0,
+  "unit_tests_passed": null,
+  "network_connections": "Blocked by replay",
+  "scope": "Actual upstream harmonizer in a minimal Django configuration; no database, ingestion service or production deployment",
+  "elapsed_seconds": 2.033
+}

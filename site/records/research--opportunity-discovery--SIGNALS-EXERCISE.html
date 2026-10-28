@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>First exercise: samples, channels and time</title><style>body{font:16px/1.7 "Trebuchet MS",Arial,sans-serif;color:#203b50;background:#f4f7fb;margin:0}header,main{max-width:1000px;margin:auto;padding:25px}header{border-bottom:1px solid #d8e2ec}a{color:#3156a0;text-underline-offset:3px}:focus-visible{outline:3px solid #397eaa;outline-offset:3px}main{background:white}h1{font:30px/1.3 Georgia,serif}h2{font-size:23px;margin-top:35px}h3{font-size:19px}p,li{max-width:78ch}pre{background:#eaf0f7;padding:20px;overflow:auto;border-radius:6px}code{font-size:13px;overflow-wrap:anywhere}table{border-collapse:collapse;font-size:14px;min-width:600px}th,td{text-align:left;vertical-align:top;border:1px solid #d8e2ec;padding:10px}.table{overflow:auto}ul{padding-left:25px;margin:8px 0}.note{font-size:13px;color:#64788a}img{max-width:100%}</style></head><body><header><a href="../../index.html">Kufu Labs</a><p class="note">Research record. Read the current hub validation ledger before interpreting historical decisions.</p></header><main><h1 id="first-exercise-samples-channels-and-time">First exercise: samples, channels and time</h1>
+<p>Suggested time: 45–60 minutes. This supports the <a href="research--opportunity-discovery--NEUROINFORMATICS-PLAN.html">learning plan</a>, independently of whether a software patch is ready. No equipment, account or recording download is needed.</p>
+<h2 id="read-and-predict">Read and predict</h2>
+<p>Start with Neuromatch&#x27;s <a href="https://compneuro.neuromatch.io/tutorials/intro.html">introductory neuro videos</a>, particularly spiking activity, local field potentials and EEG/MEG. Then read <a href="https://pynwb.readthedocs.io/en/stable/tutorials/general/plot_file.html#time-series-data">PyNWB&#x27;s time-series introduction</a>.</p>
+<p>Before running the code, write answers to these questions:</p>
+<ul><li>With 100 samples per second, how far apart are successive samples?</li></ul>
+<ul><li>If the first sample is at zero, what time is the 100th sample?</li></ul>
+<ul><li>Does an array shaped <code>(100, 2)</code> contain 100 channels or two?</li></ul>
+<ul><li>What additional information would you need before calling these numbers a neural recording?</li></ul>
+<ul><li>Would preserving every value establish that the measurement or scientific interpretation was correct?</li></ul>
+<h2 id="run-a-constructed-signal">Run a constructed signal</h2>
+<p>The following uses only Python&#x27;s standard library. It produces mathematical sine waves, not a model or measurement of a brain:</p>
+<pre><code>import math
+
+rate = 100
+times = [i / rate for i in range(100)]
+channels = [(math.sin(2 * math.pi * 2 * t), math.sin(2 * math.pi * 12 * t)) for t in times]
+print(&quot;sampling interval:&quot;, times[1] - times[0])
+print(&quot;last sample time:&quot;, times[-1])
+print(&quot;samples and channels:&quot;, len(channels), len(channels[0]))
+
+# Compare 2 Hz and 12 Hz mathematical signals sampled at only 10 Hz.
+slow_times = [i / 10 for i in range(10)]
+a = [math.sin(2 * math.pi * 2 * t) for t in slow_times]
+b = [math.sin(2 * math.pi * 12 * t) for t in slow_times]
+print(&quot;largest sampled difference:&quot;, max(abs(x - y) for x, y in zip(a, b)))</code></pre>
+<p>The expected first outputs are 0.01 seconds, 0.99 seconds and <code>(100, 2)</code>. The two slowly sampled signals have nearly identical sampled values up to floating-point error, despite different underlying frequencies. Read the sampling material before generalising this example to a measurement system.</p>
+<h2 id="connect-the-exercise-to-kufus-software-work">Connect the exercise to Kufu&#x27;s software work</h2>
+<p>In the NWB replay, rows represent samples and columns represent constructed channels. Replacing rows with zeros changes the stored sequence; preserving those values is a software requirement. Actual channel meaning requires a measurement method, units, reference, calibration and acquisition context. Spikes, LFP and EEG do not represent the same measurement.</p>
+<p>Write three short statements: what you observed, why the mathematical example produced it, and what it does not establish about a biological brain. Bring any confusing distinction to the next learning session. No clinical interpretation or scientific discovery is claimed by this exercise.</p></main></body></html>

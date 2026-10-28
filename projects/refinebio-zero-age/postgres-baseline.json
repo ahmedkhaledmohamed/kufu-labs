@@ -1,0 +1,55 @@
+{
+  "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
+  "expectation": "baseline",
+  "python": "3.10.16",
+  "versions": {
+    "Django": "3.2.18",
+    "boto3": "1.26.71",
+    "django-computedfields": "0.2.1",
+    "elasticsearch-dsl": "6.4.0",
+    "psycopg2-binary": "2.9.5"
+  },
+  "sample_source_sha256": "0b1cf777429e46efa1b6a1393d248b83845f88f45f9492e2c6724cb97ec7a41c",
+  "cases": [
+    {
+      "input_age": "0",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    },
+    {
+      "input_age": "0.0",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    },
+    {
+      "input_age": "2",
+      "harmonized_age": 2.0,
+      "exported_age": "2.000",
+      "persisted_age": "2.000",
+      "csv_sanity_age": "2.000"
+    },
+    {
+      "input_age": "",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    },
+    {
+      "input_age": "unknown",
+      "harmonized_age": null,
+      "exported_age": "",
+      "persisted_age": null,
+      "csv_sanity_age": ""
+    }
+  ],
+  "model_test_methods_passed": null,
+  "existing_sample_test_methods_passed": 1,
+  "postgres_version_number": 160002,
+  "scope": "Actual Harmonizer, model-schema creation, save/reload and Sample.to_metadata_dict on private PostgreSQL; inert cloud clients and production readiness hooks disabled; CSV check uses the standard library",
+  "not_validated": "Production hooks, PostgreSQL migrations, live ingestion and full export service"
+}

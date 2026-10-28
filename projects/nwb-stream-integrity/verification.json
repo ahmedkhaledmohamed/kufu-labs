@@ -35,8 +35,7 @@
     "Real recordings",
     "Additional dependency versions",
     "Upstream review",
-    "Researcher outcome study",
-    "First remote CI execution of the follow-up workflow"
+    "Researcher outcome study"
   ],
   "patch_reapplication": {
     "fresh_pinned_worktree": true,
@@ -51,7 +50,13 @@
     "source_preparation": "Pinned revision and patch SHA-256 checked before applying",
     "publication": "Web build downloads scientific-evidence and packages the freshly generated baseline/patched JSON",
     "local_equivalent": "Exact replay, pytest, Ruff/Black and result-copy workflow commands passed in a fresh isolated environment",
-    "remote_run": "pending",
+    "remote_run": {
+      "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40613968067",
+      "source_commit": "ebe44bf6ccb1c2b92b769e7694f0acae36110e05",
+      "conclusion": "success",
+      "scientific_replay": "Actual baseline/patched round trips and unit checks passed in the required scientific job",
+      "delivery": "Web build consumed generated NWB results; protected production delivery independently verified"
+    },
     "negative_controls": [
       "Unmodified baseline rejected when expected to be patched",
       "Patched source rejected when expected to reproduce baseline loss"

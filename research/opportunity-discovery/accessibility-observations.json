@@ -1,0 +1,23 @@
+{
+  "jupyterlab": "4.6.4",
+  "releaseCommit": "384bff3af6598b3a6348df58fe34450914b49c41",
+  "browser": "156.0.8078.48",
+  "fixture": "Empty text files and a console without a kernel; no real notebooks or recordings",
+  "fileBrowser": {
+    "afterSpaceSelected": true,
+    "afterControlSpaceSelected": false
+  },
+  "toolbarMenu": {
+    "beforeArrow": {
+      "menuVisible": true,
+      "menuFocused": false,
+      "activeMenuItems": 0
+    },
+    "afterArrow": {
+      "menuVisible": true,
+      "menuFocused": false,
+      "activeMenuItems": 0
+    }
+  },
+  "limits": "No screen reader, Firefox or patched upstream frontend tested"
+}

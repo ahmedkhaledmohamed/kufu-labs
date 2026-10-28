@@ -8,7 +8,7 @@ An open-source lab for building and testing small tools around reported research
 
 Kufu investigates scientific software gaps across domains. The current research includes microscopy, neuroscience, biomedical evidence, bioinformatics, accessibility and research methods. Pose tracking was the first implemented exploration; it does not define the lab's scope or determine the next project.
 
-The [problem board](problems.html) contains 26 candidate tasks, including hypotheses and deferred ideas. The [source directory](sources.html) links 16 boards and directories where needs, priorities and challenges are reported. These are curated research snapshots, not an exhaustive list of unsolved problems or confirmation that each proposed tool is needed.
+The [problem board](problems.html) contains 27 candidate tasks, including hypotheses and deferred ideas. The [source directory](sources.html) links 18 boards and directories where needs, priorities and challenges are reported. These are curated research snapshots, not an exhaustive list of unsolved problems or confirmation that each proposed tool is needed.
 
 | Area and intended beneficiaries | Candidate task and possible value | Evidence and existing work | Next validation and integration route |
 | --- | --- | --- | --- |
@@ -23,6 +23,8 @@ The [problem board](problems.html) contains 26 candidate tasks, including hypoth
 These are candidate contributions, not demonstrated unmet needs of equal strength. Sources and comparisons were reviewed on 26–27 October 2026; current status must be rechecked before selecting new work. The [research record](research/opportunity-discovery/README.md) retains further candidates, alternatives and limitations.
 
 ## Implemented work and remaining proof
+
+- **[Zero-age metadata preservation](projects/refinebio-zero-age/README.md):** a source-discovered component omission in refine.bio, with a local patch and constructed-data replay. Full service integration and user benefit remain unvalidated. The [cross-domain comparison](research/opportunity-discovery/VALIDATION-BATCH.md) records why generic enrichment and competing accessibility implementations were not selected.
 
 - **[NWB stream preservation](projects/nwb-stream-integrity/README.md):** a local utility patch prevents pre-write inspection from consuming streamed data in the tested HDF5/Zarr workflows. The [detailed implementation and learning plan](research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) pairs this contribution with introductory neuroscience exercises and a Canadian organisation reading list. Real-recording coverage, dependency alternatives, upstream acceptance and researcher benefit remain unvalidated.
 
@@ -49,7 +51,7 @@ Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm run build` and `np
 | [Pose-review task research](research/pose-review-validation/README.md) | Existing-tool audit and one specific pairwise-score request | Proposed outcome study is unrun; outreach is deferred |
 | [Opportunity discovery](research/opportunity-discovery/README.md) | Named candidates, existing tools, source boards and comparative audit | Most ideas lack a demonstrated remaining gap |
 
-The board aggregates 26 named candidates from these records, including deferred concepts and competing work, with 16 source boards/directories. It is a curated snapshot, not an exhaustive census or a live feed. No end-to-end user problem is claimed resolved.
+The board aggregates 27 named candidates from these records, including deferred concepts and competing work, with 18 source boards/directories. It is a curated snapshot, not an exhaustive census or a live feed. No end-to-end user problem is claimed resolved.
 
 ## Structure and boundaries
 
@@ -64,6 +66,7 @@ No recordings, model weights, environments, patient information or credentials b
 The lab's original code and documentation use the [MIT License](LICENSE), except where an existing project-specific licence or upstream notice applies:
 
 - The [pose overlap inspector](projects/overlap-inspector/COPYING), including its source and generated demo, remains GPL-3.0-only.
+- The [refine.bio patch](projects/refinebio-zero-age/preserve-zero.patch) retains its [upstream BSD licence](projects/refinebio-zero-age/UPSTREAM-LICENSE).
 - The [NWB Inspector patch](projects/nwb-stream-integrity/non-consuming-shape.patch) retains its [upstream licence and enhancement clause](projects/nwb-stream-integrity/UPSTREAM-LICENSE).
 - Upstream movement code included in the filtering patch retains its [BSD-3-Clause notice](projects/movement-edit-filtering/UPSTREAM-LICENSE). The lab's original integration and verification scripts use the default MIT licence.
 
