@@ -1,7 +1,7 @@
 {
   "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
   "expectation": "patched",
-  "python": "3.10.16",
+  "python": "3.10.12",
   "versions": {
     "Django": "3.2.18",
     "boto3": "1.26.71",
@@ -49,7 +49,148 @@
   ],
   "model_test_methods_passed": 3,
   "existing_sample_test_methods_passed": 1,
-  "postgres_version_number": 160002,
-  "scope": "Actual Harmonizer, model-schema creation, save/reload and Sample.to_metadata_dict on private PostgreSQL; inert cloud clients and production readiness hooks disabled; CSV check uses the standard library",
-  "not_validated": "Production hooks, PostgreSQL migrations, live ingestion and full export service"
+  "postgres_version_number": 140024,
+  "official_migrations_applied": 91,
+  "workflow": "export",
+  "worker_export": {
+    "r_version": "3.4.4",
+    "export_modes": [
+      {
+        "aggregate_by": "ALL",
+        "tsv_age_by_accession": {
+          "constructed-0": "0.000",
+          "constructed-1": "0.000",
+          "constructed-2": "2.000",
+          "constructed-3": "",
+          "constructed-4": ""
+        },
+        "tsv_files": {
+          "ALL/ALL/metadata_ALL.tsv": "refinebio_accession_code\texperiment_accession\trefinebio_age\trefinebio_cell_line\trefinebio_compound\trefinebio_developmental_stage\trefinebio_disease\trefinebio_disease_stage\trefinebio_genetic_information\trefinebio_organism\trefinebio_platform\trefinebio_processed\trefinebio_race\trefinebio_sex\trefinebio_source_archive_url\trefinebio_source_database\trefinebio_specimen_part\trefinebio_subject\trefinebio_time\trefinebio_title\trefinebio_treatment\nconstructed-0\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-1\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-2\tCONSTRUCTED_EXPERIMENT\t2.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-3\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-4\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\n"
+        },
+        "files": {
+          "ALL/ALL/metadata_ALL.tsv": "eee9011d1faee926282e37b708d3fedf444e596a64284eb632d86c77cb29412f",
+          "ALL/LICENSE.TXT": "cf11c82ba0e812174c77cf1863805446c8356e21c8165efaf8898b1edc41c807",
+          "ALL/README.md": "055a36e5257147d3c901cf6027cb285bf9b257422b10be00499eb720efc360fb",
+          "ALL/aggregated_metadata.json": "05bc01306abe32d71b794c70309a18de4b594e9d42c2530e832fbebe4b3a7484"
+        }
+      },
+      {
+        "aggregate_by": "EXPERIMENT",
+        "tsv_age_by_accession": {
+          "constructed-0": "0.000",
+          "constructed-1": "0.000",
+          "constructed-2": "2.000",
+          "constructed-3": "",
+          "constructed-4": ""
+        },
+        "tsv_files": {
+          "EXPERIMENT/CONSTRUCTED_EXPERIMENT/metadata_CONSTRUCTED_EXPERIMENT.tsv": "refinebio_accession_code\texperiment_accession\trefinebio_age\trefinebio_cell_line\trefinebio_compound\trefinebio_developmental_stage\trefinebio_disease\trefinebio_disease_stage\trefinebio_genetic_information\trefinebio_organism\trefinebio_platform\trefinebio_processed\trefinebio_race\trefinebio_sex\trefinebio_source_archive_url\trefinebio_source_database\trefinebio_specimen_part\trefinebio_subject\trefinebio_time\trefinebio_title\trefinebio_treatment\nconstructed-0\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-1\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-2\tCONSTRUCTED_EXPERIMENT\t2.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-3\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-4\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\n"
+        },
+        "files": {
+          "EXPERIMENT/CONSTRUCTED_EXPERIMENT/metadata_CONSTRUCTED_EXPERIMENT.tsv": "eee9011d1faee926282e37b708d3fedf444e596a64284eb632d86c77cb29412f",
+          "EXPERIMENT/LICENSE.TXT": "cf11c82ba0e812174c77cf1863805446c8356e21c8165efaf8898b1edc41c807",
+          "EXPERIMENT/README.md": "055a36e5257147d3c901cf6027cb285bf9b257422b10be00499eb720efc360fb",
+          "EXPERIMENT/aggregated_metadata.json": "32d04c5f8c0e106bb2dacb880be936431d64ac177139da062e1d12a921c44d6d"
+        }
+      },
+      {
+        "aggregate_by": "SPECIES",
+        "tsv_age_by_accession": {
+          "constructed-0": "0.000",
+          "constructed-1": "0.000",
+          "constructed-2": "2.000",
+          "constructed-3": "",
+          "constructed-4": ""
+        },
+        "tsv_files": {
+          "SPECIES/CONSTRUCTED_SPECIES/metadata_CONSTRUCTED_SPECIES.tsv": "refinebio_accession_code\texperiment_accession\trefinebio_age\trefinebio_cell_line\trefinebio_compound\trefinebio_developmental_stage\trefinebio_disease\trefinebio_disease_stage\trefinebio_genetic_information\trefinebio_organism\trefinebio_platform\trefinebio_processed\trefinebio_race\trefinebio_sex\trefinebio_source_archive_url\trefinebio_source_database\trefinebio_specimen_part\trefinebio_subject\trefinebio_time\trefinebio_title\trefinebio_treatment\nconstructed-0\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-1\tCONSTRUCTED_EXPERIMENT\t0.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-2\tCONSTRUCTED_EXPERIMENT\t2.000\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-3\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\nconstructed-4\tCONSTRUCTED_EXPERIMENT\t\t\t\t\t\t\t\tCONSTRUCTED_SPECIES\tCONSTRUCTED_INSTRUMENT (CONSTRUCTED_INSTRUMENT)\tTrue\t\t\t\tSRA\t\t\t\tconstructed sample\t\n"
+        },
+        "files": {
+          "SPECIES/CONSTRUCTED_SPECIES/metadata_CONSTRUCTED_SPECIES.json": "45ce3833de720ce6cc934c4acbf53ccfc451056e67d33883f3995a7c7c45a7f4",
+          "SPECIES/CONSTRUCTED_SPECIES/metadata_CONSTRUCTED_SPECIES.tsv": "eee9011d1faee926282e37b708d3fedf444e596a64284eb632d86c77cb29412f",
+          "SPECIES/LICENSE.TXT": "cf11c82ba0e812174c77cf1863805446c8356e21c8165efaf8898b1edc41c807",
+          "SPECIES/README.md": "055a36e5257147d3c901cf6027cb285bf9b257422b10be00499eb720efc360fb",
+          "SPECIES/aggregated_metadata.json": "adef6e5a85e8cdd48fc2a3b0bb5c4a1429f956c9499f4176c4f5ada9ebe8086e"
+        }
+      }
+    ],
+    "python_packages": {
+      "setuptools": "59.6.0",
+      "pip": "22.0.2",
+      "Django": "3.2.18",
+      "kiwisolver": "1.4.4",
+      "joblib": "1.2.0",
+      "django-elasticsearch-dsl-drf": "0.22.5",
+      "six": "1.16.0",
+      "typing_extensions": "4.5.0",
+      "simplejson": "3.18.3",
+      "fonttools": "4.38.0",
+      "pytz": "2022.7.1",
+      "rpy2": "3.4.5",
+      "sqlparse": "0.4.3",
+      "pycparser": "2.21",
+      "asgiref": "3.6.0",
+      "daiquiri": "3.2.1",
+      "django-elasticsearch-dsl": "6.5.0",
+      "wrapt": "1.14.1",
+      "pytz-deprecation-shim": "0.1.0.post0",
+      "MarkupSafe": "2.0.0",
+      "retrying": "1.3.4",
+      "defusedxml": "0.7.1",
+      "raven": "6.10.0",
+      "djangorestframework": "3.13.1",
+      "elasticsearch-dsl": "6.4.0",
+      "mpmath": "1.2.1",
+      "botocore": "1.29.71",
+      "jmespath": "1.0.1",
+      "threadpoolctl": "3.1.0",
+      "django-fast-update": "0.2.1",
+      "boto3": "1.26.71",
+      "psutil": "5.9.4",
+      "idna": "3.4",
+      "python-json-logger": "2.0.6",
+      "wheel": "0.37.1",
+      "unicodecsv": "0.14.1",
+      "nose": "1.3.7",
+      "sympy": "1.11.1",
+      "packaging": "23.0",
+      "pandas": "1.5.3",
+      "certifi": "2023.7.22",
+      "Pillow": "9.4.0",
+      "contourpy": "1.0.7",
+      "coverage": "7.1.0",
+      "untangle": "1.2.1",
+      "django-nine": "0.2.7",
+      "requests": "2.28.2",
+      "numpy": "1.23.5",
+      "multidict": "6.0.4",
+      "yarl": "1.8.2",
+      "urllib3": "1.26.14",
+      "psycopg2-binary": "2.9.5",
+      "PyYAML": "6.0",
+      "charset-normalizer": "3.0.1",
+      "python-dateutil": "2.8.2",
+      "django-computedfields": "0.2.1",
+      "vcrpy": "4.2.1",
+      "elasticsearch": "6.8.2",
+      "tzlocal": "4.2",
+      "scipy": "1.10.0",
+      "matplotlib": "3.7.0",
+      "s3transfer": "0.6.0",
+      "tzdata": "2022.7",
+      "pyparsing": "3.0.9",
+      "scikit-learn": "1.2.1",
+      "Jinja2": "3.1.2",
+      "cycler": "0.11.0",
+      "cffi": "1.15.1",
+      "Cython": "0.29.28",
+      "Pygments": "2.11.2",
+      "mercurial": "6.1.1",
+      "pybind11": "2.9.1"
+    },
+    "existing_metadata_tests_passed": 5
+  },
+  "upstream_startup_hook_loaded": true,
+  "scope": "Real SRA Sample creation with constructed ENA file-report responses, official migrations and startup-hook registration, save/reload and real worker metadata export",
+  "not_validated": "Live service integration, S3 deletion execution, expression processing, dispatch/upload, populated-database upgrades, full upstream suite and researcher benefit"
 }

@@ -13,7 +13,6 @@
     "Public affected-sample audit",
     "Researcher outcome validation",
     "Upstream review",
-    "Actual worker export and selected metadata regressions",
     "Full upstream suite, populated-database upgrades and cloud deletion handler execution"
   ],
   "negative_controls": [
@@ -26,7 +25,7 @@
   },
   "model_export_cases": 5,
   "model_test_methods_passed": 3,
-  "scope": "Component/model checks, disposable PostgreSQL persistence, official empty-database migrations and constructed SRA record creation; actual worker export configured but unexecuted",
+  "scope": "Constructed actual SRA record creation, official migrations and real worker TSV/JSON metadata exports on pinned Linux/R runtime; full service integration and researcher benefit remain unvalidated",
   "partial_fix_counterexample": "Harmoniser-only patch still exports empty for zero; the actual-model replay rejects it",
   "postgres_persistence": {
     "version": "16.2",
@@ -43,7 +42,7 @@
     "startup_hook": "Real CommonAppConfig loads and S3 pre-delete receiver registration checked; deletion not invoked",
     "sra_sample_creation": "Five cases per revision through real _generate_sample; fixture ENA file-report HTTP response, all other sockets blocked",
     "fresh_source_only_checkouts": "Passed preparation, hash checks, patch reapplication and both ingestion/harmoniser replays",
-    "worker_export": "No completed export; first two remote attempts stopped before writing actual exports",
+    "worker_export": "Actual write_non_data_files executed successfully for ALL, EXPERIMENT and SPECIES in CI run 40763058912",
     "model_and_existing_sample_tests": "Three new model methods on patched source and one existing method per revision pass"
   },
   "upstream_refresh": {
@@ -70,5 +69,23 @@
     "workflow": "Reached baseline migration/ingestion and real worker import, then failed on a relative email-template path before export",
     "local_correction": "Enter the upstream workers directory before importing either exporter or selected test module; actual export assertions and source patch unchanged",
     "pending": "First execution of corrected importer, actual export and five selected worker regressions"
+  },
+  "successful_remote_run": {
+    "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40763058912",
+    "head_commit": "43eae2c516135b88fa9b4a83f56b6ececc42e06b",
+    "postgres_version": "14.24",
+    "r_version": "3.4.4",
+    "official_migrations_per_revision": 91,
+    "constructed_cases_per_revision": 5,
+    "aggregation_modes": [
+      "ALL",
+      "EXPERIMENT",
+      "SPECIES"
+    ],
+    "existing_metadata_regressions_passed_per_revision": 5,
+    "zero_age_tsv": "Baseline empty; patched 0.000 in both zero cases and every mode",
+    "controls": "Positive remains 2.000; empty/unknown remain empty",
+    "independent_artifact_check": "All 26 output-file hashes and retained TSV text matched the artifact",
+    "web_and_preview": "All four gates passed, including browser verification and protected Vercel preview deployment"
   }
 }
