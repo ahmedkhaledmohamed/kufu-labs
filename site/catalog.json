@@ -1011,9 +1011,9 @@
       "verdict": "Local data-preservation result; upstream adoption unvalidated",
       "observed": "12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 341 passed, 5 skipped.",
       "baseline": "NWB Inspector e6d968a, PyNWB 4.2.0, HDMF 6.2.0; constructed positive int16 arrays.",
-      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. Follow-up CI replay configuration is locally verified; its first remote run is pending.",
+      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. The required scientific CI replay and protected production delivery passed in main run 40613968067.",
       "criterion": "The supported inspection/save workflow preserves all input values without weakening checks, and the preferred design is independently reviewed.",
-      "next": "Review the existing-helper integration and run the configured CI replay."
+      "next": "Review the existing-helper integration and contribution package; upstream discussion remains deferred."
     },
     {
       "problem": "zero-age-metadata",
@@ -1133,7 +1133,7 @@
       "runtime": "Local Python 3.13 with pinned NWB Inspector, PyNWB, HDMF and HDF5/Zarr dependencies.",
       "inputs": "Constructed two-channel positive int16 arrays: 50, 100 or 500 rows at 100 Hz. No recordings.",
       "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
-      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. Follow-up CI now runs the replay in the required scientific check; its first remote run is pending.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release.",
       "limits": "No uploaded data, hosted Python execution, real-recording evaluation, full version matrix or upstream acceptance.",
       "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
       "href": null,
