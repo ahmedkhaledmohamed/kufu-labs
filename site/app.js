@@ -15,265 +15,136 @@ function link(title, href) {
   }
   return a;
 }
-const record = (p) => CATALOG.documents[p];
 const problemById = (id) => CATALOG.problems.find((p) => p.id === id);
+function redirectLegacy() {
+  const current = location.pathname.split("/").pop();
+  if (current === "problems.html" && location.hash.startsWith("#problem-")) {
+    const problem = problemById(location.hash.slice("#problem-".length));
+    if (problem) location.replace(problem.href);
+  }
+  if (current === "explorations.html" && location.hash.startsWith("#demo-")) {
+    const demo = CATALOG.demonstrations.find(
+      (d) => d.id === location.hash.slice(6),
+    );
+    if (demo) location.replace(problemById(demo.problem).href + "#try");
+  }
+  if (
+    current === "validation.html" &&
+    ["#zeroAgeWorkflowComparison", "#zeroAgeWorkflowTitle"].includes(
+      location.hash,
+    )
+  ) {
+    location.replace(problemById("zero-age-metadata").href + "#before-after");
+  }
+}
+redirectLegacy();
+window.addEventListener("hashchange", redirectLegacy);
 function options(id, values, all) {
-  const s = $(id);
-  s.append(new Option(all, ""));
-  values.forEach(([v, t]) => s.append(new Option(t, v)));
+  const select = $(id);
+  select.append(new Option(all, ""));
+  values.forEach(([value, text]) => select.append(new Option(text, value)));
 }
 if ($("problemList")) {
+  $("filters").hidden = false;
   options(
     "domain",
     [...new Set(CATALOG.problems.map((p) => p.domain))]
       .sort()
-      .map((v) => [v, v]),
+      .map((value) => [value, value]),
     "All domains",
   );
   options(
     "stage",
-    [...new Set(CATALOG.problems.map((p) => p.stage))].map((v) => [v, v]),
+    [...new Set(CATALOG.problems.map((p) => p.stage))].map((value) => [
+      value,
+      value,
+    ]),
     "All states",
   );
   options(
     "sourceFilter",
-    CATALOG.boards.map((b) => [b.id, b.title]),
+    CATALOG.boards.map((board) => [board.id, board.title]),
     "All source boards",
   );
-  function field(title, text) {
-    const f = node("div", undefined, "field");
-    f.append(node("h4", title), node("p", text));
-    return f;
-  }
-  const problemNodes = [];
-  for (const p of CATALOG.problems) {
-    const d = node("details", undefined, "problem");
-    d.id = "problem-" + p.id;
-    const summary = node("summary");
-    summary.append(
-      node("span", p.title, "title"),
-      node("span", p.domain, "domain"),
-      node("span", p.stage, "stage"),
-      node("span", p.evidence, "evidence"),
-    );
-    d.append(summary);
-    const body = node("div", undefined, "body");
-    body.append(
-      field("Reported need / starting concept", p.need),
-      field("Possible contribution", p.proposal),
-      field("Existing tools and counterevidence", p.baseline),
-      field("Integration route", p.integration),
-      field("Limits and unresolved assumptions", p.unknown),
-      field("Next validation action", p.next),
-    );
-    const sources = node("div", undefined, "field");
-    sources.append(node("h4", "Primary reports and existing alternatives"));
-    if (p.sources.length) {
-      const ul = node("ul");
-      for (const s of p.sources) {
-        const li = node("li");
-        li.append(link(s.title, s.url));
-        ul.append(li);
-      }
-      sources.append(ul);
-    } else
-      sources.append(
-        node(
-          "p",
-          "No direct primary problem report selected. Retained as an unvalidated concept.",
-        ),
-      );
-    body.append(sources);
-    const boards = node("div", undefined, "field");
-    boards.append(node("h4", "Discovery boards"));
-    if (p.boards.length) {
-      const ul = node("ul");
-      for (const id of p.boards) {
-        const b = CATALOG.boards.find((b) => b.id === id),
-          li = node("li");
-        li.append(link(b.title, b.url));
-        ul.append(li);
-      }
-      boards.append(ul);
-    } else
-      boards.append(
-        node(
-          "p",
-          "No specific board established; see the linked research record.",
-        ),
-      );
-    body.append(boards);
-    const foot = node("div", undefined, "recordlink");
-    foot.append(
-      link("Read the full investigation", record(p.record)),
-      document.createTextNode(
-        ` · Evidence reviewed ${p.reviewed}. Resolution is not established by this work state.`,
-      ),
-    );
-    body.append(foot);
-    d.append(body);
-    $("problemList").append(d);
-    problemNodes.push([p, d]);
-  }
   function applyFilters() {
-    const query = $("search").value.trim().toLowerCase(),
-      domain = $("domain").value,
-      stage = $("stage").value,
-      source = $("sourceFilter").value;
+    const query = $("search").value.trim().toLowerCase();
     let count = 0;
-    for (const [p, d] of problemNodes) {
+    for (const problem of CATALOG.problems) {
       const match =
-        (!query || JSON.stringify(p).toLowerCase().includes(query)) &&
-        (!domain || p.domain === domain) &&
-        (!stage || p.stage === stage) &&
-        (!source || p.boards.includes(source));
-      d.hidden = !match;
+        (!query || JSON.stringify(problem).toLowerCase().includes(query)) &&
+        (!$("domain").value || problem.domain === $("domain").value) &&
+        (!$("stage").value || problem.stage === $("stage").value) &&
+        (!$("sourceFilter").value ||
+          problem.boards.includes($("sourceFilter").value));
+      $("problem-" + problem.id).hidden = !match;
       if (match) count++;
     }
     $("empty").hidden = count !== 0;
     $("problemCount").textContent =
       `${count} of ${CATALOG.problems.length} problems shown`;
   }
-  $("filters").addEventListener("submit", (e) => e.preventDefault());
+  $("filters").addEventListener("submit", (event) => event.preventDefault());
   for (const id of ["search", "domain", "stage", "sourceFilter"])
     $(id).addEventListener("input", applyFilters);
-  $("filters").addEventListener("reset", (e) => {
-    e.preventDefault();
+  $("filters").addEventListener("reset", (event) => {
+    event.preventDefault();
     for (const id of ["search", "domain", "stage", "sourceFilter"])
       $(id).value = "";
     applyFilters();
   });
-  function openHash() {
-    if (location.hash.startsWith("#problem-")) {
-      const target = document.getElementById(location.hash.slice(1));
-      if (target) {
-        $("filters").reset();
-        target.open = true;
-        target.scrollIntoView({ block: "start" });
-      }
-    }
-  }
-  const requestedSource = new URLSearchParams(location.search).get("source");
-  if (requestedSource) $("sourceFilter").value = requestedSource;
+  const source = new URLSearchParams(location.search).get("source");
+  if (source) $("sourceFilter").value = source;
   applyFilters();
-  openHash();
-  window.addEventListener("hashchange", openHash);
 }
-if ($("sourceList"))
-  for (const b of CATALOG.boards) {
+if ($("sourceList")) {
+  for (const board of CATALOG.boards) {
     const article = node("article", undefined, "sourceboard"),
-      h = node("h3");
-    h.append(link(b.title, b.url));
+      heading = node("h3");
+    heading.append(link(board.title, board.url));
     article.append(
-      node("div", b.kind, "kind"),
-      h,
-      node("p", b.scope),
-      node("p", b.limit, "limit"),
-      node("p", b.access, "date"),
+      node("div", board.kind, "kind"),
+      heading,
+      node("p", board.scope),
+      node("p", board.limit, "limit"),
+      node("p", board.access, "date"),
     );
     const button = node("button", "Show related problems");
     button.type = "button";
     button.addEventListener("click", () => {
-      location.href = "problems.html?source=" + encodeURIComponent(b.id);
+      location.href = "problems.html?source=" + encodeURIComponent(board.id);
     });
     article.append(button);
     $("sourceList").append(article);
   }
-if ($("validationList"))
-  for (const v of CATALOG.validation) {
-    const p = problemById(v.problem),
+}
+if ($("explorationList")) {
+  for (const demo of CATALOG.demonstrations) {
+    const problem = problemById(demo.problem),
+      article = node("article", undefined, "exploration"),
+      heading = node("h2");
+    heading.append(link(problem.page.title, problem.href));
+    article.append(
+      heading,
+      node("span", problem.page.execution.label, "state"),
+      node("p", problem.page.summary),
+    );
+    $("explorationList").append(article);
+  }
+}
+if ($("validationList")) {
+  for (const validation of CATALOG.validation) {
+    const problem = problemById(validation.problem),
       article = node("article"),
-      title = node("div"),
-      h = node("h3");
-    h.append(link(p.title, `problems.html#problem-${p.id}`));
-    title.append(h, node("p", v.verdict, "verdictlabel"));
-    const evidence = node("div");
-    for (const [label, text] of [
-      ["Observed", v.observed],
-      ["Pinned baseline", v.baseline],
-      ["Still missing", v.remaining],
-      ["Resolution criterion", v.criterion],
-      ["Next check", v.next],
-    ]) {
-      const p = node("p");
-      p.append(node("strong", label), document.createTextNode(text));
-      evidence.append(p);
-    }
-    article.append(title, evidence);
+      heading = node("h2");
+    heading.append(link(problem.page?.title || problem.title, problem.href));
+    article.append(heading, node("p", validation.verdict, "verdictlabel"));
     $("validationList").append(article);
   }
+}
 if ($("coverage")) $("coverage").textContent = CATALOG.coverage;
 if ($("sourceCount"))
   $("sourceCount").textContent =
     `${CATALOG.boards.length} source boards and directories`;
 if ($("maintenance"))
   $("maintenance").textContent =
-    `Snapshot updated ${CATALOG.updated}. Source review dates are shown per problem and source board. Selected reports and competing fixes were checked through GitHub APIs; this is not a live status feed. Broader claims remain unverified unless backed by an explicit result.`;
-
-if ($("explorationList")) {
-  for (const x of CATALOG.explorations) {
-    const article = node("article", undefined, "exploration"),
-      heading = node("h3");
-    heading.append(link(x.title, record(x.href) || x.href));
-    article.append(
-      heading,
-      node("span", x.state, "state"),
-      node("p", x.summary),
-    );
-    const refs = node("div", undefined, "record");
-    refs.append(
-      link("Project record", record(x.record)),
-      document.createTextNode(" · "),
-      link("Problem and evidence", `problems.html#problem-${x.problem}`),
-    );
-    const demo = CATALOG.demonstrations.find((d) => d.id === x.id);
-    if (demo)
-      refs.append(
-        document.createTextNode(" · "),
-        link("Code implementation", demo.implementation),
-      );
-    article.append(refs);
-    $("explorationList").append(article);
-  }
-}
-
-if ($("demoList"))
-  for (const d of CATALOG.demonstrations) {
-    const a = node("article", undefined, "demo-entry");
-    a.id = "demo-" + d.id;
-    a.append(node("h3", d.title), node("p", d.runtime));
-    for (const [label, text] of [
-      ["Inputs", d.inputs],
-      ["Expected result", d.expected],
-      ["Verification", d.verification],
-      ["Limits", d.limits],
-    ]) {
-      const p = node("p");
-      p.append(node("strong", label + ": "), document.createTextNode(text));
-      a.append(p);
-    }
-    const pre = node("pre", d.command);
-    pre.setAttribute("aria-label", "Reproduction command");
-    a.append(pre);
-    const actions = node("div", undefined, "demo-actions");
-    if (d.href) {
-      const open = link("Open interactive demo", d.href);
-      open.target = "_blank";
-      open.rel = "noopener noreferrer";
-      actions.append(open);
-    }
-    actions.append(
-      link("Code implementation", d.implementation),
-      link("Verification code", d.verificationCode),
-      link("Reproduction and source record", record(d.record)),
-      link("Recorded result", d.result),
-      link("Verification runs", CATALOG.verificationRuns),
-    );
-    a.append(actions);
-    $("demoList").append(a);
-  }
-const current = location.pathname.split("/").pop() || "index.html";
-document.querySelectorAll("nav a").forEach((a) => {
-  if (a.getAttribute("href") === current)
-    a.setAttribute("aria-current", "page");
-});
+    `Catalogue updated ${CATALOG.updated}. Evidence review dates are shown per problem and source board. These are recorded investigations, not a live status feed.`;

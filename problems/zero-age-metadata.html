@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Preserve a supplied age of zero · Kufu Labs</title>
+    <link rel="stylesheet" href="../site/style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="mast">
+        <div>
+          <a class="brand" href="../index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="../problems.html" aria-current="page">Problems</a>
+          <a href="../sources.html">Sources</a>
+        </nav>
+      </div>
+    </header>
+    <main class="problem-detail">
+      <div class="problem-heading">
+  <p class="breadcrumb"><a href="../problems.html" aria-current="page">All problems</a></p>
+  <h1>Preserve a supplied age of zero</h1><p class="problem-lede">A dataset supplies an age value of zero. During metadata processing, software treats zero as false and leaves the exported age empty. A known value has become indistinguishable from a missing annotation.</p><p class="problem-state">Constructed metadata workflow preservation demonstrated; researcher benefit unvalidated</p>
+</div>
+<div class="problem-layout">
+  <article class="problem-story" aria-label="Problem and solution">
+    <section id="people"><h2>Who encounters it and why it matters</h2><p>Researchers reusing biological sample metadata exported by refine.bio.</p><p>Preserve a supplied zero instead of turning it into a missing value. Affected public samples, prevalence and researcher benefit remain unmeasured.</p></section>
+<section id="science"><h2>Science and terms</h2><p>Sample metadata describes the biological material being analysed. Researchers use those annotations when selecting or comparing samples. A numeric zero and an absent value have different meanings; this software check preserves what was supplied without interpreting the biology.</p><dl class="problem-terms"><dt>Harmonisation</dt><dd>Turning supplied annotations into consistent fields and representations.</dd><dt>Truthiness check</dt><dd>A programming condition that treats numeric zero as false, alongside values such as an empty string.</dd><dt>TSV / JSON</dt><dd>Text file formats used here for actual metadata exports.</dd></dl></section>
+<section id="workflow"><h2>Where the problem appears</h2><ol class="problem-workflow"><li><strong>Supply an annotation</strong><p>Five constructed metadata cases include zero, positive and missing values.</p></li><li><strong>Create sample records</strong><p>The real SRA surveyor path harmonises and saves them.</p></li><li><strong>Export metadata</strong><p>The actual worker writes files in all three aggregation modes.</p></li><li><strong>Read the output files</strong><p>The replay checks saved values and unchanged controls.</p></li></ol></section>
+<section id="evidence"><h2>Evidence and existing tools</h2><p>refine.bio at the pinned production-deploy revision 7b809b7. Its existing harmoniser, SRA sample-creation path and worker metadata exporter are exercised with constructed inputs; this is not a live ingestion service.</p><ul><li><a href="https://github.com/AlexsLemonade/refinebio/blob/7b809b7cae8d8a16f635febda80ac0c7336de9d7/foreman/data_refinery_foreman/surveyor/harmony.py" target="_blank" rel="noopener noreferrer">Pinned harmonisation source</a></li></ul></section>
+<section id="solution"><h2>The solution being tested</h2><p>The patch preserves zero in refine.bio’s harmoniser and model metadata output while retaining existing handling of empty or unknown values. The tested path creates real sample records and writes actual TSV/JSON metadata files. It does not infer missing ages or change their units.</p><p>Existing SRA sample creation, database and worker metadata-export path; a patch to refine.bio, not a new application.</p></section>
+<section id="before-after"><h2>Before and after the metadata patch</h2><p>These are actual worker export results for constructed inputs. The test covers ALL, EXPERIMENT and SPECIES aggregation; it does not establish affected-sample prevalence or researcher benefit.</p><p id="zeroAgeWorkflowStatus">Actual SRA sample creation, official migrations and worker metadata export executed with constructed inputs. All three aggregation modes agree; five existing export regressions passed per revision.</p><div class="table-scroll"><table id="zeroAgeWorkflowComparison"><caption>Age in actual exported TSV files</caption><thead><tr><th scope="col">Input age</th><th scope="col">Baseline TSV</th><th scope="col">Patched TSV</th></tr></thead><tbody><tr><td>0</td><td>(empty)</td><td>0.000</td></tr><tr><td>0.0</td><td>(empty)</td><td>0.000</td></tr><tr><td>2</td><td>2.000</td><td>2.000</td></tr><tr><td>(empty)</td><td>(empty)</td><td>(empty)</td></tr><tr><td>unknown</td><td>(empty)</td><td>(empty)</td></tr></tbody></table></div><p><a href="../projects/refinebio-zero-age/postgres-baseline.json">Baseline result</a> · <a href="../projects/refinebio-zero-age/postgres-patched.json">Patched result</a></p><p>Results include the unmodified TSV text. ENA file reports are constructed responses. No expression processing, dispatch, upload, live-data assessment or researcher benefit is established.</p></section>
+<section id="try"><h2>Try or reproduce</h2><p class="execution-kind">Verified CI export</p><p>Linux CI runs the real sample-creation, database and worker-export path. This page displays its saved output; it does not run a live refine.bio service or start a background analysis when opened.</p><div class="problem-actions"><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752" target="_blank" rel="noopener noreferrer">View verified run</a><a href="../projects/refinebio-zero-age/postgres-patched.json" target="_blank" rel="noopener noreferrer">Saved result (JSON)</a></div><details class="reproduction"><summary>How to reproduce locally</summary><p>Maintained Linux CI replay using the pinned upstream R 3.4.4 base and PostgreSQL 14.24; local ingestion/migration replay also passed on PostgreSQL 16.2.</p><p>These are instructions for your own environment. Opening this section does not execute the command.</p><pre><code>python projects/refinebio-zero-age/verify_postgres.py --workflow ingestion --postgres-bin /path/to/postgresql/bin --clean-checkout /path/to/pinned-clean-refinebio --patched-checkout /path/to/pinned-patched-refinebio --output-dir /tmp/zero-age-ingestion</code></pre><a href="../site/records/projects--refinebio-zero-age--README.html">Full environment and reproduction record</a></details></section>
+<section id="validation"><h2>Validation and limits</h2><p>The real SRA creation and worker metadata path passed in Linux CI with 91 migrations per revision. Both zero cases change from empty to 0.000 in ALL, EXPERIMENT and SPECIES TSV output; positive/empty/unknown controls stay unchanged. Five existing export regressions pass per revision.</p><h3>What remains unverified</h3><p>No live source ingestion, expression processing, dispatch/upload, cloud deletion, populated-database upgrades, full upstream suite, affected public-sample audit, acceptance or researcher benefit.</p><h3>What would count as resolving it</h3><p>An explicit zero annotation survives supported ingestion, harmonisation and export without changing missing-value handling; workflow relevance independently assessed.</p></section>
+<section id="next"><h2>Next step</h2><p>Review the pinned contribution and its integration limits; further usefulness assessment remains separate and outreach is deferred.</p></section>
+<section id="records"><h2>Implementation and research records</h2><ul><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/preserve-zero.patch" target="_blank" rel="noopener noreferrer">Code implementation</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py" target="_blank" rel="noopener noreferrer">Replay and verification code</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml" target="_blank" rel="noopener noreferrer">All verification runs</a></li></ul><ul><li><a href="../site/records/projects--refinebio-zero-age--README.html">Detailed record: Preserve zero-valued age metadata</a></li><li><a href="../site/records/research--opportunity-discovery--VALIDATION-BATCH.html">Detailed record: Cross-domain validation batch</a></li></ul></section>
+  </article>
+  <aside class="problem-context" aria-label="Problem context">
+    <h2>At a glance</h2><dl><dt>Domain</dt><dd>Bioinformatics</dd><dt>Work state</dt><dd>Constructed workflow verified</dd><dt>Evidence basis</dt><dd>Source-discovered defect + constructed replay</dd><dt>Source review</dt><dd>2026-10-27</dd></dl><p class="context-note">The website explains the work and displays saved evidence. It does not start Python or a scientific service when you open a page.</p><h3>Where this was investigated</h3><ul><li><a href="https://github.com/AlexsLemonade/refinebio/issues" target="_blank" rel="noopener noreferrer">refine.bio issues and source</a></li></ul><h3>Related problems</h3><ul><li><a href="../problems/sample-metadata.html">Repair biological sample metadata with source evidence</a></li><li><a href="../problems/bio-explorer.html">General biological dataset explorer</a></li></ul>
+  </aside>
+</div>
+
+      <footer>
+        Kufu Labs. Constructed demos and recorded checks do not establish
+        researcher benefit.
+      </footer>
+    </main>
+
+  </body>
+</html>

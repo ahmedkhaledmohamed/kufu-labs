@@ -207,80 +207,34 @@ button:hover {
   color: #496074;
   gap: 22px;
 }
-.problem {
+.problem-row {
   border-bottom: 1px solid var(--rule);
   background: white;
-}
-.problem summary {
   padding: 19px 20px;
-  cursor: pointer;
   display: grid;
   grid-template-columns: 2.2fr 1fr 1.1fr 1fr;
   gap: 22px;
-  align-items: start;
-  list-style: none;
+  text-decoration: none;
+  color: inherit;
 }
-.problem summary::-webkit-details-marker {
-  display: none;
+.problem-row:hover {
+  background: #edf4f8;
 }
-.problem .title {
+.problem-row:hover .title {
+  text-decoration: underline;
+}
+.problem-row .title {
   font-size: 15px;
   font-weight: bold;
+  color: var(--blue);
 }
-.problem .title::before {
-  content: "+";
-  margin-right: 12px;
-  color: var(--ocean);
-  display: inline-block;
-  width: 10px;
-}
-.problem[open] .title::before {
-  content: "−";
-}
-.problem .domain,
-.problem .stage,
-.problem .evidence {
+.problem-row .domain,
+.problem-row .stage,
+.problem-row .evidence {
   font-size: 12px;
 }
 .stage {
   color: var(--ocean);
-}
-.problem[open] {
-  outline: 1px solid #aec7d9;
-  outline-offset: -1px;
-}
-.problem[open] summary {
-  background: #f0f6fa;
-}
-.problem .body {
-  padding: 8px 25px 25px 42px;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 20px 40px;
-  font-size: 14px;
-}
-.field {
-  margin-top: 15px;
-}
-.field h4 {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0 0 5px;
-}
-.field p {
-  margin: 0;
-}
-.field ul {
-  margin: 4px 0;
-  padding-left: 20px;
-}
-.field li {
-  margin: 5px 0;
-}
-.recordlink {
-  font-size: 12px;
-  grid-column: 1/-1;
-  margin-top: 5px;
 }
 .empty {
   padding: 28px;
@@ -458,7 +412,7 @@ footer {
   .boardhead {
     display: none;
   }
-  .problem summary {
+  .problem-row {
     grid-template-columns: 1fr 1fr;
     padding: 17px;
     gap: 8px 18px;
@@ -469,11 +423,6 @@ footer {
   .problem .evidence {
     grid-column: 1/-1;
     color: var(--muted);
-  }
-  .problem .body {
-    grid-template-columns: 1fr;
-    padding: 0 19px 24px 30px;
-    gap: 0;
   }
   .recordlink {
     margin-top: 20px;
@@ -671,5 +620,209 @@ code {
   .kufu-flow li + li {
     border-top: 1px solid var(--rule);
     padding-top: 20px;
+  }
+}
+
+.problem-detail {
+  max-width: 1280px;
+}
+.breadcrumb {
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.problem-heading {
+  max-width: 850px;
+  margin-bottom: 34px;
+}
+.problem-heading h1 {
+  font:
+    36px/1.2 Georgia,
+    serif;
+  letter-spacing: -0.5px;
+  margin-bottom: 18px;
+}
+.problem-lede {
+  font-size: 18px;
+  line-height: 1.65;
+}
+.problem-state {
+  color: var(--ocean);
+  font-size: 14px;
+}
+.problem-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(230px, 1fr);
+  gap: 55px;
+  align-items: start;
+}
+.problem-story {
+  min-width: 0;
+}
+.problem-story section {
+  margin: 0 0 38px;
+}
+.problem-story h2 {
+  margin-bottom: 15px;
+}
+.problem-story h3 {
+  margin-top: 23px;
+}
+.problem-story ul {
+  padding-left: 21px;
+}
+.problem-story li {
+  margin-bottom: 10px;
+}
+.problem-context {
+  border-left: 2px solid #aec7d9;
+  padding-left: 24px;
+  font-size: 14px;
+}
+.problem-context h2 {
+  font-size: 18px;
+}
+.problem-context h3 {
+  margin-top: 28px;
+}
+.problem-context dl {
+  margin: 0;
+}
+.problem-context dt {
+  color: var(--muted);
+  margin-top: 15px;
+}
+.problem-context dd {
+  margin: 3px 0 0;
+}
+.problem-context ul {
+  padding-left: 18px;
+}
+.problem-context li {
+  margin: 10px 0;
+}
+.context-note {
+  margin-top: 25px;
+  color: #496074;
+}
+.problem-terms {
+  margin: 20px 0;
+  padding: 18px 22px;
+  background: #e8f1f4;
+}
+.problem-terms dt {
+  font-weight: bold;
+  margin-top: 12px;
+}
+.problem-terms dt:first-child {
+  margin-top: 0;
+}
+.problem-terms dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+.problem-workflow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px 30px;
+  padding-left: 22px;
+}
+.problem-workflow li {
+  border-top: 2px solid var(--rule);
+  padding-top: 12px;
+}
+.problem-workflow p {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+.table-scroll {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.problem-story table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+.problem-story caption {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+.problem-story th,
+.problem-story td {
+  border: 1px solid #b9cbdc;
+  text-align: left;
+  vertical-align: top;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+.problem-story th {
+  background: #e7edf5;
+}
+.problem-story tbody tr:nth-child(even) {
+  background: white;
+}
+.execution-kind {
+  color: var(--ocean);
+  font-weight: bold;
+}
+.problem-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px 24px;
+  margin: 20px 0;
+}
+.problem-actions a {
+  display: inline-block;
+  padding: 8px 0;
+}
+.reproduction {
+  margin-top: 22px;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+}
+.reproduction summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+.reproduction p {
+  margin-top: 15px;
+}
+.reproduction pre {
+  background: #e7edf5;
+  padding: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.record-note {
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 850px) {
+  .problem-layout {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .problem-context {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: 24px 0 0;
+  }
+  .problem-heading h1 {
+    font-size: 30px;
+  }
+}
+@media (max-width: 450px) {
+  .problem-workflow {
+    grid-template-columns: 1fr;
+  }
+  .problem-story th,
+  .problem-story td {
+    padding: 8px;
+    font-size: 13px;
+  }
+  .problem-lede {
+    font-size: 17px;
   }
 }

@@ -4,33 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>__TITLE__ · Kufu Labs</title>
-    <link rel="stylesheet" href="site/style.css" />
+    <link rel="stylesheet" href="__ROOT__site/style.css" />
+    <!--__EXTRA_HEAD__-->
   </head>
   <body>
     <header>
       <div class="mast">
         <div>
-          <a class="brand" href="index.html">Kufu Labs</a>
-          <p>Explorations, evidence and working software</p>
+          <a class="brand" href="__ROOT__index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
         </div>
         <nav aria-label="Main navigation">
-          <a href="index.html">Home</a
-          ><a href="explorations.html">Explorations</a
-          ><a href="problems.html">Problems</a><a href="sources.html">Sources</a
-          ><a href="validation.html">Validation</a>
+          <a href="__ROOT__index.html">Home</a>
+          <a href="__ROOT__problems.html">Problems</a>
+          <a href="__ROOT__sources.html">Sources</a>
         </nav>
       </div>
     </header>
-    <main>
+    <main class="__MAIN_CLASS__">
       <!--__CONTENT__-->
       <footer>
         Kufu Labs. Constructed demos and recorded checks do not establish
         researcher benefit.
       </footer>
     </main>
-    <script>
-      /*__CATALOG__*/
-    </script>
-    <script src="site/app.js"></script>
+    <!--__SCRIPTS__-->
   </body>
 </html>

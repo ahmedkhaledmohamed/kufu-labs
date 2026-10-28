@@ -4,7 +4,7 @@ Publication history: PRs #3–#7 are merged. Main run [40572525361](https://gith
 
 ## Runtime and navigation
 
-Home, Explorations, Problems, Sources and Validation are independent HTML documents. Ordinary navigation changes page URLs; the interactive pose demo action opens a separate tab. Each software entry lists its runtime/version boundary, constructed inputs, launch command, expected result, verification evidence and limitations.
+Home, Problems and Sources are the primary navigation destinations. Each problem has an independent static document at `problems/<id>.html`. The old Explorations and Validation documents remain compact indexes; historical problem/demo/export fragments resolve to the corresponding problem page. Each implemented problem explains the need, science, actual contribution, before/after result, execution model, reproduction and limits. The pose browser demo opens a separate tab and returns to its problem page. Research-only candidates clearly state that no solution is implemented.
 
 The hub and pose inspector are browser software. The movement example runs the actual pinned Python/Qt host in an isolated local or CI environment. Python source downloads are inert website assets, not arbitrary server execution endpoints. No universal hosted code runner or remote desktop is introduced.
 

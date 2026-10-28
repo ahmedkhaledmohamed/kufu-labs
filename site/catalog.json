@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-27",
+  "updated": "2026-10-28",
   "coverage": "All named candidates from the current opportunity and pose-review records, including deferred concepts. Curated snapshot; not a complete inventory of scientific problems or a live crawler.",
   "boards": [
     {
@@ -192,7 +192,81 @@
         "movement"
       ],
       "record": "projects/movement-edit-filtering/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/edit-filtering.html",
+      "audience": "Researchers cleaning pose tracks after manually correcting body-part positions in napari.",
+      "value": "Keep deliberate corrections while removing other predictions with missing confidence; fewer lost corrections is a hypothesis until assessed in real use.",
+      "page": {
+        "title": "Keep manual pose corrections during filtering",
+        "summary": "A person corrects a tracked body-part position, saves the dataset, then filters low-confidence predictions. The corrected point can be removed because its confidence is missing—the same condition used for other unscored predictions.",
+        "solution": "The patch lets the existing confidence filter accept explicit edited flags. With missing-score retention disabled, it can keep a deliberately corrected point while dropping an unedited prediction with a missing score. Omitting the new input preserves the existing policy.",
+        "science": "Pose estimates are coordinates, while confidence scores describe the model output. A manual-edit flag describes where a correction came from. It does not prove the corrected coordinates are scientifically accurate.",
+        "terms": [
+          [
+            "Keypoint",
+            "A named body-part position at a particular time."
+          ],
+          [
+            "NaN",
+            "A missing numeric value. Here, a missing confidence score does not tell us whether a person corrected the point."
+          ],
+          [
+            "Edit provenance",
+            "A record that a value was deliberately edited, separate from its numeric position and confidence."
+          ]
+        ],
+        "workflow": [
+          [
+            "Load predictions",
+            "Open a constructed movement dataset in the real host."
+          ],
+          [
+            "Correct a position",
+            "The connected napari event records an explicit edit."
+          ],
+          [
+            "Save and reload",
+            "The host writes and reloads the edited dataset."
+          ],
+          [
+            "Filter using provenance",
+            "The patch distinguishes the correction from other unscored points."
+          ]
+        ],
+        "comparisonTitle": "Before and after the filtering patch",
+        "comparisonNote": "This comparison disables retention of missing confidence scores in both cases. The existing default can instead keep all missing-score points; it cannot make the explicit-edit distinction.",
+        "comparison": [
+          [
+            "Constructed input",
+            "Existing filter, missing scores dropped",
+            "Filter with explicit edit flags"
+          ],
+          [
+            "Manually corrected point; confidence missing",
+            "Dropped",
+            "Retained"
+          ],
+          [
+            "Unedited prediction; confidence missing",
+            "Dropped",
+            "Dropped"
+          ],
+          [
+            "Removed or originally missing position",
+            "Stays missing",
+            "Stays missing"
+          ]
+        ],
+        "execution": {
+          "label": "Verified CI workflow",
+          "summary": "Python and real Qt widgets execute locally or in CI with constructed data. The website displays saved evidence. It does not host a live napari window, and the offscreen test does not establish rendered mouse interaction.",
+          "action": "View verified run"
+        },
+        "related": [
+          "deleted-flags",
+          "behaviour-sensitivity"
+        ]
+      }
     },
     {
       "id": "deleted-flags",
@@ -220,7 +294,10 @@
         "movement"
       ],
       "record": "projects/movement-edit-filtering/REVIEW.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/deleted-flags.html",
+      "audience": "Researchers saving and reopening manually corrected movement datasets.",
+      "value": "Keep a trustworthy record of deliberate deletions across editing sessions. The defect is reproduced; no fix or benefit has been established."
     },
     {
       "id": "pairwise-overlap",
@@ -253,7 +330,82 @@
         "sleap-discussions"
       ],
       "record": "projects/overlap-inspector/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/pairwise-overlap.html",
+      "audience": "Researchers proofreading overlapping animal-pose predictions in SLEAP.",
+      "value": "Make duplicate-filter decisions inspectable so a person can understand a setting. Better choices and time saved remain unmeasured.",
+      "page": {
+        "title": "Inspect why overlapping poses are removed",
+        "summary": "Two pose predictions can overlap even when they describe different animals or different body-part arrangements. The researcher needs to understand why a duplicate filter keeps one and removes another.",
+        "solution": "Kufu’s prototype adds an overlay, pair measurements, threshold boundaries and score-order context around an unchanged filter. It is a browser demonstration of an inspection capability. It is not integrated into the SLEAP application and does not improve the prediction model.",
+        "science": "A pose is an estimated set of body-part positions. Tracking software can produce multiple candidate poses in one video frame. A duplicate filter compares candidates and can remove a later candidate when their similarity exceeds a chosen threshold.",
+        "terms": [
+          [
+            "IoU",
+            "Intersection over union: how much two bounding boxes overlap relative to their combined area."
+          ],
+          [
+            "OKS",
+            "Object keypoint similarity: a score based on corresponding body-part positions and scale. This implementation’s score can depend on comparison direction."
+          ],
+          [
+            "Suppression",
+            "Removing a candidate pose from the filter output; this is not evidence that it was biologically wrong."
+          ]
+        ],
+        "workflow": [
+          [
+            "Predict body-part positions",
+            "The host produces candidate poses and confidence scores."
+          ],
+          [
+            "Compare overlapping candidates",
+            "A chosen metric assigns pairwise similarity."
+          ],
+          [
+            "Apply the threshold",
+            "Score order and earlier decisions affect which candidates remain."
+          ],
+          [
+            "Inspect the decision",
+            "The prototype exposes the selected pair and full-frame context."
+          ]
+        ],
+        "comparisonTitle": "What the inspector adds",
+        "comparisonNote": "Both views use the same fixed input and filter. For the swapped-label example at IoU threshold 0.8, A is retained and B is suppressed in both views. The added capability is explanation.",
+        "comparison": [
+          [
+            "What you can inspect",
+            "Filter output alone",
+            "Inspector prototype"
+          ],
+          [
+            "Returned poses",
+            "A retained; B suppressed",
+            "A retained; B suppressed"
+          ],
+          [
+            "Why that pair was treated as overlapping",
+            "Output states do not explain the pair",
+            "Pair metric, overlay and threshold shown"
+          ],
+          [
+            "Decision context",
+            "Keep/remove states",
+            "Score order, metric direction and full-frame context"
+          ]
+        ],
+        "execution": {
+          "label": "Interactive browser demo",
+          "summary": "The controls and drawings run in your browser. Filter outputs were computed from the real pinned Python implementation before the page was published. Changing a control selects those saved results; it does not start Python, model inference or a background server.",
+          "action": "Open browser demo"
+        },
+        "related": [
+          "identity-review",
+          "lr-pairing",
+          "outlier-review"
+        ]
+      }
     },
     {
       "id": "label-free",
@@ -286,7 +438,10 @@
         "ai4life"
       ],
       "record": "research/opportunity-discovery/AUDIT.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/label-free.html",
+      "audience": "Microscopy researchers comparing predicted fluorescence with measured images.",
+      "value": "Determine whether a prediction remains useful for a declared measurement across acquisition conditions; no replacement of physical measurements is established."
     },
     {
       "id": "neural-behaviour",
@@ -315,7 +470,10 @@
         "neurostars"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/neural-behaviour.html",
+      "audience": "Researchers relating measured behaviour to neural activity.",
+      "value": "Avoid incompatible time, feature or dataset assumptions in one declared analysis. No specific software gap has been demonstrated."
     },
     {
       "id": "biomedical-retrieval",
@@ -348,7 +506,10 @@
         "openchallenges"
       ],
       "record": "research/opportunity-discovery/AUDIT.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/biomedical-retrieval.html",
+      "audience": "Researchers checking whether a scientific answer is supported by relevant papers.",
+      "value": "Make supporting passages and unanswered questions easier to inspect. A concrete failure against existing retrieval tools still needs to be established."
     },
     {
       "id": "drug-safety",
@@ -377,7 +538,10 @@
         "openchallenges"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/drug-safety.html",
+      "audience": "Researchers evaluating models of drug properties on a defined benchmark.",
+      "value": "Identify one measurable modelling failure. A benchmark result would not establish clinical safety."
     },
     {
       "id": "epilepsy-access",
@@ -405,7 +569,10 @@
         "jla"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/epilepsy-access.html",
+      "audience": "People searching for reviewed epilepsy information and researchers navigating unanswered priorities.",
+      "value": "Connect a precise information need to an appropriate existing answer or research priority. No new clinical guidance or selected product is offered."
     },
     {
       "id": "assistive-reliability",
@@ -433,7 +600,10 @@
         "lipsync"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/assistive-reliability.html",
+      "audience": "People relying on assistive devices and those supporting their use.",
+      "value": "Support independent operation for one documented reliability barrier. A specific device, task and remaining software gap have not been selected."
     },
     {
       "id": "sample-metadata",
@@ -469,7 +639,10 @@
         "refinebio"
       ],
       "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/sample-metadata.html",
+      "audience": "Researchers reusing biological datasets across studies.",
+      "value": "Preserve or recover a selected annotation from its actual source. Missing information must not be invented."
     },
     {
       "id": "accessible-science",
@@ -505,7 +678,10 @@
         "jupyterlab"
       ],
       "record": "research/opportunity-discovery/VALIDATION-BATCH.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/accessible-science.html",
+      "audience": "Scientists whose access needs are not met by a notebook or visualisation workflow.",
+      "value": "Enable independent completion of one scientific task. Existing fixes and assistive-technology behaviour must be checked before building."
     },
     {
       "id": "discharge-handover",
@@ -533,7 +709,10 @@
         "jla"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/discharge-handover.html",
+      "audience": "Families and caregivers managing responsibilities after a hospital discharge.",
+      "value": "Clarify who does what and which questions remain unanswered. This is an unvalidated workflow hypothesis, not a medical service."
     },
     {
       "id": "microscopy-sensitivity",
@@ -562,7 +741,10 @@
         "grand-challenge"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/microscopy-sensitivity.html",
+      "audience": "Researchers making quantitative measurements from microscopy images.",
+      "value": "Understand whether a declared measurement changes with analysis choices. A specific measurement and inadequate baseline remain unselected."
     },
     {
       "id": "experimental-units",
@@ -584,7 +766,10 @@
       ],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/experimental-units.html",
+      "audience": "Researchers analysing observations nested within animals, people, cultures or experiments.",
+      "value": "Make the declared grouping visible before interpreting independent evidence. Experimental design cannot be reliably inferred from column names alone."
     },
     {
       "id": "eeg-events",
@@ -612,7 +797,10 @@
         "neurostars"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/eeg-events.html",
+      "audience": "Researchers aligning EEG recordings with events or stimuli.",
+      "value": "Expose a particular discrepancy in timing or markers against a known reference. Software alone cannot establish physical timing without an appropriate reference."
     },
     {
       "id": "ml-leakage",
@@ -640,7 +828,10 @@
         "openchallenges"
       ],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/ml-leakage.html",
+      "audience": "Researchers evaluating machine-learning models on biological data.",
+      "value": "Keep related observations and preprocessing history from compromising a declared evaluation. A specific unsupported case still needs comparison with existing tools."
     },
     {
       "id": "microplates",
@@ -666,7 +857,10 @@
       ],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/microplates.html",
+      "audience": "Laboratory researchers preparing sample layouts and instrument exports.",
+      "value": "Represent one verified instrument format and its layout constraints consistently. No missing connector has been established."
     },
     {
       "id": "identity-review",
@@ -699,7 +893,10 @@
         "dlc"
       ],
       "record": "research/pose-review-validation/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/identity-review.html",
+      "audience": "Researchers proofreading which tracked animal a pose belongs to.",
+      "value": "Reduce consequential identity errors in a defined review task. Existing editors and diagnostics already cover much of this work."
     },
     {
       "id": "lr-pairing",
@@ -727,7 +924,10 @@
         "sleap"
       ],
       "record": "research/pose-review-validation/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/lr-pairing.html",
+      "audience": "Researchers configuring left/right or other symmetric body-part relationships in pose quality control.",
+      "value": "Represent relationships that naming rules miss. Existing upstream work must be assessed before proposing another implementation."
     },
     {
       "id": "outlier-review",
@@ -756,7 +956,10 @@
         "dlc"
       ],
       "record": "research/pose-review-validation/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/outlier-review.html",
+      "audience": "Researchers selecting suspicious pose frames for proofreading.",
+      "value": "Direct attention to useful review cases. Existing quality-control queues and diagnostics need to be tested before a new score is justified."
     },
     {
       "id": "behaviour-sensitivity",
@@ -780,7 +983,10 @@
         "sleap"
       ],
       "record": "research/pose-review-validation/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/behaviour-sensitivity.html",
+      "audience": "Researchers deriving a behavioural measure from pose tracks.",
+      "value": "Understand a declared measure’s response to corrections or filtering. No recurring unmet workflow or product has been established."
     },
     {
       "id": "caregiver",
@@ -802,7 +1008,10 @@
       ],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/caregiver.html",
+      "audience": "Potential users are family caregivers; no representative workflow has been validated.",
+      "value": "The broad coordination concept is retained for comparison. Existing products and a specific remaining need must be assessed before building."
     },
     {
       "id": "health-timeline",
@@ -824,7 +1033,10 @@
       ],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/health-timeline.html",
+      "audience": "Potential users are people organising their health records; no representative workflow has been validated.",
+      "value": "The broad timeline concept is retained for comparison. No remaining need beyond existing products has been demonstrated."
     },
     {
       "id": "bio-explorer",
@@ -846,7 +1058,10 @@
       ],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/bio-explorer.html",
+      "audience": "Potential users are researchers exploring public biological datasets; no specific unsupported task is selected.",
+      "value": "Existing repositories and analysis tools may already serve the task. A narrower failure needs evidence before another explorer is justified."
     },
     {
       "id": "reproducibility",
@@ -863,7 +1078,10 @@
       "sources": [],
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26"
+      "reviewed": "2026-10-26",
+      "href": "problems/reproducibility.html",
+      "audience": "Potential users are researchers trying to repeat another analysis.",
+      "value": "Reduce friction in a narrowly defined reproduction task. There is no implemented universal paper-reproduction system."
     },
     {
       "id": "nwb-stream-integrity",
@@ -876,7 +1094,7 @@
       "baseline": "Pinned NWB Inspector e6d968a with PyNWB 4.2.0 and HDMF 6.2.0; related HDMF PR #1606 remains open when checked.",
       "integration": "Existing inspect_nwbfile_object workflow; upstream utility patch, not a new application.",
       "unknown": "Real-recording coverage, full dependency matrix, preferred upstream design and adoption remain unvalidated.",
-      "next": "Verify the follow-up CI gate and review the smaller integration before considering an upstream proposal.",
+      "next": "Review the existing-helper contribution and its tested limits; the maintained round-trip CI is already passing.",
       "sources": [
         {
           "title": "NWB Inspector data-loss report #771",
@@ -895,20 +1113,94 @@
         "nwbinspector"
       ],
       "record": "projects/nwb-stream-integrity/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/nwb-stream-integrity.html",
+      "audience": "Researchers and engineers converting streamed neurophysiology data into NWB files.",
+      "value": "Preserve the original samples when software inspects them before saving. Scientific conclusions and real-recording usefulness remain unvalidated.",
+      "page": {
+        "title": "Keep streamed neural data intact during inspection",
+        "summary": "A converter checks a stream of samples before writing an NWB file. The inspection can consume part of the stream, leaving the later writer with missing values that become zeros in the saved file.",
+        "solution": "The patch reuses HDMF’s existing shape helper instead of the Inspector’s local helper. In the tested wrapped-stream workflow, inspection no longer consumes data that the writer still needs. An upstream proposal already suggested helper reuse; Kufu’s contribution is the bounded patch, reproduction and regression evidence.",
+        "science": "Neurophysiology recordings can be large, so software may handle them a chunk at a time. The saved sample sequence must match the input. Preserving samples is a data-integrity requirement; it does not establish that the experiment or its interpretation is correct.",
+        "terms": [
+          [
+            "NWB",
+            "Neurodata Without Borders: a format and ecosystem for organising neurophysiology data."
+          ],
+          [
+            "Stream / iterator",
+            "A source that yields successive chunks; reading a single-pass source advances it."
+          ],
+          [
+            "Shape inspection",
+            "Asking how many samples and channels an object contains, without intentionally analysing the signal."
+          ]
+        ],
+        "workflow": [
+          [
+            "Receive a stream",
+            "Constructed positive samples arrive in chunks."
+          ],
+          [
+            "Inspect before writing",
+            "The real Inspector checks the NWB object."
+          ],
+          [
+            "Save and reopen",
+            "The real HDF5 or Zarr writer and reader execute."
+          ],
+          [
+            "Compare every value",
+            "The replay checks the complete sequence and dtype against input."
+          ]
+        ],
+        "comparisonTitle": "Before and after the inspection patch",
+        "comparisonNote": "The input contains no zeros. The baseline returns inspection errors, but writing still succeeds; it must not be described as a silently passing inspection. Uninspected controls preserve the data.",
+        "comparison": [
+          [
+            "Input rows",
+            "Baseline rows replaced by zeros",
+            "Patched rows replaced by zeros"
+          ],
+          [
+            "50",
+            "50",
+            "0"
+          ],
+          [
+            "100",
+            "100",
+            "0"
+          ],
+          [
+            "500",
+            "300",
+            "0"
+          ]
+        ],
+        "execution": {
+          "label": "Verified CI round trip",
+          "summary": "The real inspection, save and reload run in Python locally or in CI. This page shows saved results from those runs. Opening it starts no Python computation and uploads no recording.",
+          "action": "View verified run"
+        },
+        "related": [
+          "eeg-events",
+          "neural-behaviour"
+        ]
+      }
     },
     {
       "id": "zero-age-metadata",
       "title": "Retain valid zero-valued age annotations",
       "domain": "Bioinformatics",
-      "stage": "Local component patch",
+      "stage": "Constructed workflow verified",
       "evidence": "Source-discovered defect + constructed replay",
       "need": "Truthiness checks discard a supplied numeric zero during harmonisation and replace a zero again in model metadata output.",
       "proposal": "Preserve zero at both the harmoniser and model-metadata boundaries without changing missing-value handling.",
-      "baseline": "refine.bio 7b809b7; actual Harmonizer under the declared Django 3.2.18 with a minimal offline configuration.",
-      "integration": "Existing sample harmonisation component; no new enrichment application.",
+      "baseline": "refine.bio at the pinned production-deploy revision 7b809b7. Its existing harmoniser, SRA sample-creation path and worker metadata exporter are exercised with constructed inputs; this is not a live ingestion service.",
+      "integration": "Existing SRA sample creation, database and worker metadata-export path; a patch to refine.bio, not a new application.",
       "unknown": "No affected public sample, frequency, full service integration or researcher benefit established.",
-      "next": "Review in the complete upstream environment before expanding or submitting the component patch.",
+      "next": "Review the pinned contribution and remaining integration limits; outreach remains deferred.",
       "sources": [
         {
           "title": "Pinned harmonisation source",
@@ -919,7 +1211,59 @@
         "refinebio"
       ],
       "record": "projects/refinebio-zero-age/README.md",
-      "reviewed": "2026-10-27"
+      "reviewed": "2026-10-27",
+      "href": "problems/zero-age-metadata.html",
+      "audience": "Researchers reusing biological sample metadata exported by refine.bio.",
+      "value": "Preserve a supplied zero instead of turning it into a missing value. Affected public samples, prevalence and researcher benefit remain unmeasured.",
+      "page": {
+        "title": "Preserve a supplied age of zero",
+        "summary": "A dataset supplies an age value of zero. During metadata processing, software treats zero as false and leaves the exported age empty. A known value has become indistinguishable from a missing annotation.",
+        "solution": "The patch preserves zero in refine.bio’s harmoniser and model metadata output while retaining existing handling of empty or unknown values. The tested path creates real sample records and writes actual TSV/JSON metadata files. It does not infer missing ages or change their units.",
+        "science": "Sample metadata describes the biological material being analysed. Researchers use those annotations when selecting or comparing samples. A numeric zero and an absent value have different meanings; this software check preserves what was supplied without interpreting the biology.",
+        "terms": [
+          [
+            "Harmonisation",
+            "Turning supplied annotations into consistent fields and representations."
+          ],
+          [
+            "Truthiness check",
+            "A programming condition that treats numeric zero as false, alongside values such as an empty string."
+          ],
+          [
+            "TSV / JSON",
+            "Text file formats used here for actual metadata exports."
+          ]
+        ],
+        "workflow": [
+          [
+            "Supply an annotation",
+            "Five constructed metadata cases include zero, positive and missing values."
+          ],
+          [
+            "Create sample records",
+            "The real SRA surveyor path harmonises and saves them."
+          ],
+          [
+            "Export metadata",
+            "The actual worker writes files in all three aggregation modes."
+          ],
+          [
+            "Read the output files",
+            "The replay checks saved values and unchanged controls."
+          ]
+        ],
+        "comparisonTitle": "Before and after the metadata patch",
+        "comparisonNote": "These are actual worker export results for constructed inputs. The test covers ALL, EXPERIMENT and SPECIES aggregation; it does not establish affected-sample prevalence or researcher benefit.",
+        "execution": {
+          "label": "Verified CI export",
+          "summary": "Linux CI runs the real sample-creation, database and worker-export path. This page displays its saved output; it does not run a live refine.bio service or start a background analysis when opened.",
+          "action": "View verified run"
+        },
+        "related": [
+          "sample-metadata",
+          "bio-explorer"
+        ]
+      }
     }
   ],
   "explorations": [
@@ -1000,7 +1344,7 @@
     {
       "problem": "deleted-flags",
       "verdict": "Reproduced; no fix",
-      "observed": "Repeated export loses removed-point edited flags while position/confidence values remain unchanged. Reproduction artifacts are in separate open lab PR #3.",
+      "observed": "The pinned repeated-export reproduction loses removed-point edited flags while position/confidence values remain unchanged. This is a recorded failure, not a fixed defect.",
       "baseline": "movement 39ee15e29706150d7d4f60ba617aa99d2027eed7, unmodified converter",
       "remaining": "No corrective patch, accepted design or regression proving a fix.",
       "criterion": "A pinned regression fails before and passes after the fix for deletion-only and mixed edits, without resurrecting coordinates or changing unrelated provenance.",
@@ -1110,7 +1454,9 @@
       "record": "projects/overlap-inspector/README.md",
       "result": "projects/overlap-inspector/verification.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/tree/main/projects/overlap-inspector",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/overlap-inspector/verify-browser.cjs"
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/overlap-inspector/verify-browser.cjs",
+      "problem": "pairwise-overlap",
+      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
     },
     {
       "id": "movement",
@@ -1125,7 +1471,9 @@
       "record": "projects/movement-edit-filtering/PILOT.md",
       "result": "site/validation-results.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/movement-pilot.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_workflow.py"
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_workflow.py",
+      "problem": "edit-filtering",
+      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
     },
     {
       "id": "nwb-stream-integrity",
@@ -1140,11 +1488,13 @@
       "record": "projects/nwb-stream-integrity/README.md",
       "result": "projects/nwb-stream-integrity/patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/non-consuming-shape.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/verify.py"
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/verify.py",
+      "problem": "nwb-stream-integrity",
+      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
     },
     {
       "id": "zero-age-metadata",
-      "title": "Zero-age preservation component replay",
+      "title": "Zero-age metadata workflow replay",
       "runtime": "Maintained Linux CI replay using the pinned upstream R 3.4.4 base and PostgreSQL 14.24; local ingestion/migration replay also passed on PostgreSQL 16.2.",
       "inputs": "Five constructed SRA metadata cases through the actual worker path, plus 28 harmoniser cases; no research files or live API calls.",
       "expected": "Both zero-age cases change from empty to 0.000 in actual TSV files; positive age remains 2.000 and empty/unknown stay empty in all three aggregation modes.",
@@ -1155,7 +1505,9 @@
       "record": "projects/refinebio-zero-age/README.md",
       "result": "projects/refinebio-zero-age/postgres-patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/preserve-zero.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py"
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py",
+      "problem": "zero-age-metadata",
+      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
     }
   ],
   "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"
