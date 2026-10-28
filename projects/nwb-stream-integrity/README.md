@@ -1,6 +1,6 @@
 # NWB stream integrity during inspection
 
-Status: local patch and constructed-data replay. No upstream PR, researcher validation or real-recording evaluation. The [implementation and learning plan](../../research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) explains the next milestones.
+Status: lab-published patch and constructed-data replay; [upstream review package](REVIEW.md) prepared locally. No upstream PR, researcher validation or real-recording evaluation. The [implementation and learning plan](../../research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) explains the next milestones.
 
 ## Reported problem and beneficiary
 
@@ -49,7 +49,7 @@ The replay passed locally on Python 3.13.2 with PyNWB 4.2.0, HDMF 6.2.0, HDMF-Za
 
 The broader local unit run passed 341 tests, including 11 new stream/shape cases, with 5 skipped. Ruff and Black passed on the two changed upstream files. This includes checking that an existing resizable HDF5 dataset reports its current shape, and that existing time-series validation still detects its tested failures. Broader unit regression results and final patch reapplication are recorded in [verification](verification.json).
 
-The initial scope does not cover real recordings, every NWB extension or iterator implementation, all dependency versions, performance at recording scale, upstream acceptance or researcher benefit. Shape metadata itself may be incorrect. Preserving values does not prove acquisition quality or scientific validity. The follow-up workflow runs this replay and the unit regressions inside the existing required scientific-contract check, using an isolated environment. The web build consumes that run's JSON results. This configuration has passed its local equivalent; the first remote CI run remains pending publication of the follow-up.
+The initial scope does not cover real recordings, every NWB extension or iterator implementation, all dependency versions, performance at recording scale, upstream acceptance or researcher benefit. Shape metadata itself may be incorrect. Preserving values does not prove acquisition quality or scientific validity. The follow-up workflow runs this replay and the unit regressions inside the existing required scientific-contract check, using an isolated environment. The web build consumes that run's JSON results. The required check and deployment passed on merged main in [run 40613968067](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40613968067); packaged and production results were independently verified.
 
 ## Science to understand alongside this patch
 
@@ -59,6 +59,6 @@ NWB organises measurements and associated metadata so they can be stored and reu
 
 ## Publication and licence
 
-The patch is retained locally for review. The upstream [developer guide](https://github.com/NeurodataWithoutBorders/nwbinspector/blob/e6d968a1e0a62aa8f6611f45f242196d9ce75ea5/docs/developer_guide.rst) asks contributors not to open a PR before the issue is approved by its team. No approval, maintainer discussion, fork push or upstream PR is claimed. Outreach remains deferred.
+The patch is published in the lab, with a separate local upstream-review package. The upstream [developer guide](https://github.com/NeurodataWithoutBorders/nwbinspector/blob/e6d968a1e0a62aa8f6611f45f242196d9ce75ea5/docs/developer_guide.rst) asks contributors not to open a PR before the issue is approved by its team. No approval, maintainer discussion, fork push or upstream PR is claimed. Outreach remains deferred.
 
-Retain the [upstream licence](UPSTREAM-LICENSE), including its enhancement clause, with the patch. The lab's original replay and documentation use the repository default MIT terms. The next step is exact-diff review and remote CI verification of this simpler patch and replay gate before considering an upstream proposal.
+Retain the [upstream licence](UPSTREAM-LICENSE), including its enhancement clause, with the patch. The lab's original replay and documentation use the repository default MIT terms. The next step is review of the mechanism, integration limits and existing upstream alternatives before any authorised upstream discussion.

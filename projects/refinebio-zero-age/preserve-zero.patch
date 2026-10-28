@@ -1,0 +1,108 @@
+diff --git a/common/data_refinery_common/models/sample.py b/common/data_refinery_common/models/sample.py
+index 9d215249..278cd19c 100644
+--- a/common/data_refinery_common/models/sample.py
++++ b/common/data_refinery_common/models/sample.py
+@@ -111,7 +111,7 @@ class Sample(models.Model):
+         metadata["refinebio_source_database"] = self.source_database
+         metadata["refinebio_source_archive_url"] = self.source_archive_url
+         metadata["refinebio_sex"] = self.sex
+-        metadata["refinebio_age"] = self.age or ""
++        metadata["refinebio_age"] = self.age if self.age is not None else ""
+         metadata["refinebio_specimen_part"] = self.specimen_part
+         metadata["refinebio_genetic_information"] = self.genetic_information
+         metadata["refinebio_disease"] = self.disease
+diff --git a/common/tests/test_sample_zero_age.py b/common/tests/test_sample_zero_age.py
+new file mode 100644
+index 00000000..a601134f
+--- /dev/null
++++ b/common/tests/test_sample_zero_age.py
+@@ -0,0 +1,21 @@
++import unittest
++from decimal import Decimal
++
++from data_refinery_common.models import Sample
++
++
++class ZeroAgeExportTests(unittest.TestCase):
++    def export_age(self, age):
++        sample = Sample(pk=1, title="constructed sample", age=age)
++        return sample.to_metadata_dict()["refinebio_age"]
++
++    def test_zero_age_is_exported(self):
++        for age in [0, 0.0, Decimal("0.000")]:
++            with self.subTest(age=age):
++                self.assertEqual(self.export_age(age), age)
++
++    def test_missing_age_is_empty(self):
++        self.assertEqual(self.export_age(None), "")
++
++    def test_positive_age_is_unchanged(self):
++        self.assertEqual(self.export_age(Decimal("2.000")), Decimal("2.000"))
+diff --git a/foreman/data_refinery_foreman/surveyor/harmony.py b/foreman/data_refinery_foreman/surveyor/harmony.py
+index a2712de0..218f8959 100644
+--- a/foreman/data_refinery_foreman/surveyor/harmony.py
++++ b/foreman/data_refinery_foreman/surveyor/harmony.py
+@@ -775,13 +775,13 @@ class Harmonizer:
+             lower_key = key.lower().strip()
+             if lower_key in key_strings:
+                 harmonized_value = self.harmonize_value(sample_attribute, value)
+-                if harmonized_value:
++                if harmonized_value is not None and harmonized_value != "":
+                     harmonized_values.add(harmonized_value)
+ 
+             for key_regex in key_regexes:
+                 if key_regex.fullmatch(lower_key):
+                     harmonized_value = self.harmonize_value(sample_attribute, value)
+-                    if harmonized_value:
++                    if harmonized_value is not None and harmonized_value != "":
+                         harmonized_values.add(harmonized_value)
+ 
+         # Age can only be one value in the database.
+diff --git a/foreman/tests/surveyor/test_harmony_zero_age.py b/foreman/tests/surveyor/test_harmony_zero_age.py
+new file mode 100644
+index 00000000..4953e3f9
+--- /dev/null
++++ b/foreman/tests/surveyor/test_harmony_zero_age.py
+@@ -0,0 +1,42 @@
++import unittest
++
++from data_refinery_foreman.surveyor.harmony import Harmonizer
++
++
++class ZeroAgeTests(unittest.TestCase):
++    def setUp(self):
++        self.harmonizer = Harmonizer()
++
++    def test_zero_age_is_retained(self):
++        for value in [0, 0.0, "0", "0.0"]:
++            with self.subTest(value=value):
++                result = {}
++                self.harmonizer.harmonize_field({"age": value}, result, "age_fields")
++                self.assertEqual(result, {"age": 0.0})
++
++    def test_zero_age_field_variants_are_retained(self):
++        for key in ["Age", "age (years)", "characteristics_age"]:
++            with self.subTest(key=key):
++                result = {}
++                self.harmonizer.harmonize_field({key: "0"}, result, "age_fields")
++                self.assertEqual(result, {"age": 0.0})
++
++    def test_empty_and_unknown_age_stay_absent(self):
++        for value in ["", "unknown"]:
++            with self.subTest(value=value):
++                result = {}
++                self.harmonizer.harmonize_field({"age": value}, result, "age_fields")
++                self.assertNotIn("age", result)
++
++    def test_positive_age_is_unchanged(self):
++        result = {}
++        self.harmonizer.harmonize_field({"age": "2"}, result, "age_fields")
++        self.assertEqual(result, {"age": 2.0})
++
++    def test_full_sample_keeps_zero_and_other_annotations(self):
++        result = self.harmonizer.harmonize_sample(
++            {"title": "constructed sample", "age": "0", "sex": "female"}
++        )
++        self.assertEqual(result["age"], 0.0)
++        self.assertEqual(result["sex"], "female")
++        self.assertEqual(result["title"], "constructed sample")

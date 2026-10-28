@@ -1,0 +1,31 @@
+{
+  "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
+  "patch_sha256": "02c792097dfb18f0eb58fda6b73ca6897f1604654c4b644d4d9914ae0382bbe7",
+  "constructed_cases": 28,
+  "zero_age_cases": 16,
+  "baseline_zero_age_retained": 0,
+  "patched_zero_age_retained": 16,
+  "targeted_test_methods_passed": 5,
+  "fresh_patch_application": "Combined harmoniser/model patch applied to fresh pinned worktree; both replays and all eight regression methods passed",
+  "evidence_kind": "Source-discovered component defect, not a reported user workflow",
+  "not_run": [
+    "Full database-backed upstream test suite",
+    "Ingestion/export service",
+    "Public affected-sample audit",
+    "Researcher outcome validation",
+    "Upstream review",
+    "Lab CI execution gate for this component"
+  ],
+  "negative_controls": [
+    "patched expectation rejected for opposite source",
+    "baseline expectation rejected for opposite source"
+  ],
+  "lint": {
+    "lab_runner_ruff": "passed",
+    "upstream_changed_files_black_line_length_100": "passed with Black 26.10.1; full pinned upstream pre-commit not run"
+  },
+  "model_export_cases": 5,
+  "model_test_methods_passed": 3,
+  "scope": "Actual harmoniser and actual Sample.to_metadata_dict with unsaved model fixtures and an empty SQLite annotation table; production hooks disabled and cloud clients inert",
+  "partial_fix_counterexample": "Harmoniser-only patch still exports empty for zero; the actual-model replay rejects it"
+}

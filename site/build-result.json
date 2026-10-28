@@ -6,10 +6,10 @@
     "sources",
     "validation"
   ],
-  "demonstrations": 3,
-  "problems": 26,
-  "boards": 16,
-  "explorations": 5,
-  "research_pages": 18,
-  "catalog_sha256": "72cb457e7fd955e6376696412526e7ea9bb14806adb744a634bba2174f5e204e"
+  "demonstrations": 4,
+  "problems": 27,
+  "boards": 18,
+  "explorations": 6,
+  "research_pages": 22,
+  "catalog_sha256": "87b04ea2e1f4d3921c917c07d4e02643b65dad30fa4d73933e7548c67374fd59"
 }
