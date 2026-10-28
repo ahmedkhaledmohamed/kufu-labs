@@ -50,10 +50,30 @@ python projects/refinebio-zero-age/verify_postgres.py --postgres-bin /path/to/po
 
 The launcher creates only temporary databases in a private Unix-socket cluster, disables TCP listening, ignores inherited PostgreSQL connection settings, verifies the data-directory identity and empty databases before schema creation, then stops and removes the cluster. It does not use an existing database. The child `--postgres-socket` arguments are fixture internals. The tested macOS ARM64 runtime came from [pgserver 0.1.4](https://pypi.org/project/pgserver/); its wheel checksum is recorded in verification. No binaries are distributed in the lab. Other platforms and PostgreSQL versions remain untested.
 
+## Official migration and startup-hook follow-up
+
+The PostgreSQL runner now accepts `--migrations`. It applies all 91 official migrations in each empty fixture database, verifies no migration remains pending, and loads the real CommonAppConfig startup hook. The S3 pre-delete handler is verified as registered; its cloud operation is not invoked. Both the [baseline](migrations-baseline.json) and [patched](migrations-patched.json) pass the constructed model cases and existing Sample regression. This is an empty-database installation check, not a populated-production upgrade test.
+
+## SRA record-creation replay
+
+The [baseline](ingestion-baseline.json) and [patched](ingestion-patched.json) results now exercise the actual `SraSurveyor._generate_sample` method with five constructed metadata cases. The real harmoniser, sample/original-file records, experiment associations, saves, reloads and metadata method execute after official migrations. Only the ENA file-report HTTP response is supplied by the fixture; all other Python socket connections are blocked. No research file is downloaded and no job is dispatched. The positive/missing-value controls and upstream Sample regression pass. The launcher also repeats the 28-case harmoniser comparison and its five new test methods.
+
+Use the PostgreSQL command above with `--workflow ingestion`. This enables official migrations and startup-hook registration automatically. For a source-only fresh checkout, `python projects/refinebio-zero-age/prepare.py` fetches the exact revision with a blob filter and sparse source paths, excludes both test-volume directories, checks hashes in [workflow-lock.json](workflow-lock.json), and applies the unchanged patch. It refuses to overwrite existing checkouts. The fresh checkouts passed the local replay.
+
+## Prepared Linux worker-export gate
+
+The actual worker exporter remains unexecuted at this review boundary. The new `Pinned refine.bio metadata workflow` CI job is configured to build the hash-checked upstream Linux base (R 3.4.4), then install the worker/common Python dependency files in upstream order and a local PostgreSQL runtime. The metadata execution image does not restore the expression-processing Bioconductor libraries because the selected metadata path does not call them. It is not the full smasher service environment.
+
+The runtime uses an unprivileged container, disabled networking, read-only source mounts, an isolated temporary filesystem and a writable results directory. It calls the real SRA sample-creation path, followed by `write_non_data_files`, including `compile_metadata`, `write_tsv_json`, database lookups, README/licence copying and actual TSV/JSON output for ALL, EXPERIMENT and SPECIES aggregation. It checks the embedded R version instead of stubbing rpy2. Five existing upstream metadata-export regression methods are selected; the full worker suite would require additional data and services and is not requested.
+
+The worker replay uses `--workflow export`; output retains file hashes and exact TSV text alongside the original files in the CI artifact. The web job depends on this gate and packages its fresh baseline/patched results. The Validation page shows a five-case before/after table only when both result records contain successfully checked actual exports; otherwise it explicitly reports that worker export is unverified. Local component results are not relabelled as an exporter result.
+
+The local container build was prevented by a managed sign-in policy. No managed account or policy change was used. Consequently the new Linux recipe, actual exporter path and selected worker tests still need their first approved CI run. Build/runtime logs are retained even when the job fails. Exact-diff approval is required before pushing the branch that triggers that run.
+
 ## Validation limits and next decision
 
-The component and model environments use Python 3.10.16 and the repository's declared core dependency versions. They are not the complete locked service environment. Selected model persistence now passes on PostgreSQL 16.2; production signals, surveyors, official migrations, output-file generation and the full Django test suite have not run. A preservation result does not establish researcher benefit.
+The component and model environments use Python 3.10.16 and the repository's declared core dependency versions. They are not the complete locked service environment. Selected model persistence now passes on PostgreSQL 16.2; surveyors, output-file generation and the full Django test suite have not run. Official migrations now pass on empty fixture databases; the production deletion hook is registered but not executed. A preservation result does not establish researcher benefit.
 
 Current source already retrieves BioSample metadata. The earlier generic proposal to add BioSample enrichment is therefore deferred rather than duplicated. The project's open [production-data-flow issue #3595](https://github.com/AlexsLemonade/refinebio/issues/3595) is a separate operational concern; an independent app would not resolve it.
 
-The next step is review in the complete upstream environment and a refresh for competing work. Do not expand this into an enrichment platform. No upstream message, fork push or PR is included. The replay is local and not yet a maintained lab CI gate. Lab publication requires exact-diff approval; upstream outreach remains deferred.
+The next step is review in the complete upstream environment and a refresh for competing work. Do not expand this into an enrichment platform. No upstream message, fork push or PR is included. The local ingestion replay passes; the new maintained Linux export gate is configured but not yet executed. Lab publication requires exact-diff approval; upstream outreach remains deferred.

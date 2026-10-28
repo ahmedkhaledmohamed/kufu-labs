@@ -13,8 +13,8 @@
     "Public affected-sample audit",
     "Researcher outcome validation",
     "Upstream review",
-    "Lab CI execution gate for this component",
-    "Full upstream suite, production ready hooks and official migrations"
+    "First execution of the prepared Linux worker-export gate",
+    "Full upstream suite, populated-database upgrades and cloud deletion handler execution"
   ],
   "negative_controls": [
     "patched expectation rejected for opposite source",
@@ -26,7 +26,7 @@
   },
   "model_export_cases": 5,
   "model_test_methods_passed": 3,
-  "scope": "Actual harmoniser and actual Sample.to_metadata_dict with unsaved model fixtures and an empty SQLite annotation table; production hooks disabled and cloud clients inert",
+  "scope": "Component/model checks, disposable PostgreSQL persistence, official empty-database migrations and constructed SRA record creation; actual worker export configured but unexecuted",
   "partial_fix_counterexample": "Harmoniser-only patch still exports empty for zero; the actual-model replay rejects it",
   "postgres_persistence": {
     "version": "16.2",
@@ -37,5 +37,21 @@
     "schema": "Actual Django model definitions in an empty PostgreSQL database; not official migrations",
     "isolation": "Temporary private Unix socket; TCP disabled; inherited PG settings ignored; data directory verified; cluster stopped and removed",
     "csv": "Standard-library sanity serialization, not production exporter"
+  },
+  "migration_and_ingestion_followup": {
+    "official_migrations_per_revision": 91,
+    "startup_hook": "Real CommonAppConfig loads and S3 pre-delete receiver registration checked; deletion not invoked",
+    "sra_sample_creation": "Five cases per revision through real _generate_sample; fixture ENA file-report HTTP response, all other sockets blocked",
+    "fresh_source_only_checkouts": "Passed preparation, hash checks, patch reapplication and both ingestion/harmoniser replays",
+    "worker_export": "Configured for Linux CI, not executed locally or remotely yet",
+    "model_and_existing_sample_tests": "Three new model methods on patched source and one existing method per revision pass"
+  },
+  "upstream_refresh": {
+    "checked": "2026-10-28",
+    "default_branch": "dev",
+    "default_branch_commit": "288d43cad259daecc95d6a3d43f74fd92ccbf57d",
+    "pinned_commit_description": "Production-deploy merge #3606, separate from default dev branch",
+    "compared_files": "Default dev Sample, Harmonizer and base Dockerfile hashes match the pinned baseline",
+    "duplicate_search": "Bounded GitHub issue search for zero age returned two unrelated discussions; not proof that no competing work exists"
   }
 }

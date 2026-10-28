@@ -1,0 +1,22 @@
+{
+  "upstream_commit": "7b809b7cae8d8a16f635febda80ac0c7336de9d7",
+  "patch_sha256": "02c792097dfb18f0eb58fda6b73ca6897f1604654c4b644d4d9914ae0382bbe7",
+  "source_files": {
+    "common/dockerfiles/Dockerfile.base": "31a1e7ad44e6e28c02790d9783affb06658c092964c948899f68f04a67e1ec71",
+    "common/requirements.txt": "fb470e3fe2594b7851a4a977e232408a668dc496c2b0ec01ebd14daf73fb51f2",
+    "workers/data_refinery_workers/processors/requirements.txt": "3cc4d3c9c828e2d985f800728f564c4c01745ee4973dfb2dfbb04e99a71cee74",
+    "workers/data_refinery_workers/processors/smashing_utils.py": "71f8933ec6df73d286e3b6302e9ea43273f37ddb93e037d6e8c0d9909b7ae194",
+    "workers/tests/processors/test_smasher.py": "3884cb1fde408e8d52b3961be7d5587ae85c48c0d605c2238f9a59749c8ddea6",
+    "foreman/data_refinery_foreman/surveyor/sra.py": "33591aeffc26f4d456108b3842e80d8edc062467f4ba3354cc32b83a1a162220"
+  },
+  "changed_files": {
+    "baseline": {
+      "common/data_refinery_common/models/sample.py": "0b1cf777429e46efa1b6a1393d248b83845f88f45f9492e2c6724cb97ec7a41c",
+      "foreman/data_refinery_foreman/surveyor/harmony.py": "3a0f7579d8d2972852cda2e381e8664710a08a5a5223ee09e4749669db580d58"
+    },
+    "patched": {
+      "common/data_refinery_common/models/sample.py": "6a01cfe15254b32fec5e25336150dfcddb1ab8f0dc5cfea16dc72639c686928d",
+      "foreman/data_refinery_foreman/surveyor/harmony.py": "2f5370ae052968b5ec42628c2d82e8c20f90fe9a4995c96ab23474a02c101017"
+    }
+  }
+}

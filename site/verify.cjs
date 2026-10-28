@@ -273,6 +273,33 @@ const url = (p) => new URL(p, base).href;
         }
       }
     }
+    await page.goto(url("validation.html"));
+    const exportResult = JSON.parse(
+      fs.readFileSync(
+        path.join(root, "projects/refinebio-zero-age/postgres-patched.json"),
+        "utf8",
+      ),
+    );
+    if (exportResult.worker_export) {
+      const rows = await page
+        .locator("#zeroAgeWorkflowComparison tbody tr")
+        .evaluateAll((ns) =>
+          ns.map((n) => Array.from(n.cells, (c) => c.textContent.trim())),
+        );
+      assert.deepEqual(rows, [
+        ["0", "(empty)", "0.000"],
+        ["0.0", "(empty)", "0.000"],
+        ["2", "2.000", "2.000"],
+        ["(empty)", "(empty)", "(empty)"],
+        ["unknown", "(empty)", "(empty)"],
+      ]);
+    } else {
+      assert.equal(await page.locator("#zeroAgeWorkflowComparison").count(), 0);
+      assert.match(
+        await page.locator("#zeroAgeWorkflowStatus").innerText(),
+        /has not executed/,
+      );
+    }
     if (process.env.HUB_URL) {
       const response = await context.request.get(url("build-info.json"));
       assert.equal(response.ok(), true);
