@@ -2,6 +2,20 @@
 
 Prepared: 26 October 2026. Status: research milestone and approved local technical pilot complete; full-diff review and external validation remain pending. Context and source links: [research record](README.md).
 
+## Current direction: compare candidates across domains
+
+Updated 27 October 2026. The first pose-tracking pilots are technical experiments, not a commitment to specialise the lab in that domain. The earlier audit and selection below remain historical evidence for that first pilot.
+
+Before selecting the next build:
+
+1. Compare a concrete candidate in microscopy, biomedical evidence, accessibility, bioinformatics, neuroscience timing and research methods. Include the pose pilots as existing work, without giving them automatic priority because code already exists.
+2. For each candidate, refresh the primary report and existing tools; record who encounters the task, evidence strength and date, what remains unsupported, and reasons not to build. Do not equate a broad scientific priority with a software defect.
+3. Identify a supported integration boundary, permitted small inputs, a baseline and a demonstrable before/after result. Prefer a host contribution or adapter where it addresses the gap. A constructed demo must be labelled separately from a real reported failure.
+4. Compare likely benefit, technical difficulty, ability to measure an individual contribution, maintenance and evidence still needed using qualitative judgments. Do not invent comparable impact scores from unrelated studies.
+5. Propose one bounded next pilot only when a remaining gap survives that comparison. If none does, report that result and investigate further rather than filling the lab with speculative applications.
+
+This comparison requires no outreach, new accounts, paid services, recordings or model weights. It can establish a technical demonstration and its limits; researcher benefit remains unvalidated without appropriate workflow evidence. Refreshing the sources and running these candidate comparisons are next work, not completed results of this overview change.
+
 ## Goal and completion condition
 
 Identify one worthwhile, sustainable scientific-software contribution and demonstrate it in a bounded pilot. Completion requires a specific beneficiary, a documented task that existing tools do not adequately support, an agreed baseline, a measurable improvement, and a practical integration and maintenance route. A shortlist, polished interface, or challenge score alone is insufficient.
