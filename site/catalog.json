@@ -848,11 +848,11 @@
       "stage": "Local patch verified",
       "evidence": "Reported data loss + pinned host replay",
       "need": "Pre-write inspection advances a wrapped single-pass iterator; later saved data can contain zeros in place of the original values.",
-      "proposal": "Read declared shape metadata without consuming buffered data.",
+      "proposal": "Reuse HDMF's existing shape helper so inspection preserves the tested wrapped streams.",
       "baseline": "Pinned NWB Inspector e6d968a with PyNWB 4.2.0 and HDMF 6.2.0; related HDMF PR #1606 remains open when checked.",
       "integration": "Existing inspect_nwbfile_object workflow; upstream utility patch, not a new application.",
       "unknown": "Real-recording coverage, full dependency matrix, preferred upstream design and adoption remain unvalidated.",
-      "next": "Compare the HDMF alternative and add a pinned CI replay before considering an upstream proposal.",
+      "next": "Verify the follow-up CI gate and review the smaller integration before considering an upstream proposal.",
       "sources": [
         {
           "title": "NWB Inspector data-loss report #771",
@@ -952,11 +952,11 @@
     {
       "problem": "nwb-stream-integrity",
       "verdict": "Local data-preservation result; upstream adoption unvalidated",
-      "observed": "12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 343 passed, 5 skipped.",
+      "observed": "12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 341 passed, 5 skipped.",
       "baseline": "NWB Inspector e6d968a, PyNWB 4.2.0, HDMF 6.2.0; constructed positive int16 arrays.",
-      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. The new replay is not yet a required lab CI execution check.",
+      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. Follow-up CI replay configuration is locally verified; its first remote run is pending.",
       "criterion": "The supported inspection/save workflow preserves all input values without weakening checks, and the preferred design is independently reviewed.",
-      "next": "Compare the dependency fix, validate the patch package and prepare a pinned CI replay."
+      "next": "Review the existing-helper integration and run the configured CI replay."
     }
   ],
   "sourceStatus": {
@@ -1067,7 +1067,7 @@
       "runtime": "Local Python 3.13 with pinned NWB Inspector, PyNWB, HDMF and HDF5/Zarr dependencies.",
       "inputs": "Constructed two-channel positive int16 arrays: 50, 100 or 500 rows at 100 Hz. No recordings.",
       "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
-      "verification": "12 inspected cases and 12 uninspected controls per revision; 343 broader unit tests passed and 5 skipped. Results are retained locally, not yet a required CI replay.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. Follow-up CI now runs the replay in the required scientific check; its first remote run is pending.",
       "limits": "No uploaded data, hosted Python execution, real-recording evaluation, full version matrix or upstream acceptance.",
       "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
       "href": null,

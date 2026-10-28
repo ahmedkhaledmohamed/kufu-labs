@@ -70,6 +70,7 @@ def round_trip(directory, backend, iterator_type, rows, inspect_first):
         "inspect_before_write": inspect_first,
         "rows_replaced_by_zeros": int((written == 0).all(axis=1).sum()),
         "values_equal": bool(np.array_equal(written, data)),
+        "dtype_equal": written.dtype == data.dtype,
         "input_sha256": hashlib.sha256(data.tobytes()).hexdigest(),
         "output_sha256": hashlib.sha256(written.tobytes()).hexdigest(),
         "inspection_message_count": len(messages),
@@ -109,6 +110,7 @@ def main():
     assert all(c["values_equal"] for c in controls), (
         "Uninspected controls must preserve every value"
     )
+    assert all(c["dtype_equal"] for c in cases), "The stored dtype changed"
     if args.expect == "patched":
         assert not any(c["inspection_errors"] for c in inspected), (
             "Inspector errors invalidate the patched replay"
@@ -120,6 +122,9 @@ def main():
         assert all(not c["values_equal"] for c in inspected), (
             "Baseline no longer reproduces; recheck the pin"
         )
+        assert all(
+            c["rows_replaced_by_zeros"] == min(c["rows"], 300) for c in inspected
+        ), "Baseline no longer has the documented loss pattern"
     report = {
         "source": "https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771",
         "upstream_commit": source_commit,

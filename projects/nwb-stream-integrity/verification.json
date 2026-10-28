@@ -1,18 +1,13 @@
 {
   "upstream_commit": "e6d968a1e0a62aa8f6611f45f242196d9ce75ea5",
-  "patch_sha256": "05be9d6fec13e21452d0c95442f84dbdab7ca0bd67e96531af909edf6717cdb9",
+  "patch_sha256": "01f2f7a6c9e207d5e910c0295767f4adb4659a81540253595d557a294c5f1d9a",
   "scope": "Local constructed-data experiment, not upstream acceptance or real-recording validation",
-  "focused_tests": {
-    "command": "NWBI_SKIP_NETWORK_TESTS=1 python -m pytest tests/test_stream_shape.py tests/unit_tests/test_time_series.py -q",
-    "passed": 61,
-    "warnings": 6
-  },
   "broader_tests": {
     "command": "NWBI_SKIP_NETWORK_TESTS=1 python -m pytest tests/unit_tests tests/test_stream_shape.py -q",
-    "passed": 343,
+    "passed": 341,
     "skipped": 5,
     "warnings": 19,
-    "elapsed_seconds": 2.55
+    "elapsed_seconds": 2.71
   },
   "lint": {
     "upstream_ruff": "passed",
@@ -41,11 +36,44 @@
     "Additional dependency versions",
     "Upstream review",
     "Researcher outcome study",
-    "Required lab CI execution gate for this replay"
+    "First remote CI execution of the follow-up workflow"
   ],
   "patch_reapplication": {
     "fresh_pinned_worktree": true,
     "git_apply": "passed",
     "full_round_trip_matrix": "passed"
-  }
+  },
+  "implementation": "Re-export hdmf.utils.get_data_shape instead of maintaining a local shape implementation",
+  "regression_cases": 11,
+  "ci": {
+    "gate": "Existing required Pinned scientific software contracts job",
+    "environment": "Isolated .external/nwb-env",
+    "source_preparation": "Pinned revision and patch SHA-256 checked before applying",
+    "publication": "Web build downloads scientific-evidence and packages the freshly generated baseline/patched JSON",
+    "local_equivalent": "Exact replay, pytest, Ruff/Black and result-copy workflow commands passed in a fresh isolated environment",
+    "remote_run": "pending",
+    "negative_controls": [
+      "Unmodified baseline rejected when expected to be patched",
+      "Patched source rejected when expected to reproduce baseline loss"
+    ]
+  },
+  "alternatives": [
+    {
+      "candidate": "Existing HDMF 6.2.0 helper",
+      "method": "Temporary runtime substitution in the clean pinned Inspector, followed by the source re-export patch",
+      "replay_cases": 24,
+      "all_values_preserved": true,
+      "existing_unit_tests_passed": 330,
+      "existing_unit_tests_skipped": 5
+    },
+    {
+      "candidate": "HDMF PR #1606",
+      "source_commit": "10b22a4688af136ac0fd70cbdf1780cf081e6c35",
+      "schema_commit": "e7f84f0f964c1bfab6e0abdfa2ea3826c0fdd972",
+      "inspector": "Unmodified pinned Inspector",
+      "replay_cases": 24,
+      "all_values_preserved": true,
+      "status_at_review": "Open, not a released dependency fix"
+    }
+  ]
 }
