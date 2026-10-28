@@ -53,5 +53,14 @@
     "pinned_commit_description": "Production-deploy merge #3606, separate from default dev branch",
     "compared_files": "Default dev Sample, Harmonizer and base Dockerfile hashes match the pinned baseline",
     "duplicate_search": "Bounded GitHub issue search for zero age returned two unrelated discussions; not proof that no competing work exists"
+  },
+  "first_remote_run": {
+    "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40760162685",
+    "head_commit": "e024999a94a8bbda40f60eb0bfc37755d0781ebb",
+    "existing_scientific_gate": "passed",
+    "upstream_base": "Built R 3.4.4 and the rpy2 3.4.5 wheel successfully",
+    "worker_image": "Dependency check failed: wheel 0.48.0 requires packaging >=24, upstream pins packaging 23.0",
+    "exporter": "Not reached; no actual export result claimed",
+    "local_correction": "Pin wheel 0.41.3; wheel/packaging 23.0 dependency resolution passed; new Docker/CI execution pending"
   }
 }

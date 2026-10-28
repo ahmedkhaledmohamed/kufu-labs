@@ -13,7 +13,8 @@ COPY workers/data_refinery_workers/processors/requirements.txt /tmp/worker-requi
 COPY common/requirements.txt /tmp/common-requirements.txt
 # Follow upstream's worker-then-common dependency installation order. This
 # exercises metadata export, not the R/Bioconductor expression processing stack.
-RUN python3 -m pip install --disable-pip-version-check --no-cache-dir -r /tmp/worker-requirements.txt \
+RUN python3 -m pip install --disable-pip-version-check --no-cache-dir wheel==0.41.3 \
+    && python3 -m pip install --disable-pip-version-check --no-cache-dir -r /tmp/worker-requirements.txt \
     && python3 -m pip install --disable-pip-version-check --no-cache-dir -r /tmp/common-requirements.txt \
     && python3 -m pip check
 USER user
