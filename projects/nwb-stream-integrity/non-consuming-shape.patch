@@ -1,0 +1,115 @@
+diff --git a/src/nwbinspector/utils/_utils.py b/src/nwbinspector/utils/_utils.py
+index d9fda46..2f30aa9 100644
+--- a/src/nwbinspector/utils/_utils.py
++++ b/src/nwbinspector/utils/_utils.py
+@@ -7,11 +7,12 @@ from functools import lru_cache
+ from importlib import import_module
+ from importlib.metadata import version as importlib_version
+ from pathlib import Path
+-from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
++from typing import TYPE_CHECKING, Optional, TypeVar, Union
+ 
+ import h5py
+ import numpy as np
+ from hdmf.backends.hdf5.h5_utils import H5Dataset
++from hdmf.utils import get_data_shape as get_data_shape
+ from numpy.typing import ArrayLike
+ from packaging import version
+ 
+@@ -198,55 +199,6 @@ def calculate_number_of_cpu(requested_cpu: int = 1) -> int:
+         return total_cpu + requested_cpu
+ 
+ 
+-def get_data_shape(data: Any, strict_no_data_load: bool = False) -> Optional[tuple[int, ...]]:
+-    """
+-    Helper function used to determine the shape of the given array.
+-
+-    Modified from hdmf.utils.get_data_shape to return shape instead of maxshape.
+-
+-    In order to determine the shape of nested tuples, lists, and sets, this function
+-    recursively inspects elements along the dimensions, assuming that the data has a regular,
+-    rectangular shape. In the case of out-of-core iterators, this means that the first item
+-    along each dimension would potentially be loaded into memory. Set strict_no_data_load=True
+-    to enforce that this does not happen, at the cost that we may not be able to determine
+-    the shape of the array.
+-
+-    Parameters
+-    ----------
+-    data : list, numpy.ndarray, DataChunkIterator, any object that support __len__ or .shape.
+-        Array for which we should determine the shape.
+-    strict_no_data_load : bool
+-        If True and data is an out-of-core iterator, None may be returned.
+-        If False (default), the first element of data may be loaded into memory.
+-
+-    Returns
+-    -------
+-    data_shape : tuple[int], optional
+-        Tuple of ints indicating the size of known dimensions.
+-        Dimensions for which the size is unknown will be set to None.
+-    """
+-
+-    def __get_shape_helper(local_data: Any) -> tuple[int, ...]:
+-        shape = list()
+-        if hasattr(local_data, "__len__"):
+-            shape.append(len(local_data))
+-            if len(local_data):
+-                el = next(iter(local_data))
+-                if not isinstance(el, (str, bytes)):
+-                    shape.extend(__get_shape_helper(el))
+-        return tuple(shape)
+-
+-    if hasattr(data, "shape") and data.shape is not None:
+-        return data.shape
+-    if isinstance(data, dict):
+-        return None
+-    if hasattr(data, "__len__") and not isinstance(data, (str, bytes)):
+-        if not strict_no_data_load or isinstance(data, (list, tuple, set)):
+-            return __get_shape_helper(data)
+-
+-    return None
+-
+-
+ def strtobool(val: str) -> bool:
+     """
+     Convert a string representation of truth to True or False.
+diff --git a/tests/test_stream_shape.py b/tests/test_stream_shape.py
+new file mode 100644
+index 0000000..5806f15
+--- /dev/null
++++ b/tests/test_stream_shape.py
+@@ -0,0 +1,35 @@
++import h5py
++import numpy as np
++import pytest
++from hdmf.backends.hdf5 import H5DataIO
++from hdmf.data_utils import DataChunkIterator
++from hdmf_zarr import ZarrDataIO
++
++from nwbinspector.utils import get_data_shape
++
++
++@pytest.mark.parametrize("wrapper", [lambda x: x, H5DataIO, ZarrDataIO])
++@pytest.mark.parametrize("strict", [False, True])
++def test_chunk_shape_does_not_advance_stream(wrapper, strict):
++    values = np.arange(1, 1001, dtype="int16").reshape(500, 2)
++    stream = DataChunkIterator(values, buffer_size=100)
++    wrapped = wrapper(stream)
++    for _ in range(4):
++        assert get_data_shape(wrapped, strict_no_data_load=strict) == (500, 2)
++    first = next(stream)
++    np.testing.assert_array_equal(first.data, values[:100])
++
++
++def test_stored_resizable_dataset_uses_current_shape(tmp_path):
++    with h5py.File(tmp_path / "shape.h5", "w") as file:
++        data = file.create_dataset("data", data=np.zeros((5, 3)), maxshape=(None, 3))
++        assert get_data_shape(data) == (5, 3)
++        assert get_data_shape(data, strict_no_data_load=True) == (5, 3)
++
++
++@pytest.mark.parametrize(
++    "data,expected",
++    [([], (0,)), ([[1, 2], [3, 4]], (2, 2)), (("a", "b"), (2,)), ({"x": 1}, None)],
++)
++def test_materialized_shapes_unchanged(data, expected):
++    assert get_data_shape(data) == expected

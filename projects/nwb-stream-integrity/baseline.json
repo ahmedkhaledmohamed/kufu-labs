@@ -1,0 +1,383 @@
+{
+  "source": "https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771",
+  "upstream_commit": "e6d968a1e0a62aa8f6611f45f242196d9ce75ea5",
+  "shape_module_sha256": "897e62711690925b4059cac8ff5136389812977c9b7614c8fa1ae54ab9a94920",
+  "patch_sha256": null,
+  "expectation": "baseline",
+  "input_kind": "Constructed positive int16 arrays, 2 channels at 100 Hz; not neural recordings",
+  "python": "3.13.2",
+  "versions": {
+    "nwbinspector": "0.7.3",
+    "pynwb": "4.2.0",
+    "hdmf": "6.2.0",
+    "hdmf-zarr": "0.14.0",
+    "h5py": "3.16.0",
+    "zarr": "3.4.2",
+    "numpy": "2.5.4"
+  },
+  "elapsed_seconds": 2.856,
+  "cases": [
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 50,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 50,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 50,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "6d9c54dee5660c46886f32d80e57e9dd0ffa57ee0cd2a762b036d9c8e0c3a33a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 100,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 100,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 100,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 500,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "basic",
+      "rows": 500,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 300,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "2cdf41e3266adc1798ee1de48e4a67a6eb1beea0f2848a7d048518f4de7fd34a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ]
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 50,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 50,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 50,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "6d9c54dee5660c46886f32d80e57e9dd0ffa57ee0cd2a762b036d9c8e0c3a33a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 100,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 100,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 100,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 500,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "hdf5",
+      "iterator": "generic",
+      "rows": 500,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 300,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "2cdf41e3266adc1798ee1de48e4a67a6eb1beea0f2848a7d048518f4de7fd34a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 50,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 50,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 50,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "6d9c54dee5660c46886f32d80e57e9dd0ffa57ee0cd2a762b036d9c8e0c3a33a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 100,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 100,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 100,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 500,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "basic",
+      "rows": 500,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 300,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "2cdf41e3266adc1798ee1de48e4a67a6eb1beea0f2848a7d048518f4de7fd34a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 50,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 50,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 50,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "48f292d7f59963ea120d54c4672bef2afccc189db5046735f9280a2b99440e10",
+      "output_sha256": "6d9c54dee5660c46886f32d80e57e9dd0ffa57ee0cd2a762b036d9c8e0c3a33a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 100,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 100,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 100,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "fab02645c8f698bcb9d55167b8e3ba1f46797882e6901339effea75f08c5f382",
+      "output_sha256": "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'StopIteration'>: ",
+        "During evaluation of 'check_time_series_duration' - <class 'StopIteration'>: "
+      ]
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 500,
+      "inspect_before_write": false,
+      "rows_replaced_by_zeros": 0,
+      "values_equal": true,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "inspection_message_count": 0,
+      "inspection_errors": []
+    },
+    {
+      "backend": "zarr",
+      "iterator": "generic",
+      "rows": 500,
+      "inspect_before_write": true,
+      "rows_replaced_by_zeros": 300,
+      "values_equal": false,
+      "dtype_equal": true,
+      "input_sha256": "4cc2cb93c2cd75460d5add84e8a044314b4da3fc1482cd0583b9b978f4b119f8",
+      "output_sha256": "2cdf41e3266adc1798ee1de48e4a67a6eb1beea0f2848a7d048518f4de7fd34a",
+      "inspection_message_count": 9,
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ]
+    }
+  ],
+  "controls_preserved": 12,
+  "inspected_preserved": 0
+}

@@ -208,7 +208,7 @@ if ($("sourceCount"))
     `${CATALOG.boards.length} source boards and directories`;
 if ($("maintenance"))
   $("maintenance").textContent =
-    `Snapshot updated ${CATALOG.updated}. The three active contribution records and selected competing PRs were checked against GitHub issue/PR APIs on this date. General candidate evidence dates are shown per problem. Broader claims remain unverified unless backed by an explicit result.`;
+    `Snapshot updated ${CATALOG.updated}. Source review dates are shown per problem and source board. Selected reports and competing fixes were checked through GitHub APIs; this is not a live status feed. Broader claims remain unverified unless backed by an explicit result.`;
 
 if ($("explorationList")) {
   for (const x of CATALOG.explorations) {

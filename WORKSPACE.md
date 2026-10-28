@@ -2,13 +2,15 @@
 
 ## Current task
 
-Broaden the lab overview to reflect the existing cross-domain investigation. Pose tracking is the first implemented exploration, not the lab's exclusive subject or an automatic priority for the next build. The README now separates candidate problems from implemented pilots; Home states the wider scope without duplicating the navigation. The [investigation plan](research/opportunity-discovery/PLAN.md#current-direction-compare-candidates-across-domains) defines the next comparison and its evidence requirements.
+Simplify the NWB stream-preservation patch to reuse HDMF's existing helper, and make its baseline/patched replay part of the existing required scientific CI check. This remains one contribution within Kufu's purpose: free, useful software for evidenced scientific workflow gaps, integrated with existing tools and assessed against a baseline. The [implementation and learning plan](research/opportunity-discovery/NEUROINFORMATICS-PLAN.md) keeps science learning and company discovery in support of this work.
 
-Work is isolated on `docs/broaden-lab-overview` from main `5589a1830231ec1976362d1f822c7f17160bfc9e`. Publication requires full-diff/exact-commit approval, PR checks and explicit merge authorisation. PR #12 separately removes the duplicate Explorations callout; this change does not include or supersede it.
+The existing-helper substitution and linked HDMF dependency PR each preserved all values in a 24-case constructed replay. The source patch now re-exports the released helper and passes 341 unit tests, with 5 skipped. It keeps 11 regression cases; the extra arbitrary-iterator policy from the first patch is outside this reported task. The new source-preparation script checks the exact revision and patch digest and preserves existing checkouts. CI uses a separate environment, retains NWB evidence and packages freshly generated results.
 
-Local verification: `python3 site/build.py`, `python3 site/package.py`, Prettier on the Home template and the existing `site/verify.cjs` passed with Node 22.22.2, Playwright 1.64.1 and Chrome 156.0.8078.48. Browser checks covered five pages, 180 local links and desktop/mobile navigation with no page errors or external requests. Scientific execution checks were not rerun because this change only updates the overview and plan; sources were not freshly audited.
+PR #14 contains the approved initial package at `bcf65b77899a7cce3710693775adf6e0e15dc306`, with all three checks passed; it remains open. The follow-up is isolated on `fix/nwb-helper-ci`, prepared from refreshed main with that approved package carried forward. It is intended to update #14 after exact-diff approval, rather than create a second overlapping PR. No merge, upstream outreach or upstream PR is authorised by this state record.
 
-The canonical production address is https://kufu-labs.vercel.app. PR #11 merged and main run 40602566469 passed all three delivery jobs. The canonical artifact and both legacy-address redirects were independently verified. Authentication protection remains enabled.
+The exact new CI replay, pytest, Ruff/Black and result-copy commands passed in a fresh isolated environment; `pip check` found no broken requirements. Swapped baseline/patched expectations were rejected. Hub build, packaging, formatting and desktop/mobile checks passed across five pages and 204 local links, with no page errors or external browser requests. The remote follow-up CI run remains pending publication.
+
+Production remains the independently verified `f06a068c23d33e7a615a6048b17fb8b9aaa3efc2` release at https://kufu-labs.vercel.app. Preserve existing research worktrees and all publication boundaries.
 
 ## Entry points
 

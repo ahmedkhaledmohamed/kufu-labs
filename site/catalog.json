@@ -136,6 +136,15 @@
       "scope": "Official retirement notice and replacement links.",
       "limit": "Retired 2026-03-30. Do not present it as an active board.",
       "access": "Reviewed 2026-10-27"
+    },
+    {
+      "id": "nwbinspector",
+      "title": "NWB Inspector issues",
+      "url": "https://github.com/NeurodataWithoutBorders/nwbinspector/issues",
+      "kind": "Reported software gaps",
+      "scope": "NWB validation, data integrity and conversion workflows.",
+      "limit": "Individual reports do not establish prevalence; inspect linked dependency fixes and upstream contribution rules.",
+      "access": "Issue #771, linked #760 and dependency PR #1606 reviewed 2026-10-27"
     }
   ],
   "problems": [
@@ -831,6 +840,38 @@
       "boards": [],
       "record": "research/opportunity-discovery/README.md",
       "reviewed": "2026-10-26"
+    },
+    {
+      "id": "nwb-stream-integrity",
+      "title": "Preserve streamed NWB data during pre-write inspection",
+      "domain": "Neuroinformatics",
+      "stage": "Local patch verified",
+      "evidence": "Reported data loss + pinned host replay",
+      "need": "Pre-write inspection advances a wrapped single-pass iterator; later saved data can contain zeros in place of the original values.",
+      "proposal": "Reuse HDMF's existing shape helper so inspection preserves the tested wrapped streams.",
+      "baseline": "Pinned NWB Inspector e6d968a with PyNWB 4.2.0 and HDMF 6.2.0; related HDMF PR #1606 remains open when checked.",
+      "integration": "Existing inspect_nwbfile_object workflow; upstream utility patch, not a new application.",
+      "unknown": "Real-recording coverage, full dependency matrix, preferred upstream design and adoption remain unvalidated.",
+      "next": "Verify the follow-up CI gate and review the smaller integration before considering an upstream proposal.",
+      "sources": [
+        {
+          "title": "NWB Inspector data-loss report #771",
+          "url": "https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771"
+        },
+        {
+          "title": "Related shape-helper proposal #760",
+          "url": "https://github.com/NeurodataWithoutBorders/nwbinspector/issues/760"
+        },
+        {
+          "title": "Dependency fix PR #1606",
+          "url": "https://github.com/hdmf-dev/hdmf/pull/1606"
+        }
+      ],
+      "boards": [
+        "nwbinspector"
+      ],
+      "record": "projects/nwb-stream-integrity/README.md",
+      "reviewed": "2026-10-27"
     }
   ],
   "explorations": [
@@ -869,6 +910,15 @@
       "href": "research/opportunity-discovery/README.md",
       "record": "research/opportunity-discovery/AUDIT.md",
       "problem": "label-free"
+    },
+    {
+      "id": "nwb-stream-integrity",
+      "title": "NWB stream preservation",
+      "state": "Local patch; constructed-data replay",
+      "summary": "Keep inspection from consuming data that a neuroscience conversion workflow still needs to save. Includes a step-by-step science learning plan.",
+      "href": "projects/nwb-stream-integrity/README.md",
+      "record": "research/opportunity-discovery/NEUROINFORMATICS-PLAN.md",
+      "problem": "nwb-stream-integrity"
     }
   ],
   "validation": [
@@ -898,6 +948,15 @@
       "remaining": "No corrective patch, accepted design or regression proving a fix.",
       "criterion": "A pinned regression fails before and passes after the fix for deletion-only and mixed edits, without resurrecting coordinates or changing unrelated provenance.",
       "next": "Inspect conversion/export semantics before proposing any correction; retain the separate issue and patch scope."
+    },
+    {
+      "problem": "nwb-stream-integrity",
+      "verdict": "Local data-preservation result; upstream adoption unvalidated",
+      "observed": "12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 341 passed, 5 skipped.",
+      "baseline": "NWB Inspector e6d968a, PyNWB 4.2.0, HDMF 6.2.0; constructed positive int16 arrays.",
+      "remaining": "No real recordings, full version matrix, upstream acceptance or researcher benefit. Follow-up CI replay configuration is locally verified; its first remote run is pending.",
+      "criterion": "The supported inspection/save workflow preserves all input values without weakening checks, and the preferred design is independently reviewed.",
+      "next": "Review the existing-helper integration and run the configured CI replay."
     }
   ],
   "sourceStatus": {
@@ -1001,6 +1060,21 @@
       "result": "site/validation-results.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/movement-pilot.patch",
       "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_workflow.py"
+    },
+    {
+      "id": "nwb-stream-integrity",
+      "title": "NWB stream preservation replay",
+      "runtime": "Local Python 3.13 with pinned NWB Inspector, PyNWB, HDMF and HDF5/Zarr dependencies.",
+      "inputs": "Constructed two-channel positive int16 arrays: 50, 100 or 500 rows at 100 Hz. No recordings.",
+      "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. Follow-up CI now runs the replay in the required scientific check; its first remote run is pending.",
+      "limits": "No uploaded data, hosted Python execution, real-recording evaluation, full version matrix or upstream acceptance.",
+      "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
+      "href": null,
+      "record": "projects/nwb-stream-integrity/README.md",
+      "result": "projects/nwb-stream-integrity/patched.json",
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/non-consuming-shape.patch",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/verify.py"
     }
   ],
   "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"
