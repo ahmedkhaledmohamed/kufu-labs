@@ -1018,9 +1018,9 @@
     {
       "problem": "zero-age-metadata",
       "verdict": "Component preservation demonstrated; workflow benefit unvalidated",
-      "observed": "Harmoniser retains 16/16 zero-age variants after the patch versus 0/16 before; actual model metadata retains zero in a separate offline handoff replay. Five harmoniser and three model test methods pass.",
+      "observed": "Harmoniser retains 16/16 zero-age variants after the patch versus 0/16 before; actual model metadata retains zero in a separate offline handoff replay. Five harmoniser and three model test methods pass. Selected save/reload and model metadata cases also pass on PostgreSQL 16.2, including the existing Sample metadata-key test.",
       "baseline": "refine.bio 7b809b7; Python 3.10.16 and Django 3.2.18; minimal offline configuration.",
-      "remaining": "No PostgreSQL persistence, production hooks, output-file generation, full Django suite, public affected-sample audit, upstream acceptance or user validation.",
+      "remaining": "No production hooks, official migration validation, output-file generation, full Django suite, public affected-sample audit, upstream acceptance or user validation.",
       "criterion": "An explicit zero annotation survives supported ingestion, harmonisation and export without changing missing-value handling; workflow relevance independently assessed.",
       "next": "Run the full upstream environment before claiming integration complete."
     }
@@ -1145,15 +1145,15 @@
     {
       "id": "zero-age-metadata",
       "title": "Zero-age preservation component replay",
-      "runtime": "Local Python 3.10 and pinned Django dependencies; actual harmoniser plus an offline real-model metadata fixture.",
+      "runtime": "Local Python 3.10 and pinned Django dependencies; component/model replays and an optional disposable PostgreSQL 16.2 persistence fixture.",
       "inputs": "28 constructed metadata cases, including 16 zero representations/key variants and positive/empty/unknown controls.",
       "expected": "The baseline omits every zero age; the patched harmoniser retains all 16 while preserving the controls and other annotations.",
-      "verification": "28 harmoniser cases and 5 model-handoff cases per revision; five harmoniser and three model test methods pass. Full service and lab CI integration remain untested.",
+      "verification": "28 harmoniser cases, 5 offline model cases and 5 PostgreSQL persistence cases per revision; targeted tests and the existing Sample metadata-key test pass. Full service and lab CI integration remain untested.",
       "limits": "Source-discovered defect; no user report, full service test, affected public sample or measured research benefit. Not a maintained lab CI replay yet.",
       "command": "python projects/refinebio-zero-age/verify_export.py --checkout /path/to/pinned-patched-refinebio --expect patched --output /tmp/zero-age-export.json",
       "href": null,
       "record": "projects/refinebio-zero-age/README.md",
-      "result": "projects/refinebio-zero-age/export-patched.json",
+      "result": "projects/refinebio-zero-age/postgres-patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/preserve-zero.patch",
       "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py"
     }

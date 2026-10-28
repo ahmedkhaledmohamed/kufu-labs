@@ -23,7 +23,7 @@ Select work using documented task severity, evidence of an unsupported case, per
 | Biological sample metadata | A [GEO completeness study](https://link.springer.com/article/10.1186/s13059-025-03725-0) documents missing annotations; [refine.bio](https://docs.refine.bio/en/latest/main_text.html#metadata) documents existing harmonisation and limitations. | A source-linked table/adapter for a field that is recoverable but missed by the selected baseline. | Retain. No specific sample/field or current implementation failure established. Do not infer unpublished information. |
 | Analysis leakage checks | [DataSAIL](https://datasail.readthedocs.io/en/latest/) already offers biological data splitting against leakage. | A demonstrated dataset-specific failure and a missing adapter/check, rather than another general checker. | Retain as research; no remaining gap reproduced. |
 
-This is a qualitative comparison of evidence currently available, not a completed hands-on audit of every domain or a ranking of scientific importance. Only the NWB candidate has a new local execution result in this milestone.
+This is a qualitative comparison of evidence currently available, not a completed hands-on audit of every domain or a ranking of scientific importance. The later [validation batch](VALIDATION-BATCH.md) records actual JupyterLab observations and a source-discovered metadata-preservation patch, including a PostgreSQL persistence follow-up. These are bounded results rather than domain-wide validation.
 
 ## Engineering milestones
 

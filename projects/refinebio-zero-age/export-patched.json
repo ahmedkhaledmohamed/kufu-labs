@@ -38,6 +38,8 @@
     }
   ],
   "model_test_methods_passed": 3,
+  "existing_sample_test_methods_passed": null,
+  "postgres_version_number": null,
   "scope": "Actual Harmonizer and Sample.to_metadata_dict; unsaved constructed model instances, empty SQLite annotation table, inert cloud clients, production AppConfig.ready hooks disabled",
   "not_validated": "Persistence, production signals, PostgreSQL migrations, live ingestion and full service tests"
 }

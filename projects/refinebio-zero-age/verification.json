@@ -9,12 +9,12 @@
   "fresh_patch_application": "Combined harmoniser/model patch applied to fresh pinned worktree; both replays and all eight regression methods passed",
   "evidence_kind": "Source-discovered component defect, not a reported user workflow",
   "not_run": [
-    "Full database-backed upstream test suite",
     "Ingestion/export service",
     "Public affected-sample audit",
     "Researcher outcome validation",
     "Upstream review",
-    "Lab CI execution gate for this component"
+    "Lab CI execution gate for this component",
+    "Full upstream suite, production ready hooks and official migrations"
   ],
   "negative_controls": [
     "patched expectation rejected for opposite source",
@@ -27,5 +27,15 @@
   "model_export_cases": 5,
   "model_test_methods_passed": 3,
   "scope": "Actual harmoniser and actual Sample.to_metadata_dict with unsaved model fixtures and an empty SQLite annotation table; production hooks disabled and cloud clients inert",
-  "partial_fix_counterexample": "Harmoniser-only patch still exports empty for zero; the actual-model replay rejects it"
+  "partial_fix_counterexample": "Harmoniser-only patch still exports empty for zero; the actual-model replay rejects it",
+  "postgres_persistence": {
+    "version": "16.2",
+    "runtime_package": "pgserver 0.1.4, cp310 macOS ARM64 wheel",
+    "wheel_sha256": "2aa7897ab2894a460cfc430959f9640e27659fc8b8802f82b3f58632ae181218",
+    "cases_per_revision": 5,
+    "original_sample_test_passed_per_revision": 1,
+    "schema": "Actual Django model definitions in an empty PostgreSQL database; not official migrations",
+    "isolation": "Temporary private Unix socket; TCP disabled; inherited PG settings ignored; data directory verified; cluster stopped and removed",
+    "csv": "Standard-library sanity serialization, not production exporter"
+  }
 }
