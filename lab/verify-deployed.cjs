@@ -67,6 +67,25 @@ async function request(suffix = "", options = {}) {
   assert.equal(result.source_commit, manifest.source_commit);
   assert.equal(result.lab_source_commit, manifest.source_commit);
   assert.equal(result.sandbox_stopped, true);
+  assert.ok(
+    result.progress?.finished_at,
+    "A completed run must retain its timestamped progress",
+  );
+  assert.ok(
+    result.progress.events.every(
+      (event) => event.outcome === "completed" && event.finished_at,
+    ),
+  );
+  for (const phase of [
+    "Running baseline and fresh uninspected controls",
+    "Running patched and fresh uninspected controls",
+    "Stopping isolated runtime",
+    "Saving result bundle",
+  ])
+    assert.ok(
+      result.progress.events.some((event) => event.label === phase),
+      `Missing actual worker phase: ${phase}`,
+    );
   assert.equal(result.comparisons.length, 2);
   assert.deepEqual(
     result.comparisons.map((c) => c.input),

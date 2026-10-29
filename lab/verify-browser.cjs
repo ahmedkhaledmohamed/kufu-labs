@@ -55,6 +55,51 @@ const server = http.createServer((req, res) => {
     let submitted;
     let available = true;
     let failSubmitOnce = false;
+    let jobState = "queued";
+    const created = new Date(Date.now() - 20000).toISOString();
+    const started = new Date(Date.now() - 15000).toISOString();
+    const phaseStarted = new Date(Date.now() - 5000).toISOString();
+    const completed = new Date().toISOString();
+    function progressFixture() {
+      const events = [
+        {
+          label: "Waiting for a worker",
+          started_at: created,
+          outcome: jobState === "queued" ? "active" : "completed",
+          ...(jobState !== "queued" ? { finished_at: started } : {}),
+        },
+      ];
+      if (jobState !== "queued") {
+        events.push({
+          label: "Starting isolated Python runtime",
+          started_at: started,
+          finished_at: phaseStarted,
+          outcome: "completed",
+        });
+        events.push({
+          label: "Installing pinned dependencies",
+          started_at: phaseStarted,
+          outcome:
+            jobState === "completed"
+              ? "completed"
+              : jobState === "failed"
+                ? "failed"
+                : "active",
+          ...(["completed", "failed"].includes(jobState)
+            ? { finished_at: completed }
+            : {}),
+        });
+      }
+      return {
+        created_at: created,
+        started_at: jobState === "queued" ? null : started,
+        updated_at: jobState === "queued" ? created : phaseStarted,
+        ...(["completed", "failed"].includes(jobState)
+          ? { finished_at: completed }
+          : {}),
+        events,
+      };
+    }
     await page.route("**/api/experiments**", async (route) => {
       const req = route.request();
       if (req.method() === "POST") {
@@ -70,9 +115,19 @@ const server = http.createServer((req, res) => {
         });
       }
       const id = new URL(req.url()).searchParams.get("id");
+      if (id && jobState === "unavailable")
+        return route.fulfill({
+          status: 503,
+          json: { error: "Status service unavailable." },
+        });
       return route.fulfill({
         json: id
-          ? { id, status: "completed", ...fixture }
+          ? {
+              id,
+              status: jobState,
+              ...(jobState === "completed" ? fixture : {}),
+              progress: progressFixture(),
+            }
           : { enabled: available },
       });
     });
@@ -104,8 +159,55 @@ const server = http.createServer((req, res) => {
       .getByRole("button", { name: "Run on Vercel", exact: true })
       .click();
     await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("queued"),
+    );
+    assert.equal(
+      await page.locator("#runTimeline .phase-state").last().textContent(),
+      "Waiting",
+    );
+    jobState = "running";
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#progressSummary").textContent ===
+        "Installing pinned dependencies",
+    );
+    assert.equal(
+      await page
+        .locator('#runTimeline [aria-current="step"]')
+        .textContent()
+        .then((text) => text.includes("Installing pinned dependencies")),
+      true,
+    );
+    assert.equal(await page.locator("#runResults table").count(), 0);
+    const beforeTick = await page.locator("#runElapsed").textContent();
+    await page.waitForFunction(
+      (before) => document.querySelector("#runElapsed").textContent !== before,
+      beforeTick,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      true,
+    );
+    fs.mkdirSync(output, { recursive: true });
+    await page
+      .locator("#runProgress")
+      .screenshot({ path: path.join(output, "progress-running-mobile.png") });
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page
+      .locator("#runProgress")
+      .screenshot({ path: path.join(output, "progress-running-desktop.png") });
+    jobState = "completed";
+    await page.waitForFunction(() =>
       document.querySelector("#runStatus").textContent.includes("completed"),
     );
+    assert.equal(
+      await page.locator("#runTimeline .phase-completed").count(),
+      3,
+    );
+    assert.equal(await page.locator("#runTimeline [aria-current]").count(), 0);
     assert.deepEqual(submitted.cases, planned);
     assert.equal(
       await page.locator("#runResults table").count(),
@@ -133,6 +235,50 @@ const server = http.createServer((req, res) => {
       submissions,
       1,
       "Reload must read the same run, never resubmit it",
+    );
+    assert.equal(
+      await page.locator("#runTimeline .phase-completed").count(),
+      3,
+      "Reload must retain recorded stages",
+    );
+    jobState = "running";
+    await page.reload();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#progressSummary").textContent ===
+        "Installing pinned dependencies",
+    );
+    jobState = "unavailable";
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#progressSummary")
+        .textContent.includes("Status unavailable"),
+    );
+    assert.equal(await page.locator("#runTimeline [aria-current]").count(), 0);
+    assert.equal(
+      await page.locator("#runTimeline .phase-state").last().textContent(),
+      "Last reported running",
+    );
+    jobState = "failed";
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("failed"),
+    );
+    assert.equal(await page.locator("#runTimeline .phase-failed").count(), 1);
+    assert.equal(await page.locator("#runResults table").count(), 0);
+    jobState = "interrupted";
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("interrupted"),
+    );
+    assert.equal(
+      await page.locator("#runTimeline .phase-interrupted").count(),
+      1,
+    );
+    jobState = "completed";
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("completed"),
     );
     await page.getByLabel("Rows", { exact: true }).fill("2001");
     await page
@@ -187,7 +333,7 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator("#runExperiment").isDisabled(), true);
     assert.deepEqual(errors, []);
     console.log(
-      "Lab browser flow passed: generated inputs, explicit submission, actual-report rendering, bookmarked results, downloads, invalid inputs, unavailable backend and mobile layout. Queue/API responses were local test doubles; this check launched no hosted compute.",
+      "Lab browser flow passed: live queued/running stages and elapsed time, reload persistence, failed/interrupted stages, stale-status handling, generated inputs, explicit submission, actual-report rendering, downloads and mobile layout. Queue/API responses were local test doubles; this check launched no hosted compute.",
     );
   } finally {
     await browser.close();

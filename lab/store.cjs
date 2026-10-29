@@ -30,6 +30,17 @@ async function write(path, data, contentType = "application/json") {
 async function writeJSON(id, name, value) {
   return write(key(id, name), JSON.stringify(value));
 }
+async function writeProgress(id, value) {
+  // The immutable run claim guarantees one writer. Only this live snapshot
+  // is replaceable; submissions, claims and final results remain immutable.
+  return put(key(id, "progress.json"), JSON.stringify(value), {
+    access: "private",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: "application/json",
+    cacheControlMaxAge: 60,
+  });
+}
 async function reserveDailySlot(id) {
   const date = new Date().toISOString().slice(0, 10);
   for (let slot = 0; slot < 10; slot++) {
@@ -60,6 +71,7 @@ module.exports = {
   readJSON,
   write,
   writeJSON,
+  writeProgress,
   reserveDailySlot,
   existsError,
   build,

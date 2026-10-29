@@ -11,6 +11,83 @@
   let busy = false;
   let timer;
   let pendingSubmission;
+  const progressPanel = document.querySelector("#runProgress");
+  const progressSummary = document.querySelector("#progressSummary");
+  const timeline = document.querySelector("#runTimeline");
+  let progressData;
+  let progressReadError = false;
+  let phaseTimings = [];
+  const duration = (milliseconds) => {
+    const seconds = Math.max(0, Math.floor(milliseconds / 1000));
+    return seconds < 60
+      ? `${seconds}s`
+      : `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+  };
+  function updateTimings() {
+    if (!progressData?.progress) return;
+    const progress = progressData.progress;
+    const terminal = ["completed", "failed", "interrupted"].includes(
+      progressData.status,
+    );
+    const stoppedUpdating = progressReadError || terminal;
+    const end =
+      progress.finished_at || (stoppedUpdating ? progress.updated_at : null);
+    const now = end ? Date.parse(end) : Date.now();
+    const elapsed = duration(now - Date.parse(progress.created_at));
+    document.querySelector("#runElapsed").textContent =
+      `${progress.finished_at ? "Total recorded time" : stoppedUpdating ? "Time recorded before updates stopped" : "Elapsed since submission"}: ${elapsed}. Last update: ${new Date(progress.updated_at).toLocaleTimeString()}.`;
+    for (const { event, node } of phaseTimings)
+      node.textContent = duration(
+        (event.finished_at ? Date.parse(event.finished_at) : now) -
+          Date.parse(event.started_at),
+      );
+  }
+  function renderProgress(data) {
+    progressData = data;
+    progressReadError = false;
+    progressPanel.hidden = false;
+    timeline.replaceChildren();
+    phaseTimings = [];
+    if (!data.progress?.events?.length) {
+      progressSummary.textContent =
+        "Stage history is unavailable for this older run.";
+      document.querySelector("#runElapsed").textContent = "";
+      return;
+    }
+    const terminal = ["completed", "failed", "interrupted"].includes(
+      data.status,
+    );
+    progressSummary.textContent = terminal
+      ? `Experiment ${data.status}.`
+      : data.progress.events.at(-1).label;
+    for (const event of data.progress.events) {
+      const outcome =
+        event.outcome === "active" && terminal ? data.status : event.outcome;
+      const item = document.createElement("li");
+      item.className = `phase-${outcome}`;
+      if (outcome === "active") item.setAttribute("aria-current", "step");
+      const label = document.createElement("span");
+      label.textContent = event.label;
+      const state = document.createElement("strong");
+      state.className = "phase-state";
+      state.textContent =
+        data.status === "queued" && outcome === "active"
+          ? "Waiting"
+          : {
+              completed: "Completed",
+              active: "Running",
+              failed: "Failed",
+              interrupted: "Interrupted",
+            }[outcome] || outcome;
+      const time = document.createElement("span");
+      time.className = "phase-time";
+      item.append(label, state, time);
+      timeline.append(item);
+      phaseTimings.push({ event, node: time });
+    }
+    updateTimings();
+  }
+  setInterval(updateTimings, 1000);
   const inputs = () => {
     const data = Object.fromEntries(new FormData(form));
     const value = Object.fromEntries(
@@ -130,6 +207,7 @@
         `/api/experiments?id=${encodeURIComponent(id)}`,
       );
       status.textContent = `Run ${id}: ${data.status}. ${data.message || ""}`;
+      renderProgress(data);
       if (["completed", "failed", "interrupted"].includes(data.status)) {
         busy = false;
         run.disabled = !ready;
@@ -144,6 +222,17 @@
         timer = setTimeout(() => poll(id), 5000);
       }
     } catch (error) {
+      progressReadError = true;
+      if (progressData) {
+        progressSummary.textContent =
+          "Status unavailable; showing the last received stage. Reload to check again.";
+        timeline.querySelectorAll('[aria-current="step"]').forEach((node) => {
+          node.removeAttribute("aria-current");
+          node.querySelector(".phase-state").textContent =
+            "Last reported running";
+        });
+        updateTimings();
+      }
       status.textContent = `${error.message} Reload this page to check the same run again; no new experiment will be submitted.`;
       busy = false;
       run.disabled = !ready;
@@ -158,6 +247,8 @@
     run.disabled = true;
     download.hidden = true;
     results.replaceChildren();
+    progressPanel.hidden = true;
+    progressData = undefined;
     document.querySelector("#executionDetails").hidden = true;
     status.textContent = "Submitting experiment…";
     const cases = inputs();
