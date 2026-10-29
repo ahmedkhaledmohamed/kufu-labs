@@ -3,6 +3,11 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
 const esbuild = require("esbuild");
+const {
+  NodejsLambda,
+  FileFsRef,
+  sanitizeConsumerName,
+} = require("@vercel/build-utils");
 const root = path.resolve(__dirname, "..");
 const output = path.join(root, "dist-backend");
 async function main() {
@@ -29,28 +34,40 @@ async function main() {
       loader: { ".py": "text", ".patch": "text", ".txt": "text" },
       define: { KUFU_SOURCE: JSON.stringify(source) },
     });
+    const config = {
+      runtime: "nodejs22.x",
+      handler: "index.cjs",
+      launcherType: "Nodejs",
+      shouldAddHelpers: true,
+      maxDuration: duration,
+      regions: ["iad1"],
+      ...(entry === "worker"
+        ? {
+            experimentalTriggers: [
+              {
+                type: "queue/v2beta",
+                topic: "kufu-nwb",
+                consumer: sanitizeConsumerName(`api/${name}`),
+                maxConcurrency: 1,
+                maxDeliveries: 2,
+              },
+            ],
+          }
+        : {}),
+    };
+    // Validate the prebuilt contract with the same class used by Vercel deploy.
+    // Framework trigger input omits consumer; Build Output must include it.
+    new NodejsLambda({
+      ...config,
+      files: {
+        "index.cjs": new FileFsRef({
+          fsPath: path.join(directory, "index.cjs"),
+        }),
+      },
+    });
     fs.writeFileSync(
       path.join(directory, ".vc-config.json"),
-      JSON.stringify({
-        runtime: "nodejs22.x",
-        handler: "index.cjs",
-        launcherType: "Nodejs",
-        shouldAddHelpers: true,
-        maxDuration: duration,
-        regions: ["iad1"],
-        ...(entry === "worker"
-          ? {
-              experimentalTriggers: [
-                {
-                  type: "queue/v2beta",
-                  topic: "kufu-nwb",
-                  maxConcurrency: 1,
-                  maxDeliveries: 2,
-                },
-              ],
-            }
-          : {}),
-      }),
+      JSON.stringify(config),
     );
   }
   const manifestPath = path.join(root, "dist/build-info.json");
