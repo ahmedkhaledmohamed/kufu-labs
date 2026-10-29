@@ -1,0 +1,12 @@
+{
+  "host_repository": "https://github.com/talmolab/sleap.git",
+  "host_tag": "v1.6.6",
+  "host_revision": "d24a98fbc2f69d84c6c080bab4e826c4992ac76f",
+  "backend_version": "0.3.4",
+  "backend_source": "sleap_nn/inference/ops/filters.py",
+  "backend_source_sha256": "e09aae412051c4faaa1998d9371a23d78d01140ea1e200573485e65a7fd716d6",
+  "adapter_sha256": {
+    "pair_overlap.py": "852a7c2b721bde9b5c1157cc041e88e9febbfd40c93cf95388e49d6cd674f186",
+    "sleap-1.6.6.patch": "79b83e779e28307aa76ce25f2a0f351b247a83e70e9d71fef4e8d7a83907fb9c"
+  }
+}

@@ -337,7 +337,7 @@
       "page": {
         "title": "Inspect why overlapping poses are removed",
         "summary": "Two pose predictions can overlap even when they describe different animals or different body-part arrangements. The researcher needs to understand why a duplicate filter keeps one and removes another.",
-        "solution": "Kufu’s prototype adds an overlay, pair measurements, threshold boundaries and score-order context around an unchanged filter. It is a browser demonstration of an inspection capability. It is not integrated into the SLEAP application and does not improve the prediction model.",
+        "solution": "The browser prototype adds an overlay, pair measurements, threshold boundaries and score-order context around an unchanged filter. A separate experimental SLEAP 1.6.6 source adapter now inspects actual host instances read-only, with both directional OKS values and stored confidence fields. The project record links its installation and recorded host walkthrough. Neither capability improves the prediction model.",
         "science": "A pose is an estimated set of body-part positions. Tracking software can produce multiple candidate poses in one video frame. A duplicate filter compares candidates and can remove a later candidate when their similarity exceeds a chosen threshold.",
         "terms": [
           [
@@ -1335,11 +1335,11 @@
     {
       "problem": "pairwise-overlap",
       "verdict": "Demonstrated; user problem not yet solved",
-      "observed": "7 frozen synthetic cases; 498 actual FilterPipeline calls and 168 browser boundary views passed.",
+      "observed": "The browser retains 7 constructed cases, 498 FilterPipeline calls and 168 boundary views. A separate experimental SLEAP 1.6.6 source adapter passed actual Qt host selection/navigation, read-only checks and 18 released NumPy Labels-filter boundary calls with constructed .slp input.",
       "baseline": "sleap-nn a2b97fe0a7d908813f0d555df284307fd5060fd5, CPU float32",
-      "remaining": "No SLEAP selection/import integration or actual researcher task. No node-exclusion support or arbitrary pose input.",
+      "remaining": "The source adapter is pinned and experimental; no upstream acceptance or researcher task validation. The browser still has fixed inputs. No node-exclusion support or model inference is added.",
       "criterion": "Correctly inspect existing host instances with matched node/score semantics, then show useful decisions in an authorised real workflow without increasing mistaken removals.",
-      "next": "Validate a read-only host selection/data adapter using constructed instances, with no recordings or model inference."
+      "next": "Review the native installation and recorded constructed-data walkthrough. Check the intended inference backend before extending support; researcher feedback remains deferred."
     },
     {
       "problem": "deleted-flags",

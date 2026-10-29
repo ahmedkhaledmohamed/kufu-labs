@@ -1,0 +1,81 @@
+{
+  "host_revision": "d24a98fbc2f69d84c6c080bab4e826c4992ac76f",
+  "rendering": "real Qt widgets using the offscreen platform",
+  "mode": "patched",
+  "versions": {
+    "sleap": "1.6.6",
+    "sleap-io": "0.9.3",
+    "sleap-nn": "0.3.4",
+    "numpy": "2.5.4",
+    "PySide6": "6.12.0"
+  },
+  "analyze_menu": [
+    "Instance Size Distribution...",
+    "Label QC...",
+    "Inspect Pairwise Overlap..."
+  ],
+  "cases": [
+    {
+      "iou": 0.8433734939759037,
+      "oks_ab": 0.8492525300307587,
+      "oks_ba": 0.8492525300307587,
+      "shared_nodes": 6,
+      "valid_nodes": [
+        6,
+        6
+      ],
+      "degenerate": [
+        false,
+        false
+      ]
+    },
+    {
+      "iou": 0.19521531100478468,
+      "oks_ab": 0.7335105757277521,
+      "oks_ba": 0.43347709217890557,
+      "shared_nodes": 6,
+      "valid_nodes": [
+        6,
+        6
+      ],
+      "degenerate": [
+        false,
+        false
+      ]
+    },
+    {
+      "iou": 0.0,
+      "oks_ab": 0.0,
+      "oks_ba": 0.0,
+      "shared_nodes": 0,
+      "valid_nodes": [
+        3,
+        3
+      ],
+      "degenerate": [
+        false,
+        false
+      ]
+    }
+  ],
+  "full_filter_boundary_checks": 18,
+  "captured_frames": 70,
+  "checks": [
+    "embedded .slp loaded by actual MainWindow",
+    "native Analyze action",
+    "canvas selection buttons",
+    "frame navigation",
+    "directional OKS",
+    "missing shared nodes",
+    "same-instance rejection",
+    "skeleton identity rejection",
+    "reordered skeleton rejection",
+    "zero-area and all-missing inputs",
+    "manual confidence labeling",
+    "empty-frame stale result clearing",
+    "read-only model and source file"
+  ],
+  "read_only": true,
+  "elapsed_seconds": 9.396,
+  "max_rss_bytes_macos": 648478720
+}

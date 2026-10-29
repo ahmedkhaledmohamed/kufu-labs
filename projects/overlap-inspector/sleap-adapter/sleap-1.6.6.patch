@@ -1,0 +1,27 @@
+diff --git a/sleap/gui/app.py b/sleap/gui/app.py
+index 35b03b4..84250d0 100644
+--- a/sleap/gui/app.py
++++ b/sleap/gui/app.py
+@@ -1032,4 +1032,5 @@ class MainWindow(QMainWindow):
+         )
+         analyzeMenu.addAction("Label QC...", self._open_label_qc)
++        analyzeMenu.addAction("Inspect Pairwise Overlap...", self._open_pair_overlap)
+ 
+         ### Tracks Menu ###
+@@ -2184,4 +2185,16 @@ class MainWindow(QMainWindow):
+         dialog.show()
+ 
++    def _open_pair_overlap(self):
++        """Open the experimental, read-only Labels-filter pair inspector."""
++        from sleap.gui.dialogs.pair_overlap import PairOverlapDialog
++
++        dialog = self._child_windows.get("pair_overlap")
++        if dialog is None:
++            dialog = PairOverlapDialog(self)
++            self._child_windows["pair_overlap"] = dialog
++        dialog.refresh_frame()
++        dialog.show()
++        dialog.raise_()
++
+     def _open_label_qc(self):
+         """Opens the label QC analysis dock widget.

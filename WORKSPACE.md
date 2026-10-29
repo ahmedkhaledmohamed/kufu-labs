@@ -2,13 +2,11 @@
 
 ## Current task
 
-Ahmed authorised merging all open PRs. PR #19 merged into its execution base at `ae4bea8cb1eb5cf07bd59a37a7892e0e55d93656`. PR #18 is being revalidated in run 40857499553 before its main merge. Its previous required checks and the progress preview passed actual Vercel Queue/Sandbox execution, private downloads, retained stage history and stopped compute. PR #17 remains open with the approved dedicated problem pages.
+The active autonomous goal is a reproducible read-only pair inspector inside the actual SLEAP host, using constructed fixtures and the correct released metric implementation. Local work is isolated on `feat/sleap-pair-inspection`. See [native host adapter](projects/overlap-inspector/sleap-adapter/README.md) for source pins, installation, checks, demonstration and remaining limits. Researcher usefulness and upstream acceptance remain unverified.
 
-The problem-page branch conflicts with the execution branch in shared navigation, packaging, styling, working context and generated HTML. This isolated reconciliation retains all 27 canonical problem pages and the Execution lab. Shared navigation is Home, Problems, Sources and Execution lab on root/problem/research pages. Explorations and Validation remain compatibility indexes. Scientific implementation, input generation, execution limits and progress behaviour are retained.
+PRs #17, #18 and #19 are merged. Main `b0e884450008c0ecc472e783626f0b4b6509ffa0` passed all four required jobs in [run 40877666335](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40877666335). Production serves the 27 dedicated problem pages and real Vercel execution with timestamped progress. The independent audit matched eight assets to the tested artifact, verified private downloads, stopped compute and blocked unauthenticated access. The production run is [9ebc0340-6763-4a6f-b05f-973270fde296](https://kufu-labs.vercel.app/lab.html?run=9ebc0340-6763-4a6f-b05f-973270fde296). Earlier pending-release descriptions below are historical.
 
-Resolve and rebuild generated output, then verify both the problem-page and execution flows. Show the complete reconciliation diff before publishing it to PR #17, as required by the personal-repository gate. The merge-all instruction authorises the three requested PR merges but does not waive exact-diff review for newly resolved source changes. Wait for CI/CD after main merges; do not deploy manually.
-
-No outreach, spending, new accounts, research recordings or model weights. Existing research worktrees are preserved. The separate evidence and learning records remain available. Scientific correctness, researcher benefit and upstream acceptance remain distinct from the tested software invariants.
+No outreach, spending, new accounts, research recordings or model weights. Preserve existing research worktrees. Show the exact full diff and contribution record before a personal-repository push or PR; merging requires a separate explicit instruction. Wait for CI/CD after an authorised merge; do not deploy manually.
 
 ## Entry points
 
@@ -20,7 +18,7 @@ No outreach, spending, new accounts, research recordings or model weights. Exist
 - [Delivery](site/DELIVERY.md): CI/CD, artifact identity and protected deployment.
 - [Licensing](README.md#licensing): default MIT terms and preserved GPL/BSD exceptions.
 
-## Verified baseline
+## Earlier verified baseline
 
 Main `10b5e2c139adc693f774792b41ffa85bacd37b69` includes merged PRs #1–#9. Run 40577617957 passed scientific, build/browser and protected Vercel deployment checks. The site is live at the existing protected production URL; its source and sampled asset hashes match the exact CI artifact. Independent desktop/mobile checks passed the inspector navigation, comparison, 182 local links and blocked unauthenticated requests. The earlier deployment goal is complete.
 
@@ -32,4 +30,4 @@ No outreach, new accounts, spending, recordings or model-weight downloads are au
 
 ## Scientific claims
 
-The pose inspector uses constructed inputs and unchanged upstream filtering. It is not yet integrated into SLEAP. The movement patch addresses a local filtering subproblem; repeated-export deletion provenance remains an unfixed finding. Researcher benefit, adoption and end-to-end problem resolution remain unmeasured.
+The pose inspector uses constructed inputs and unchanged upstream filtering. The published browser demo is separate from the locally verified experimental SLEAP source adapter. The movement patch addresses a local filtering subproblem; repeated-export deletion provenance remains an unfixed finding. Researcher benefit, adoption and end-to-end problem resolution remain unmeasured.
