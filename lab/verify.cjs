@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 const { Readable } = require("node:stream");
+const { NodejsLambda, sanitizeConsumerName } = require("@vercel/build-utils");
 const { DEFAULT, validateCases, summarize } = require("./contracts.cjs");
 const values = new Map();
 let sent = 0;
@@ -238,8 +239,23 @@ async function request(
     );
     assert.equal(config.launcherType, "Nodejs");
     assert.equal(config.runtime, "nodejs22.x");
-    if (name === "experiment-worker")
+    new NodejsLambda({ ...config, files: {} });
+    if (name === "experiment-worker") {
       assert.equal(config.experimentalTriggers[0].maxConcurrency, 1);
+      assert.equal(
+        config.experimentalTriggers[0].consumer,
+        sanitizeConsumerName("api/experiment-worker"),
+      );
+      const invalid = {
+        ...config,
+        experimentalTriggers: [{ ...config.experimentalTriggers[0] }],
+      };
+      delete invalid.experimentalTriggers[0].consumer;
+      assert.throws(
+        () => new NodejsLambda({ ...invalid, files: {} }),
+        /consumer is required/,
+      );
+    }
   }
   console.log(
     "Execution API validation, CSRF protection, idempotency, worker failures and result classification passed. No hosted compute launched by these contract checks.",
