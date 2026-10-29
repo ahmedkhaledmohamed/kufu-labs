@@ -28,4 +28,6 @@ weights/
 
 .vercel/
 dist/
+dist-backend/
 artifacts/
+.env*

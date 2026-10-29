@@ -673,3 +673,70 @@ code {
     padding-top: 20px;
   }
 }
+
+.lab-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(240px, 2fr);
+  gap: 2rem;
+  align-items: start;
+}
+.lab-inputs,
+.lab-method {
+  min-width: 0;
+}
+.lab-method {
+  background: white;
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+}
+.lab-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.lab-fields label {
+  display: grid;
+  gap: 0.25rem;
+  font-weight: bold;
+}
+.lab-fields input,
+.lab-fields select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem;
+  font: inherit;
+  border: 1px solid var(--rule);
+  background: white;
+  color: inherit;
+}
+.lab-table {
+  overflow-x: auto;
+}
+.lab-table table {
+  min-width: 640px;
+}
+#inputPlan,
+#runDetails {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 32rem;
+  overflow: auto;
+  background: white;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+}
+#runResults p {
+  overflow-wrap: anywhere;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (max-width: 760px) {
+  .lab-workspace {
+    grid-template-columns: 1fr;
+  }
+  .lab-fields {
+    grid-template-columns: 1fr;
+  }
+}

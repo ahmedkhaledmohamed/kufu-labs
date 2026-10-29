@@ -214,6 +214,7 @@ def main():
         "problems": "Problems",
         "sources": "Sources",
         "validation": "Validation",
+        "lab": "Execution lab",
     }
     template = (SITE / "template.html").read_text()
     for filename, title in pages.items():
