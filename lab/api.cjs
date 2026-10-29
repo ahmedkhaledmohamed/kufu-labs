@@ -37,6 +37,29 @@ async function status(id) {
   const failure = await store.readJSON(id, "error.json");
   if (failure) return { id, status: "failed", ...failure };
   const claim = await store.readJSON(id, "claim.json");
+  const progress = (await store.readJSON(id, "progress.json")) || {
+    created_at: submission.created_at,
+    started_at: claim?.started_at || null,
+    updated_at: claim?.started_at || submission.created_at,
+    events: [
+      {
+        label: "Waiting for a worker",
+        started_at: submission.created_at,
+        ...(claim
+          ? { finished_at: claim.started_at, outcome: "completed" }
+          : { outcome: "active" }),
+      },
+      ...(claim
+        ? [
+            {
+              label: "Starting worker",
+              started_at: claim.started_at,
+              outcome: "active",
+            },
+          ]
+        : []),
+    ],
+  };
   const expired =
     Date.now() - Date.parse(claim?.started_at || submission.created_at) >
     (claim ? 360000 : 900000);
@@ -45,10 +68,11 @@ async function status(id) {
     status: expired ? "interrupted" : claim ? "running" : "queued",
     cases: submission.cases,
     created_at: submission.created_at,
+    progress,
     message: expired
       ? "This run did not finish within its allowed time. Submit a new run to try again."
       : claim
-        ? "Running the real NWB software in Vercel Sandbox."
+        ? progress.events.at(-1).label + "."
         : "Waiting for a Vercel worker.",
   };
 }

@@ -23,8 +23,10 @@ const store = {
       error.exists = true;
       throw error;
     }
-    values.set(key, value);
+    values.set(key, JSON.parse(JSON.stringify(value)));
   },
+  writeProgress: async (id, value) =>
+    values.set(`${id}/progress.json`, JSON.parse(JSON.stringify(value))),
   reserveDailySlot: async () => ++reserved <= 10,
   existsError: (error) => error.exists,
 };
@@ -143,10 +145,27 @@ async function request(
     (await request("GET", null, {}, `/api/experiments?id=${id}`)).body.status,
     "queued",
   );
+  assert.equal(
+    (await request("GET", null, {}, `/api/experiments?id=${id}`)).body.progress
+      .events[0].outcome,
+    "active",
+  );
   const worker = load("worker", {
     "./run.cjs": {
-      execute: async () => {
+      execute: async (_cases, report) => {
         executions++;
+        await report("Installing pinned dependencies");
+        const running = (
+          await request("GET", null, {}, `/api/experiments?id=${id}`)
+        ).body;
+        assert.equal(running.status, "running");
+        assert.equal(
+          running.progress.events.at(-1).label,
+          "Installing pinned dependencies",
+        );
+        assert.equal(running.progress.events.at(-1).outcome, "active");
+        assert.ok(running.progress.events[0].finished_at);
+        await report("Running baseline and fresh uninspected controls");
         return {
           archive: Buffer.from("zip"),
           record: { comparisons: [] },
@@ -166,11 +185,21 @@ async function request(
     (await request("GET", null, {}, `/api/experiments?id=${id}`)).body.status,
     "completed",
   );
+  const finished = (await request("GET", null, {}, `/api/experiments?id=${id}`))
+    .body.progress;
+  assert.ok(
+    finished.events.every(
+      (event) => event.outcome === "completed" && event.finished_at,
+    ),
+  );
+  assert.equal(finished.events.at(-1).label, "Saving result bundle");
+  assert.ok(finished.finished_at);
   const failureId = "12345678-1234-4123-8123-123456789abd";
   await request("POST", { id: failureId, cases: [DEFAULT] });
   const failingWorker = load("worker", {
     "./run.cjs": {
-      execute: async () => {
+      execute: async (_cases, report) => {
+        await report("Running patched and fresh uninspected controls");
         throw new Error("deliberate fixture failure");
       },
     },
@@ -184,6 +213,14 @@ async function request(
       .status,
     "failed",
   );
+  const failedProgress = (
+    await request("GET", null, {}, `/api/experiments?id=${failureId}`)
+  ).body.progress;
+  assert.equal(
+    failedProgress.events.at(-1).label,
+    "Running patched and fresh uninspected controls",
+  );
+  assert.equal(failedProgress.events.at(-1).outcome, "failed");
   const control = {
     input_sha256: "same",
     values_equal: true,

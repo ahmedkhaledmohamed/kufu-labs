@@ -148,6 +148,18 @@
 <section aria-labelledby="resultsTitle">
   <h2 id="resultsTitle">2. Compare the actual saved output</h2>
   <p id="runStatus" role="status">No experiment submitted.</p>
+  <div
+    id="runProgress"
+    class="run-progress"
+    role="region"
+    aria-labelledby="progressHeading"
+    hidden
+  >
+    <h3 id="progressHeading">Execution progress</h3>
+    <p id="progressSummary" role="status"></p>
+    <p id="runElapsed" aria-live="off"></p>
+    <ol id="runTimeline" class="run-timeline"></ol>
+  </div>
   <div id="runResults"></div>
   <p><a id="downloadRun" hidden>Download arrays, reports and logs (.zip)</a></p>
   <details id="executionDetails" hidden>

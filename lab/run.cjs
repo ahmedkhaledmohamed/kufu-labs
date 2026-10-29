@@ -16,6 +16,7 @@ async function execute(cases, onProgress = async () => {}, credentials = {}) {
   validateCases(cases);
   const started = Date.now();
   let sandbox;
+  let failed = false;
   const logs = [];
   const record = {
     lab_source_commit: KUFU_SOURCE.commit,
@@ -182,11 +183,17 @@ async function execute(cases, onProgress = async () => {}, credentials = {}) {
     record.bundle_sha256 = hash(archive);
     return { record, archive, logs };
   } catch (error) {
+    failed = true;
     error.labLogs = logs;
     throw error;
   } finally {
     if (sandbox) {
-      await sandbox.stop();
+      try {
+        if (!failed) await onProgress("Stopping isolated runtime");
+      } finally {
+        // A progress-storage outage must never prevent VM cleanup.
+        await sandbox.stop();
+      }
       record.sandbox_stopped = true;
       record.elapsed_seconds = Number(
         ((Date.now() - started) / 1000).toFixed(3),
