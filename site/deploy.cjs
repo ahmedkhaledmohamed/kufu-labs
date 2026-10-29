@@ -129,7 +129,7 @@ function target() {
     "Deploy only the exact browser-tested artifact",
   );
   assert.deepEqual(web.pageErrors, []);
-  assert.equal(web.pages, 5);
+  assert.equal(web.pages, 6);
   const vercel = path.join(root, ".vercel");
   fs.mkdirSync(vercel, { recursive: true });
   fs.writeFileSync(

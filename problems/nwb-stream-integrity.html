@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Keep streamed neural data intact during inspection · Kufu Labs</title>
+    <link rel="stylesheet" href="../site/style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="mast">
+        <div>
+          <a class="brand" href="../index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="../problems.html" aria-current="page">Problems</a>
+          <a href="../sources.html">Sources</a>
+          <a href="../lab.html">Execution lab</a>
+        </nav>
+      </div>
+    </header>
+    <main class="problem-detail">
+      <div class="problem-heading">
+  <p class="breadcrumb"><a href="../problems.html" aria-current="page">All problems</a></p>
+  <h1>Keep streamed neural data intact during inspection</h1><p class="problem-lede">A converter checks a stream of samples before writing an NWB file. The inspection can consume part of the stream, leaving the later writer with missing values that become zeros in the saved file.</p><p class="problem-state">Local data-preservation result; upstream adoption unvalidated</p>
+</div>
+<div class="problem-layout">
+  <article class="problem-story" aria-label="Problem and solution">
+    <section id="people"><h2>Who encounters it and why it matters</h2><p>Researchers and engineers converting streamed neurophysiology data into NWB files.</p><p>Preserve the original samples when software inspects them before saving. Scientific conclusions and real-recording usefulness remain unvalidated.</p></section>
+<section id="science"><h2>Science and terms</h2><p>Neurophysiology recordings can be large, so software may handle them a chunk at a time. The saved sample sequence must match the input. Preserving samples is a data-integrity requirement; it does not establish that the experiment or its interpretation is correct.</p><dl class="problem-terms"><dt>NWB</dt><dd>Neurodata Without Borders: a format and ecosystem for organising neurophysiology data.</dd><dt>Stream / iterator</dt><dd>A source that yields successive chunks; reading a single-pass source advances it.</dd><dt>Shape inspection</dt><dd>Asking how many samples and channels an object contains, without intentionally analysing the signal.</dd></dl></section>
+<section id="workflow"><h2>Where the problem appears</h2><ol class="problem-workflow"><li><strong>Receive a stream</strong><p>Constructed positive samples arrive in chunks.</p></li><li><strong>Inspect before writing</strong><p>The real Inspector checks the NWB object.</p></li><li><strong>Save and reopen</strong><p>The real HDF5 or Zarr writer and reader execute.</p></li><li><strong>Compare every value</strong><p>The replay checks the complete sequence and dtype against input.</p></li></ol></section>
+<section id="evidence"><h2>Evidence and existing tools</h2><p>Pinned NWB Inspector e6d968a with PyNWB 4.2.0 and HDMF 6.2.0; related HDMF PR #1606 remains open when checked.</p><ul><li><a href="https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771" target="_blank" rel="noopener noreferrer">NWB Inspector data-loss report #771</a></li><li><a href="https://github.com/NeurodataWithoutBorders/nwbinspector/issues/760" target="_blank" rel="noopener noreferrer">Related shape-helper proposal #760</a></li><li><a href="https://github.com/hdmf-dev/hdmf/pull/1606" target="_blank" rel="noopener noreferrer">Dependency fix PR #1606</a></li></ul></section>
+<section id="solution"><h2>The solution being tested</h2><p>The patch reuses HDMF’s existing shape helper instead of the Inspector’s local helper. In the tested wrapped-stream workflow, inspection no longer consumes data that the writer still needs. An upstream proposal already suggested helper reuse; Kufu’s contribution is the bounded patch, reproduction and regression evidence.</p><p>Existing inspect_nwbfile_object workflow; upstream utility patch, not a new application.</p></section>
+<section id="before-after"><h2>Before and after the inspection patch</h2><p>The input contains no zeros. The baseline returns inspection errors, but writing still succeeds; it must not be described as a silently passing inspection. Uninspected controls preserve the data.</p><div class="table-scroll"><table><caption>Before and after the inspection patch</caption><thead><tr><th scope="col">Input rows</th><th scope="col">Baseline rows replaced by zeros</th><th scope="col">Patched rows replaced by zeros</th></tr></thead><tbody><tr><td>50</td><td>50</td><td>0</td></tr><tr><td>100</td><td>100</td><td>0</td></tr><tr><td>500</td><td>300</td><td>0</td></tr></tbody></table></div></section>
+<section id="try"><h2>Try or reproduce</h2><p class="execution-kind">Queued Vercel Sandbox experiment</p><p>This page shows recorded round-trip evidence. Open the Execution lab to change or generate synthetic inputs and run the actual baseline and patched software on Vercel. The lab retains timestamped progress, actual comparisons, arrays and logs after compute stops. Opening either page starts no scientific compute.</p><div class="problem-actions"><a href="../lab.html" target="_blank" rel="noopener noreferrer">Open execution lab</a><a href="../projects/nwb-stream-integrity/patched.json" target="_blank" rel="noopener noreferrer">Saved result (JSON)</a><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40804343375" target="_blank" rel="noopener noreferrer">View verified run</a></div><details class="reproduction"><summary>How to reproduce locally</summary><p>Complete CPython 3.13.9 in a short-lived Vercel Sandbox for requested experiments; the pinned local/CI replay remains available.</p><p>These are instructions for your own environment. Opening this section does not execute the command.</p><pre><code># Follow the pinned environment and patch setup in the project record.
+python projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json</code></pre><a href="../site/records/projects--nwb-stream-integrity--README.html">Full environment and reproduction record</a></details></section>
+<section id="validation"><h2>Validation and limits</h2><p>12 inspected HDF5/Zarr cases lose values at baseline and preserve every value with the patch. All 12 uninspected controls per revision preserve values. Broader unit run: 341 passed, 5 skipped.</p><h3>What remains unverified</h3><p>No real recordings, full version matrix, upstream acceptance or researcher benefit. The required scientific CI replay and protected production delivery passed in main run 40613968067.</p><h3>What would count as resolving it</h3><p>The supported inspection/save workflow preserves all input values without weakening checks, and the preferred design is independently reviewed.</p></section>
+<section id="next"><h2>Next step</h2><p>Review the existing-helper integration and contribution package; upstream discussion remains deferred.</p></section>
+<section id="records"><h2>Implementation and research records</h2><ul><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/non-consuming-shape.patch" target="_blank" rel="noopener noreferrer">Code implementation</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/experiment.py" target="_blank" rel="noopener noreferrer">Replay and verification code</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml" target="_blank" rel="noopener noreferrer">All verification runs</a></li></ul><ul><li><a href="../site/records/projects--nwb-stream-integrity--README.html">Detailed record: NWB stream integrity during inspection</a></li><li><a href="../site/records/research--opportunity-discovery--NEUROINFORMATICS-PLAN.html">Detailed record: Neuroinformatics implementation and learning plan</a></li></ul></section>
+  </article>
+  <aside class="problem-context" aria-label="Problem context">
+    <h2>At a glance</h2><dl><dt>Domain</dt><dd>Neuroinformatics</dd><dt>Work state</dt><dd>Local patch verified</dd><dt>Evidence basis</dt><dd>Reported data loss + pinned host replay</dd><dt>Source review</dt><dd>2026-10-27</dd></dl><p class="context-note">The website explains the work and displays saved evidence. It does not start Python or a scientific service when you open a page.</p><h3>Where this was investigated</h3><ul><li><a href="https://github.com/NeurodataWithoutBorders/nwbinspector/issues" target="_blank" rel="noopener noreferrer">NWB Inspector issues</a></li></ul><h3>Related problems</h3><ul><li><a href="../problems/eeg-events.html">Verify EEG event markers and timing discrepancies</a></li><li><a href="../problems/neural-behaviour.html">Link quantitative behavioural data with neural activity</a></li></ul>
+  </aside>
+</div>
+
+      <footer>
+        Kufu Labs. Constructed demos and recorded checks do not establish
+        researcher benefit.
+      </footer>
+    </main>
+
+  </body>
+</html>

@@ -20,6 +20,7 @@ def main():
         ROOT / f"{p}.html"
         for p in ["index", "explorations", "problems", "sources", "validation", "lab"]
     ]
+    files += list((ROOT / "problems").glob("*.html"))
     files += [ROOT / "site/app.js", ROOT / "site/style.css", ROOT / "site/lab.js"]
     files += list((ROOT / "site/records").glob("*.html"))
     files += [

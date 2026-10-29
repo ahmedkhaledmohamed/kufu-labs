@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Preserve deleted-point provenance on repeated export · Kufu Labs</title>
+    <link rel="stylesheet" href="../site/style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="mast">
+        <div>
+          <a class="brand" href="../index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="../problems.html" aria-current="page">Problems</a>
+          <a href="../sources.html">Sources</a>
+          <a href="../lab.html">Execution lab</a>
+        </nav>
+      </div>
+    </header>
+    <main class="problem-detail">
+      <div class="problem-heading">
+  <p class="breadcrumb"><a href="../problems.html" aria-current="page">All problems</a></p>
+  <h1>Preserve deleted-point provenance on repeated export</h1><p class="problem-lede">A second GUI export loses edited flags for removed points, while coordinates remain missing.</p><p class="problem-state">Reproduced; no fix</p>
+</div>
+<div class="problem-layout">
+  <article class="problem-story" aria-label="Problem and solution">
+    <section id="people"><h2>Who encounters it and why it matters</h2><p>Researchers saving and reopening manually corrected movement datasets.</p><p>Keep a trustworthy record of deliberate deletions across editing sessions. The defect is reproduced; no fix or benefit has been established.</p></section>
+<section id="evidence"><h2>Evidence and existing tools</h2><p>Existing movement conversion/Qt save path, separate from the filter patch.</p><ul><li><a href="https://github.com/neuroinformatics-unit/movement/issues/1174" target="_blank" rel="noopener noreferrer">Reported defect #1174</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/pull/3" target="_blank" rel="noopener noreferrer">Reproduction artifacts in lab PR #3</a></li></ul></section>
+<section id="solution"><h2>Proposed direction</h2><p>No fix implemented; preserve and report the minimal reproduction.</p><p>No corrective patch is implemented for this reproduced defect.</p><p>Existing movement napari converter and native netCDF.</p></section>
+<section id="try"><h2>What runs here</h2><p>Recorded failure; no corrective patch. The existing CI replay reproduces the defect. Opening this page starts no workflow or background computation.</p><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752" target="_blank" rel="noopener noreferrer">View the failure reproduction run</a></section>
+<section id="validation"><h2>Validation and limits</h2><p>The pinned repeated-export reproduction loses removed-point edited flags while position/confidence values remain unchanged. This is a recorded failure, not a fixed defect.</p><h3>What remains unverified</h3><p>No corrective patch, accepted design or regression proving a fix.</p><h3>What would count as resolving it</h3><p>A pinned regression fails before and passes after the fix for deletion-only and mixed edits, without resurrecting coordinates or changing unrelated provenance.</p></section>
+<section id="next"><h2>Next step</h2><p>Inspect conversion/export semantics before proposing any correction; retain the separate issue and patch scope.</p></section>
+<section id="records"><h2>Research records</h2><ul><li><a href="../site/records/projects--movement-edit-filtering--REVIEW.html">Detailed record: movement filtering contribution review package</a></li></ul></section>
+  </article>
+  <aside class="problem-context" aria-label="Problem context">
+    <h2>At a glance</h2><dl><dt>Domain</dt><dd>Behavioural neuroscience</dd><dt>Work state</dt><dd>Reproduced defect</dd><dt>Evidence basis</dt><dd>Pinned workflow reproduction</dd><dt>Source review</dt><dd>2026-10-27</dd></dl><p class="context-note">The website explains the work and displays saved evidence. It does not start Python or a scientific service when you open a page.</p><h3>Where this was investigated</h3><ul><li><a href="https://github.com/neuroinformatics-unit/movement/issues" target="_blank" rel="noopener noreferrer">movement issues</a></li></ul>
+  </aside>
+</div>
+
+      <footer>
+        Kufu Labs. Constructed demos and recorded checks do not establish
+        researcher benefit.
+      </footer>
+    </main>
+
+  </body>
+</html>

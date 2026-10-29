@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Inspect why overlapping poses are removed · Kufu Labs</title>
+    <link rel="stylesheet" href="../site/style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="mast">
+        <div>
+          <a class="brand" href="../index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="../problems.html" aria-current="page">Problems</a>
+          <a href="../sources.html">Sources</a>
+          <a href="../lab.html">Execution lab</a>
+        </nav>
+      </div>
+    </header>
+    <main class="problem-detail">
+      <div class="problem-heading">
+  <p class="breadcrumb"><a href="../problems.html" aria-current="page">All problems</a></p>
+  <h1>Inspect why overlapping poses are removed</h1><p class="problem-lede">Two pose predictions can overlap even when they describe different animals or different body-part arrangements. The researcher needs to understand why a duplicate filter keeps one and removes another.</p><p class="problem-state">Demonstrated; user problem not yet solved</p>
+</div>
+<div class="problem-layout">
+  <article class="problem-story" aria-label="Problem and solution">
+    <section id="people"><h2>Who encounters it and why it matters</h2><p>Researchers proofreading overlapping animal-pose predictions in SLEAP.</p><p>Make duplicate-filter decisions inspectable so a person can understand a setting. Better choices and time saved remain unmeasured.</p></section>
+<section id="science"><h2>Science and terms</h2><p>A pose is an estimated set of body-part positions. Tracking software can produce multiple candidate poses in one video frame. A duplicate filter compares candidates and can remove a later candidate when their similarity exceeds a chosen threshold.</p><dl class="problem-terms"><dt>IoU</dt><dd>Intersection over union: how much two bounding boxes overlap relative to their combined area.</dd><dt>OKS</dt><dd>Object keypoint similarity: a score based on corresponding body-part positions and scale. This implementation’s score can depend on comparison direction.</dd><dt>Suppression</dt><dd>Removing a candidate pose from the filter output; this is not evidence that it was biologically wrong.</dd></dl></section>
+<section id="workflow"><h2>Where the problem appears</h2><ol class="problem-workflow"><li><strong>Predict body-part positions</strong><p>The host produces candidate poses and confidence scores.</p></li><li><strong>Compare overlapping candidates</strong><p>A chosen metric assigns pairwise similarity.</p></li><li><strong>Apply the threshold</strong><p>Score order and earlier decisions affect which candidates remain.</p></li><li><strong>Inspect the decision</strong><p>The prototype exposes the selected pair and full-frame context.</p></li></ol></section>
+<section id="evidence"><h2>Evidence and existing tools</h2><p>SLEAP has QC, editing and filter settings; pinned audit found no pairwise comparison panel.</p><ul><li><a href="https://github.com/talmolab/sleap/issues/2816" target="_blank" rel="noopener noreferrer">Feature request #2816</a></li><li><a href="https://github.com/talmolab/sleap/discussions/2815" target="_blank" rel="noopener noreferrer">Original discussion #2815</a></li><li><a href="https://github.com/talmolab/sleap-nn/blob/a2b97fe0a7d908813f0d555df284307fd5060fd5/sleap_nn/inference/filters.py" target="_blank" rel="noopener noreferrer">Pinned tensor filter</a></li></ul></section>
+<section id="solution"><h2>The solution being tested</h2><p>Kufu’s prototype adds an overlay, pair measurements, threshold boundaries and score-order context around an unchanged filter. It is a browser demonstration of an inspection capability. It is not integrated into the SLEAP application and does not improve the prediction model.</p><p>Local demo now; future read-only SLEAP selection adapter or explicit pose import.</p></section>
+<section id="before-after"><h2>What the inspector adds</h2><p>Both views use the same fixed input and filter. For the swapped-label example at IoU threshold 0.8, A is retained and B is suppressed in both views. The added capability is explanation.</p><div class="table-scroll"><table><caption>What the inspector adds</caption><thead><tr><th scope="col">What you can inspect</th><th scope="col">Filter output alone</th><th scope="col">Inspector prototype</th></tr></thead><tbody><tr><td>Returned poses</td><td>A retained; B suppressed</td><td>A retained; B suppressed</td></tr><tr><td>Why that pair was treated as overlapping</td><td>Output states do not explain the pair</td><td>Pair metric, overlay and threshold shown</td></tr><tr><td>Decision context</td><td>Keep/remove states</td><td>Score order, metric direction and full-frame context</td></tr></tbody></table></div></section>
+<section id="try"><h2>Try or reproduce</h2><p class="execution-kind">Interactive browser demo</p><p>The controls and drawings run in your browser. Filter outputs were computed from the real pinned Python implementation before the page was published. Changing a control selects those saved results; it does not start Python, model inference or a background server.</p><div class="problem-actions"><a href="../projects/overlap-inspector/index.html" target="_blank" rel="noopener noreferrer">Open browser demo</a><a href="../projects/overlap-inspector/verification.json" target="_blank" rel="noopener noreferrer">Saved result (JSON)</a><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752" target="_blank" rel="noopener noreferrer">View verified run</a></div><details class="reproduction"><summary>How to reproduce locally</summary><p>Browser: offline, no model or Python runtime needed.</p><p>These are instructions for your own environment. Opening this section does not execute the command.</p><pre><code>python3 -m http.server 8878 --bind 127.0.0.1
+# Open /projects/overlap-inspector/index.html</code></pre><a href="../site/records/projects--overlap-inspector--README.html">Full environment and reproduction record</a></details></section>
+<section id="validation"><h2>Validation and limits</h2><p>7 frozen synthetic cases; 498 actual FilterPipeline calls and 168 browser boundary views passed.</p><h3>What remains unverified</h3><p>No SLEAP selection/import integration or actual researcher task. No node-exclusion support or arbitrary pose input.</p><h3>What would count as resolving it</h3><p>Correctly inspect existing host instances with matched node/score semantics, then show useful decisions in an authorised real workflow without increasing mistaken removals.</p></section>
+<section id="next"><h2>Next step</h2><p>Validate a read-only host selection/data adapter using constructed instances, with no recordings or model inference.</p></section>
+<section id="records"><h2>Implementation and research records</h2><ul><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/tree/main/projects/overlap-inspector" target="_blank" rel="noopener noreferrer">Code implementation</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/overlap-inspector/verify-browser.cjs" target="_blank" rel="noopener noreferrer">Replay and verification code</a></li><li><a href="https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml" target="_blank" rel="noopener noreferrer">All verification runs</a></li></ul><ul><li><a href="../site/records/projects--overlap-inspector--README.html">Detailed record: Pairwise overlap inspector</a></li><li><a href="../site/records/research--pose-review-validation--PILOT.html">Detailed record: Workflow-validation pilot: inspect pairwise overlap while tuning duplicate filters</a></li></ul></section>
+  </article>
+  <aside class="problem-context" aria-label="Problem context">
+    <h2>At a glance</h2><dl><dt>Domain</dt><dd>Behavioural neuroscience</dd><dt>Work state</dt><dd>Technical demo</dd><dt>Evidence basis</dt><dd>One direct requester + code audit</dd><dt>Source review</dt><dd>2026-10-27</dd></dl><p class="context-note">The website explains the work and displays saved evidence. It does not start Python or a scientific service when you open a page.</p><h3>Where this was investigated</h3><ul><li><a href="https://github.com/talmolab/sleap/issues" target="_blank" rel="noopener noreferrer">SLEAP issues and discussions</a></li><li><a href="https://github.com/talmolab/sleap/discussions" target="_blank" rel="noopener noreferrer">SLEAP discussions</a></li></ul><h3>Related problems</h3><ul><li><a href="../problems/identity-review.html">Locate and correct consequential pose identity switches</a></li><li><a href="../problems/lr-pairing.html">Define custom left/right relationships for pose QC</a></li><li><a href="../problems/outlier-review.html">Choose suspicious pose frames for review</a></li></ul>
+  </aside>
+</div>
+
+      <footer>
+        Kufu Labs. Constructed demos and recorded checks do not establish
+        researcher benefit.
+      </footer>
+    </main>
+
+  </body>
+</html>

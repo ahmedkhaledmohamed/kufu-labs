@@ -12,5 +12,6 @@
   "boards": 18,
   "explorations": 6,
   "research_pages": 22,
-  "catalog_sha256": "f8a126e9c29ecef7312190d8160df8e19ef5aea5a643004c87ea3e6450eece1b"
+  "problem_pages": 27,
+  "catalog_sha256": "34902a68f934a048d3ee4a42dc2a54d6dc1eb0401b4192af6811ee25137d99c5"
 }

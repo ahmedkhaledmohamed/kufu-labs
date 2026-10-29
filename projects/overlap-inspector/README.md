@@ -18,7 +18,7 @@ Controls include pair selection, metric, continuous threshold, score-order permu
 
 The comparison uses the same constructed input, selected metric, threshold and score order on both sides. The first side shows the pinned filter output states; the inspector side explains the selected pair and exposes the pose overlay, pair measurements and exact boundary. The filtering algorithm and returned poses do not change. This is an inspection capability, not a filtering fix, a screenshot comparison with SLEAP, or completed SLEAP GUI integration.
 
-The demo retains links to all five lab pages and its implementation/verification code. The hub browser check exercises each return route; the standalone browser check verifies that both comparison views agree with the displayed states at all 168 boundaries.
+The demo retains Home, Problems and Sources navigation, an About this problem link, and its implementation/verification code. The hub browser check exercises each return route; the standalone browser check verifies that both comparison views agree with the displayed states at all 168 boundaries.
 
 ## Reference implementation
 
@@ -56,7 +56,7 @@ The pose canvas is primary, with a compact control rail. Cool white, navy and te
 
 Before coding, the design review identified three risks: colour-only decisions, pair scores that hide greedy context, and rounded values that obscure equality. The implementation addresses these with explicit states, a three-instance fixture, both OKS directions and an exact-boundary action. Screenshot review removed an unnecessary metric-button transition and clarified unavailable-pair explanations.
 
-Next local milestone: evaluate a read-only SLEAP selection adapter or explicit .slp import, preserving instance/skeleton/node order and actual confidence fields. Verify against real host data structures before promising GUI integration. Researcher feedback remains deferred until Ahmed chooses to share a concrete artifact. This branch is local and uncommitted; no push, PR, merge, deployment or outreach is authorised by this goal.
+Next local milestone: evaluate a read-only SLEAP selection adapter or explicit .slp import, preserving instance/skeleton/node order and actual confidence fields. Verify against real host data structures before promising GUI integration. Researcher feedback remains deferred until Ahmed chooses to share a concrete artifact. Further publication follows the lab’s exact-diff approval and PR process. Outreach remains deferred.
 
 ## Licence
 

@@ -2,20 +2,21 @@
 
 ## Current task
 
-PR #18 is open at `7f7399302373b1dc7c00a6d432775d48da69eeb4`; PR #19 is stacked on it at `d0afa61e259e3e542e6d8e71645f7819c09b4440`. Runs 40802573803 and 40802657820 passed scientific contracts, refine.bio workflows and browser verification. Both protected deployments failed before hosted execution because the prebuilt queue trigger omitted its required consumer identifier. Production is unchanged. PR #17 remains separate and open; no merge is authorised.
+Ahmed authorised merging all open PRs. PR #19 merged into its execution base at `ae4bea8cb1eb5cf07bd59a37a7892e0e55d93656`. PR #18 is being revalidated in run 40857499553 before its main merge. Its previous required checks and the progress preview passed actual Vercel Queue/Sandbox execution, private downloads, retained stage history and stopped compute. PR #17 remains open with the approved dedicated problem pages.
 
-The local repair derives the consumer with Vercel's path-normalisation utility and validates generated configurations with the same NodejsLambda class used by deployment. The already installed build-utils version is now an explicit pinned build dependency. A negative contract check recreates the missing-consumer rejection. Both branches pass local build, contracts and formatting; the corrected hosted deployment remains pending exact-diff review and publication.
+The problem-page branch conflicts with the execution branch in shared navigation, packaging, styling, working context and generated HTML. This isolated reconciliation retains all 27 canonical problem pages and the Execution lab. Shared navigation is Home, Problems, Sources and Execution lab on root/problem/research pages. Explorations and Validation remain compatibility indexes. Scientific implementation, input generation, execution limits and progress behaviour are retained.
 
-The execution backend remains parameterized NWB baseline/patched software on Vercel Sandbox, with fresh controls and private saved outputs. The progress follow-up retains timestamped worker stages, elapsed time, reload-safe history and explicit failed/interrupted/stale states. Scientific/input-generation rules and execution bounds are unchanged. Direct Vercel scientific runs passed previously; the full deployed Queue/Sandbox/private-storage path and its progress history have not passed yet.
+Resolve and rebuild generated output, then verify both the problem-page and execution flows. Show the complete reconciliation diff before publishing it to PR #17, as required by the personal-repository gate. The merge-all instruction authorises the three requested PR merges but does not waive exact-diff review for newly resolved source changes. Wait for CI/CD after main merges; do not deploy manually.
 
-Show the repair diff before pushing either branch. Update PR #18 first and preserve PR #19's approved progress implementation when rebasing it. Mark each exact approved commit through the contribution gate. No merge, manual deployment, outreach, spending, new accounts, real recordings or model weights. Do not download unrelated environment credentials; the rejected broad environment pull was not performed.
+No outreach, spending, new accounts, research recordings or model weights. Existing research worktrees are preserved. The separate evidence and learning records remain available. Scientific correctness, researcher benefit and upstream acceptance remain distinct from the tested software invariants.
 
 ## Entry points
 
 - [Home](index.html): meaning, purpose and the practical-ingenuity figure.
-- [Explorations](explorations.html): project implementations, runnable examples and limits.
-- [Problems](problems.html), [sources](sources.html) and [validation](validation.html): the evidence catalogue and outcome assessment.
-- [Execution lab](lab.html): parameterized scientific jobs on Vercel.
+- [Execution lab](lab.html): real queued NWB experiments, progress, comparisons and downloads.
+- [Problems](problems.html): the main directory; each problem has its own explanation, solution, runtime and validation.
+- [Explorations](explorations.html): compatibility index linking to implemented problem pages.
+- [Sources](sources.html): discovery boards and their limits. [Validation](validation.html) remains a compatibility index.
 - [Delivery](site/DELIVERY.md): CI/CD, artifact identity and protected deployment.
 - [Licensing](README.md#licensing): default MIT terms and preserved GPL/BSD exceptions.
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Audit biomedical ML data leakage for one dataset · Kufu Labs</title>
+    <link rel="stylesheet" href="../site/style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="mast">
+        <div>
+          <a class="brand" href="../index.html">Kufu Labs</a>
+          <p>Problems, evidence and useful scientific software</p>
+        </div>
+        <nav aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="../problems.html" aria-current="page">Problems</a>
+          <a href="../sources.html">Sources</a>
+          <a href="../lab.html">Execution lab</a>
+        </nav>
+      </div>
+    </header>
+    <main class="problem-detail">
+      <div class="problem-heading">
+  <p class="breadcrumb"><a href="../problems.html" aria-current="page">All problems</a></p>
+  <h1>Audit biomedical ML data leakage for one dataset</h1><p class="problem-lede">Related samples or preprocessing can leak information between evaluation splits.</p><p class="problem-state">Research only; no Kufu solution implemented</p>
+</div>
+<div class="problem-layout">
+  <article class="problem-story" aria-label="Problem and solution">
+    <section id="people"><h2>Who encounters it and why it matters</h2><p>Researchers evaluating machine-learning models on biological data.</p><p>Keep related observations and preprocessing history from compromising a declared evaluation. A specific unsupported case still needs comparison with existing tools.</p></section>
+<section id="evidence"><h2>Evidence and existing tools</h2><p>scikit-learn guidance and DataSAIL cover existing prevention approaches.</p><ul><li><a href="https://scikit-learn.org/stable/common_pitfalls" target="_blank" rel="noopener noreferrer">scikit-learn pitfalls</a></li><li><a href="https://datasail.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">DataSAIL</a></li></ul></section>
+<section id="solution"><h2>Proposed direction</h2><p>Dataset-specific grouping and provenance audit.</p><p>No Kufu implementation or demonstration is available for this candidate.</p><p>Notebook/pipeline adapter with explicit subject and study identifiers.</p></section>
+<section id="try"><h2>What runs here</h2><p>Research only. This page describes an investigation; it starts no software workflow or background computation.</p></section>
+<section id="validation"><h2>Validation and limits</h2><p>Cannot certify arbitrary notebooks without identifiers/history; no specific baseline failure.</p><p>A source, challenge or plausible idea does not establish a missing software capability or a useful new product. No successful Kufu intervention is claimed.</p></section>
+<section id="next"><h2>Next step</h2><p>Construct a declared leakage case and compare to existing split tooling.</p></section>
+<section id="records"><h2>Research records</h2><ul><li><a href="../site/records/research--opportunity-discovery--README.html">Detailed record: Scientific software opportunities</a></li></ul></section>
+  </article>
+  <aside class="problem-context" aria-label="Problem context">
+    <h2>At a glance</h2><dl><dt>Domain</dt><dd>Research methods</dd><dt>Work state</dt><dd>Needs gap validation</dd><dt>Evidence basis</dt><dd>Existing methods guidance</dd><dt>Source review</dt><dd>2026-10-26</dd></dl><p class="context-note">The website explains the work and displays saved evidence. It does not start Python or a scientific service when you open a page.</p><h3>Where this was investigated</h3><ul><li><a href="https://challenges.synapse.org/openchallenges" target="_blank" rel="noopener noreferrer">OpenChallenges / Sage portal</a></li></ul>
+  </aside>
+</div>
+
+      <footer>
+        Kufu Labs. Constructed demos and recorded checks do not establish
+        researcher benefit.
+      </footer>
+    </main>
+
+  </body>
+</html>

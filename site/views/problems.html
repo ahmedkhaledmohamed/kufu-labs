@@ -1,4 +1,8 @@
 <h1>Problems and evidence</h1>
+<p class="intro">
+  Open a problem to understand who it affects, the evidence, the proposed
+  solution and what has actually been verified.
+</p>
 <section id="problems" aria-labelledby="problemTitle">
   <div class="sectionhead">
     <h2 id="problemTitle">Problem board</h2>
@@ -10,7 +14,7 @@
     ></span>
   </div>
   <p class="intro" id="coverage"></p>
-  <form class="filters" id="filters" role="search">
+  <form class="filters" id="filters" role="search" hidden>
     <label for="search"
       >Search problems, evidence or tools<input
         id="search"
@@ -31,7 +35,7 @@
     <span>Problem / task</span><span>Domain</span><span>Work state</span
     ><span>Evidence</span>
   </div>
-  <div id="problemList"></div>
+  <div id="problemList"><!--__PROBLEM_ROWS__--></div>
   <p class="empty" id="empty" hidden>
     No matching problems. Clear a filter or try a broader search term.
   </p>
