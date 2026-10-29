@@ -1179,9 +1179,9 @@
           ]
         ],
         "execution": {
-          "label": "Verified CI round trip",
-          "summary": "The real inspection, save and reload run in Python locally or in CI. This page shows saved results from those runs. Opening it starts no Python computation and uploads no recording.",
-          "action": "View verified run"
+          "label": "Queued Vercel Sandbox experiment",
+          "summary": "This page shows recorded round-trip evidence. Open the Execution lab to change or generate synthetic inputs and run the actual baseline and patched software on Vercel. The lab retains timestamped progress, actual comparisons, arrays and logs after compute stops. Opening either page starts no scientific compute.",
+          "action": "Open execution lab"
         },
         "related": [
           "eeg-events",
@@ -1478,19 +1478,19 @@
     {
       "id": "nwb-stream-integrity",
       "title": "NWB stream preservation replay",
-      "runtime": "Local Python 3.13 with pinned NWB Inspector, PyNWB, HDMF and HDF5/Zarr dependencies.",
-      "inputs": "Constructed two-channel positive int16 arrays: 50, 100 or 500 rows at 100 Hz. No recordings.",
+      "runtime": "Complete CPython 3.13.9 in a short-lived Vercel Sandbox for requested experiments; the pinned local/CI replay remains available.",
+      "inputs": "Synthetic int16 signals with configurable rows, channels, buffer, seed, pattern, HDF5/Zarr format and iterator type. The recorded CI matrix uses two channels and 50, 100 or 500 rows; no recordings.",
       "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
-      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release.",
-      "limits": "No uploaded data, hosted Python execution, real-recording evaluation, full version matrix or upstream acceptance.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release. The protected Vercel preview also passed real queued HDF5/Zarr runs, private download verification, stopped compute and retained timestamped progress.",
+      "limits": "Bounded synthetic inputs only; no uploaded recordings, arbitrary code, full version matrix, real-recording evaluation or upstream acceptance.",
       "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
-      "href": null,
+      "href": "lab.html",
       "record": "projects/nwb-stream-integrity/README.md",
       "result": "projects/nwb-stream-integrity/patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/non-consuming-shape.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/verify.py",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/nwb-stream-integrity/experiment.py",
       "problem": "nwb-stream-integrity",
-      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
+      "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40804343375"
     },
     {
       "id": "zero-age-metadata",

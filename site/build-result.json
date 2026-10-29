@@ -4,7 +4,8 @@
     "explorations",
     "problems",
     "sources",
-    "validation"
+    "validation",
+    "lab"
   ],
   "demonstrations": 4,
   "problems": 27,
@@ -12,5 +13,5 @@
   "explorations": 6,
   "research_pages": 22,
   "problem_pages": 27,
-  "catalog_sha256": "01eb4ed2a36c68f89406e66d15e4110248ec59744a62356f5ed479c2dafed81b"
+  "catalog_sha256": "34902a68f934a048d3ee4a42dc2a54d6dc1eb0401b4192af6811ee25137d99c5"
 }

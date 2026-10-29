@@ -23,7 +23,7 @@ jobs:
   contracts:
     name: Pinned scientific software contracts
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 45
     env:
       QT_QPA_PLATFORM: offscreen
       QT_API: pyqt6
@@ -37,6 +37,11 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            site/requirements-ci.txt
+            projects/nwb-stream-integrity/requirements.txt
+            .github/workflows/lab-delivery.yml
       - name: Prepare exact source checkouts, without recordings
         run: |
           python site/prepare_movement.py
@@ -64,6 +69,9 @@ jobs:
           mkdir -p .runs/contracts/nwb
           PYTHONPATH=.external/nwb-clean/src .external/nwb-env/bin/python projects/nwb-stream-integrity/verify.py --expect baseline --output .runs/contracts/nwb/baseline.json
           PYTHONPATH=.external/nwb-patched/src .external/nwb-env/bin/python projects/nwb-stream-integrity/verify.py --expect patched --output .runs/contracts/nwb/patched.json
+          python -c 'import json; from pathlib import Path; cases=[dict(rows=rows,channels=channels,buffer=buffer,seed=seed,pattern=pattern,backend=backend,iterator=iterator) for rows,channels,buffer,seed,pattern,backend,iterator in [(1,1,1,0,"ramp","hdf5","basic"),(101,3,50,42,"random","zarr","generic"),(2000,8,500,2147483647,"alternating","hdf5","generic"),(499,2,100,123,"random","zarr","basic")]]; Path(".runs/contracts/nwb/inputs.json").write_text(json.dumps(cases))'
+          PYTHONPATH=.external/nwb-clean/src .external/nwb-env/bin/python projects/nwb-stream-integrity/experiment.py --mode baseline --input .runs/contracts/nwb/inputs.json --output .runs/contracts/nwb/parameterized-baseline
+          PYTHONPATH=.external/nwb-patched/src .external/nwb-env/bin/python projects/nwb-stream-integrity/experiment.py --mode patched --input .runs/contracts/nwb/inputs.json --output .runs/contracts/nwb/parameterized-patched
           cd .external/nwb-patched
           ../nwb-env/bin/python -m pytest tests/unit_tests tests/test_stream_shape.py -q --junitxml=../../.runs/contracts/nwb/unit-tests.xml
           ../nwb-env/bin/ruff check src/nwbinspector/utils/_utils.py tests/test_stream_shape.py
@@ -160,12 +168,14 @@ jobs:
           npx --no-install playwright install --with-deps chromium
       - name: Lint, package and exercise the actual site
         run: |
-          ruff check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/refinebio-zero-age/*.py
-          ruff format --check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/refinebio-zero-age/*.py
+          ruff check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py
+          ruff format --check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py
           npm run lint
           node --check site/app.js
           node --check site/deploy.cjs
           npm run build
+          node lab/verify.cjs
+          node lab/verify-browser.cjs
           npm test
           DEMO_OUTPUT=.runs/overlap npm run test:overlap
       - name: Retain the exact tested site
@@ -173,6 +183,14 @@ jobs:
         with:
           name: tested-site
           path: dist
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: true
+      - name: Retain the exact tested execution backend
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: tested-backend
+          path: dist-backend
           if-no-files-found: error
           retention-days: 14
           include-hidden-files: true
@@ -210,6 +228,10 @@ jobs:
         with:
           name: tested-site
           path: dist
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: tested-backend
+          path: dist-backend
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: browser-evidence

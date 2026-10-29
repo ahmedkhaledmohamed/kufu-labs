@@ -18,6 +18,7 @@
           <a href="../../index.html">Home</a>
           <a href="../../problems.html">Problems</a>
           <a href="../../sources.html">Sources</a>
+          <a href="../../lab.html">Execution lab</a>
         </nav>
       </div>
     </header>
@@ -63,6 +64,11 @@ python3 -m http.server 8879 --bind 127.0.0.1 --directory dist</code></pre>
 <h2 id="nwb-stream-integrity-follow-up">NWB stream-integrity follow-up</h2>
 <p>The follow-up adds <code>projects/nwb-stream-integrity/prepare.py</code> to source preparation and an isolated NWB environment inside the existing required <strong>Pinned scientific software contracts</strong> job. The baseline replay must exhibit the documented constructed-data loss, while the helper patch must preserve all values and dtypes. The upstream unit regressions and Ruff/Black checks must also pass. A failure therefore fails an already-required check; no new branch-protection setting is needed.</p>
 <p>The existing <code>scientific-evidence</code> artifact retains <code>.runs/contracts/nwb/</code> results and JUnit output. The web job downloads this artifact and copies the newly generated baseline and patched JSON into the project before packaging the tested site. Vercel promotion remains downstream of the scientific and browser gates. The local equivalent passed; the first remote run of this follow-up remains pending publication.</p>
+<h2 id="vercel-execution-lab">Vercel execution lab</h2>
+<p>The new Execution lab is a parameterized NWB adapter alongside the static evidence pages. Functions submit/read jobs, Vercel Queues invokes the worker, Vercel Sandbox executes pinned baseline/patched software, and a private Blob store retains reports and downloadable arrays after the VM stops. GitHub Actions remains CI and invokes the deployed acceptance check; it does not execute user-submitted jobs.</p>
+<p><code>npm run build</code> bundles <code>dist-backend/functions/</code> separately from the static allowlist and records its hashes in <code>dist/build-info.json</code>. CI retains <code>tested-backend</code> alongside <code>tested-site</code>; deployment verifies both artifacts and assembles the Build Output API package. The worker has a <code>queue/v2beta</code> trigger, one concurrent delivery and a 300-second function duration. The actual Sandbox is capped at 240 seconds and is non-persistent. Private store access uses the function&#x27;s OIDC context; credentials are not embedded in the artifact.</p>
+<p>The existing personal Hobby project is prepared with a private <code>kufu-experiments</code> store connected to preview/production and <code>KUFU_LAB_ENABLED=1</code> for future deployments. No paid plan upgrade or manual deployment was performed. Static/offline previews explicitly disable execution. Pages and API reads never create Sandboxes. An atomic daily budget and immutable run claim bound submissions and duplicate delivery. Completed runs are retained without automatic cleanup in this first version; quota failures are explicit service failures.</p>
+<p><code>node lab/verify.cjs</code> checks request and worker contracts with service doubles and consumes CI&#x27;s actual parameterized scientific reports. <code>node lab/verify-browser.cjs</code> checks UI interactions against local API doubles. <code>node lab/verify-deployed.cjs</code> is the separate real hosted acceptance check: it submits HDF5 and Zarr inputs to the protected deployment, waits for the Vercel Queue/Sandbox result, requires stopped compute and preserved controls/patched values, and verifies the private ZIP hash. Deployment runs it before any main promotion. It consumes one of the ten daily submission slots; its first real deployed result is pending the reviewed PR. Authentication protection remains enabled for the site and API.</p>
       <footer>
         Kufu Labs. Constructed demos and recorded checks do not establish
         researcher benefit.

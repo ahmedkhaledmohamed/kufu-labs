@@ -572,6 +572,7 @@ def main():
         "problems": "Problems",
         "sources": "Sources",
         "validation": "Validation",
+        "lab": "Execution lab",
     }
     for filename, title in pages.items():
         view = "home" if filename == "index" else filename
@@ -608,7 +609,9 @@ def main():
             + ';</script><script src="site/app.js"></script>'
         )
         active = (
-            filename + ".html" if filename in ["index", "problems", "sources"] else None
+            filename + ".html"
+            if filename in ["index", "problems", "sources", "lab"]
+            else None
         )
         (ROOT / f"{filename}.html").write_text(
             shell(title, content, active=active, scripts=scripts)

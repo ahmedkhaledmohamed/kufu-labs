@@ -37,13 +37,22 @@ const url = (file) => new URL(file, base).href;
     await context.tracing.start({ screenshots: true, snapshots: true });
   const errors = [],
     unexpected = [],
-    scientificRequests = [];
+    scientificRequests = [],
+    capabilityRequests = [];
   context.on("page", (page) =>
     page.on("pageerror", (error) => errors.push(error.message)),
   );
   context.on("request", (request) => {
-    if (["xhr", "fetch", "websocket"].includes(request.resourceType()))
-      scientificRequests.push(request.url());
+    if (["xhr", "fetch", "websocket"].includes(request.resourceType())) {
+      const target = new URL(request.url());
+      if (
+        request.method() === "GET" &&
+        target.pathname === "/api/experiments" &&
+        !target.search
+      )
+        capabilityRequests.push(request.url());
+      else scientificRequests.push(request.url());
+    }
   });
   await context.route("**/*", async (route) => {
     const target = route.request().url();
@@ -66,6 +75,7 @@ const url = (file) => new URL(file, base).href;
       ["Home", "index.html"],
       ["Problems", "problems.html"],
       ["Sources", "sources.html"],
+      ["Execution lab", "lab.html"],
     ];
     const rootPages = [
       "index.html",
@@ -73,6 +83,7 @@ const url = (file) => new URL(file, base).href;
       "sources.html",
       "explorations.html",
       "validation.html",
+      "lab.html",
     ];
     const nav = () => page.getByRole("navigation", { name: "Main navigation" });
     await page.goto(url("index.html"));
@@ -83,7 +94,7 @@ const url = (file) => new URL(file, base).href;
         await page.locator('nav [aria-current="page"]').textContent(),
         name,
       );
-      assert.equal(await nav().getByRole("link").count(), 3);
+      assert.equal(await nav().getByRole("link").count(), primary.length);
     }
     await page.goto(url("problems.html"));
     assert.equal(
@@ -136,7 +147,7 @@ const url = (file) => new URL(file, base).href;
       await page.waitForURL(url(problem.href), { waitUntil: "load" });
       assert.equal(await page.locator("h1").count(), 1);
       assert.equal(await page.locator("script").count(), 0);
-      assert.equal(await nav().getByRole("link").count(), 3);
+      assert.equal(await nav().getByRole("link").count(), primary.length);
       assert.equal(
         await page.locator('nav [aria-current="page"]').textContent(),
         "Problems",
@@ -349,7 +360,7 @@ const url = (file) => new URL(file, base).href;
           .getByRole("navigation", { name: "Main navigation" })
           .getByRole("link")
           .count(),
-        3,
+        primary.length,
       );
       const links = await page
         .locator("a[href]")
@@ -426,9 +437,10 @@ const url = (file) => new URL(file, base).href;
       pageErrors: errors,
       externalRequests: 0,
       backgroundExecutionRequests: 0,
+      readOnlyCapabilityRequests: capabilityRequests.length,
       deployedArtifactIdentityChecked: Boolean(process.env.HUB_URL),
       checks: [
-        "three primary navigation destinations",
+        "four primary navigation destinations",
         "all canonical problem pages and legacy fragments",
         "compound filters/reset/empty state",
         "source-board query navigation with delayed script",
