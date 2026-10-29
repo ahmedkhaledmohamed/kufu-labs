@@ -2,6 +2,10 @@
 
 Local read-only demonstration of overlap filtering, using seven constructed pose examples. No recordings, biological ground truth, accounts or network connection are needed to use it. **No outreach is planned or authorised.** This replaces recruitment as the immediate next step in the earlier unpublished research plan.
 
+## Native SLEAP host adapter
+
+The separate [experimental source adapter](sleap-adapter/README.md) adds an Analyze action to pinned SLEAP 1.6.6. It loads a constructed `.slp` in the real application, uses actual canvas selections, and displays unchanged released NumPy Labels-filter metrics without modifying annotations. The record includes installation, before/after menu captures, a host walkthrough and read-only checks. Its numerical backend differs from this browser demo; support is deliberately version-pinned and researcher benefit remains unvalidated.
+
 ## Open and demonstrate
 
 Open [index.html](index.html) directly in a browser. The complete dataset and filter decisions are embedded in that file; Python and dependencies are unnecessary for viewing it. Keep COPYING alongside it when sharing a copy. Alternatively run `python3 -m http.server 8876 --bind 127.0.0.1` from this directory and visit `http://127.0.0.1:8876`.
@@ -56,7 +60,7 @@ The pose canvas is primary, with a compact control rail. Cool white, navy and te
 
 Before coding, the design review identified three risks: colour-only decisions, pair scores that hide greedy context, and rounded values that obscure equality. The implementation addresses these with explicit states, a three-instance fixture, both OKS directions and an exact-boundary action. Screenshot review removed an unnecessary metric-button transition and clarified unavailable-pair explanations.
 
-Next local milestone: evaluate a read-only SLEAP selection adapter or explicit .slp import, preserving instance/skeleton/node order and actual confidence fields. Verify against real host data structures before promising GUI integration. Researcher feedback remains deferred until Ahmed chooses to share a concrete artifact. Further publication follows the lab’s exact-diff approval and PR process. Outreach remains deferred.
+The read-only host-adapter milestone now has a separate constructed-data implementation and verification record above. Next, review its native installation and walkthrough, then assess additional backend support; upstream acceptance and usefulness in researcher tasks remain unverified. Researcher feedback remains deferred until Ahmed chooses to share a concrete artifact. Further publication follows the lab’s exact-diff approval and PR process. Outreach remains deferred.
 
 ## Licence
 

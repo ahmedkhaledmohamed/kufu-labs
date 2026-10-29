@@ -36,6 +36,17 @@ def main():
         ]
     ]
     files += [ROOT / "README.md", ROOT / "WORKSPACE.md", ROOT / "LICENSE"]
+    # Explicit native-host demonstration assets; never package arbitrary media.
+    files += [
+        ROOT / "projects/overlap-inspector/sleap-adapter" / name
+        for name in [
+            "before-menu.png",
+            "after-menu.png",
+            "host-inspector.png",
+            "host-walkthrough.mp4",
+            "UPSTREAM-SLEAP-LICENSE",
+        ]
+    ]
     # Linked research/source artifacts are explicit, inert download types.
     tracked = (
         subprocess.check_output(
