@@ -1,4 +1,4 @@
-// Promote only the tested prebuilt static artifact, with verified owner/protection.
+// Promote only the tested static and backend artifacts, with verified owner/protection.
 const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
@@ -101,6 +101,20 @@ function target() {
       hash,
       `Artifact changed: ${file}`,
     );
+  assert.equal(
+    Object.keys(manifest.backend_files || {}).length,
+    4,
+    "Missing tested execution backend",
+  );
+  for (const [file, hash] of Object.entries(manifest.backend_files))
+    assert.equal(
+      crypto
+        .createHash("sha256")
+        .update(fs.readFileSync(path.join(root, "dist-backend", file)))
+        .digest("hex"),
+      hash,
+      `Backend artifact changed: ${file}`,
+    );
   if (process.env.GITHUB_SHA)
     assert.equal(manifest.source_commit, process.env.GITHUB_SHA);
   const web = JSON.parse(
@@ -132,6 +146,11 @@ function target() {
   fs.cpSync(path.join(root, "dist"), path.join(output, "static"), {
     recursive: true,
   });
+  fs.cpSync(
+    path.join(root, "dist-backend/functions"),
+    path.join(output, "functions"),
+    { recursive: true },
+  );
   fs.writeFileSync(
     path.join(output, "config.json"),
     JSON.stringify({
@@ -186,6 +205,7 @@ function target() {
     "/",
     "/site/catalog.json",
     "/projects/overlap-inspector/index.html",
+    "/api/experiments",
   ]) {
     const response = await fetch(deployment + resource, { redirect: "manual" });
     assert.ok(
@@ -194,6 +214,24 @@ function target() {
     );
   }
   target();
+  const capability = await fetch(deployment + "/api/experiments", {
+    headers: {
+      "x-vercel-protection-bypass": process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+    },
+  });
+  assert.equal(
+    capability.status,
+    200,
+    "Execution API failed its read-only deployment check",
+  );
+  const execution = await capability.json();
+  assert.equal(execution.provider, "Vercel Sandbox");
+  assert.equal(execution.source_commit, manifest.source_commit);
+  execFileSync(process.execPath, [path.join(root, "lab/verify-deployed.cjs")], {
+    cwd: root,
+    env: { ...env, HUB_URL: deployment },
+    stdio: "inherit",
+  });
   if (mode === "production") {
     assert.equal(
       process.env.GITHUB_REF,

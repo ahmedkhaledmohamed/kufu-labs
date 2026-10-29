@@ -18,9 +18,9 @@ def main():
     OUTPUT.mkdir()
     files = [
         ROOT / f"{p}.html"
-        for p in ["index", "explorations", "problems", "sources", "validation"]
+        for p in ["index", "explorations", "problems", "sources", "validation", "lab"]
     ]
-    files += [ROOT / "site/app.js", ROOT / "site/style.css"]
+    files += [ROOT / "site/app.js", ROOT / "site/style.css", ROOT / "site/lab.js"]
     files += list((ROOT / "site/records").glob("*.html"))
     files += [
         ROOT / f"site/{p}"

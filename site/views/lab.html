@@ -1,0 +1,170 @@
+<section class="hero">
+  <p class="eyebrow">Execution lab · NWB stream preservation</p>
+  <h1>Run the software with new inputs</h1>
+  <p>
+    Generate a synthetic signal, inspect it, then write and reopen the file.
+    Compare the saved values with the original input using the baseline software
+    and our patch.
+  </p>
+  <p>
+    <a href="https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771"
+      >Original problem: NWB Inspector #771</a
+    >
+    ·
+    <a href="projects/nwb-stream-integrity/README.md"
+      >Investigation and limits</a
+    >
+    ·
+    <a
+      href="https://github.com/ahmedkhaledmohamed/kufu-labs/tree/main/projects/nwb-stream-integrity"
+      >Implementation</a
+    >
+  </p>
+</section>
+<section class="lab-workspace" aria-labelledby="inputsTitle">
+  <div class="lab-inputs">
+    <h2 id="inputsTitle">1. Choose the input</h2>
+    <p>
+      These are constructed arrays, not neural recordings. A seed reproduces the
+      same random values with the recorded NumPy version.
+    </p>
+    <form id="experimentForm">
+      <div class="lab-fields">
+        <label
+          >Rows
+          <input
+            name="rows"
+            type="number"
+            min="1"
+            max="2000"
+            value="500"
+            required
+        /></label>
+        <label
+          >Channels
+          <input
+            name="channels"
+            type="number"
+            min="1"
+            max="8"
+            value="2"
+            required
+        /></label>
+        <label
+          >Buffer rows
+          <input
+            name="buffer"
+            type="number"
+            min="1"
+            max="500"
+            value="100"
+            required
+        /></label>
+        <label
+          >Random seed
+          <input
+            name="seed"
+            type="number"
+            min="0"
+            max="2147483647"
+            value="42"
+            required
+        /></label>
+        <label
+          >Signal pattern
+          <select name="pattern">
+            <option value="ramp">Increasing positive values</option>
+            <option value="random">Seeded random positive values</option>
+            <option value="alternating">
+              Alternating positive / negative rows
+            </option>
+          </select></label
+        >
+        <label
+          >File format
+          <select name="backend">
+            <option value="hdf5">HDF5 (.nwb)</option>
+            <option value="zarr">Zarr</option>
+          </select></label
+        >
+        <label
+          >Stream iterator
+          <select name="iterator">
+            <option value="basic">DataChunkIterator</option>
+            <option value="generic">GenericDataChunkIterator</option>
+          </select></label
+        >
+        <label
+          >Experiment set
+          <select name="batch">
+            <option value="single">One case</option>
+            <option value="boundary">Boundary cases (up to four)</option>
+          </select></label
+        >
+      </div>
+      <p>
+        <button type="button" id="generateInputs">Generate input plan</button>
+        <button type="submit" id="runExperiment" disabled>Run on Vercel</button>
+      </p>
+    </form>
+    <pre id="inputPlan" aria-label="Generated experiment inputs"></pre>
+    <p id="labAvailability" role="status">Checking execution availability…</p>
+    <noscript
+      ><p>
+        JavaScript is required to submit an experiment. The investigation and
+        saved validation results remain available without it.
+      </p></noscript
+    >
+  </div>
+  <aside class="lab-method">
+    <h2>What runs</h2>
+    <ol>
+      <li>A queued Vercel worker starts an isolated Sandbox.</li>
+      <li>
+        Python generates identical inputs for fresh control and inspected runs.
+      </li>
+      <li>
+        The pinned baseline and patched NWB software write and reopen real
+        files.
+      </li>
+      <li>
+        Every value, shape and dtype is compared; arrays, reports and logs are
+        saved.
+      </li>
+      <li>The Sandbox stops. Results remain available.</li>
+    </ol>
+    <p>
+      Allow a few minutes for setup and execution. Opening this page or
+      generating an input plan starts no scientific compute.
+    </p>
+    <p>
+      Limit: four cases per submission, 2,000 rows × 8 channels per case, 10
+      submissions per UTC day across the lab. Sandbox time is capped at four
+      minutes. This validates a software property, not biological accuracy or
+      researcher benefit.
+    </p>
+  </aside>
+</section>
+<section aria-labelledby="resultsTitle">
+  <h2 id="resultsTitle">2. Compare the actual saved output</h2>
+  <p id="runStatus" role="status">No experiment submitted.</p>
+  <div
+    id="runProgress"
+    class="run-progress"
+    role="region"
+    aria-labelledby="progressHeading"
+    hidden
+  >
+    <h3 id="progressHeading">Execution progress</h3>
+    <p id="progressSummary" role="status"></p>
+    <p id="runElapsed" aria-live="off"></p>
+    <ol id="runTimeline" class="run-timeline"></ol>
+  </div>
+  <div id="runResults"></div>
+  <p><a id="downloadRun" hidden>Download arrays, reports and logs (.zip)</a></p>
+  <details id="executionDetails" hidden>
+    <summary>Execution provenance and logs</summary>
+    <pre id="runDetails"></pre>
+  </details>
+</section>
+<script src="site/lab.js" defer></script>

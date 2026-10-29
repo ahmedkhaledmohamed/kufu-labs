@@ -2,21 +2,20 @@
 
 ## Current task
 
-The previous goal is complete. PR #15 merged at `d60b408cb95fa4905cdf0402ef5aa5273a7fe683`; main run 40693803427 passed scientific, browser and protected production deployment gates. Independent production checks matched fourteen asset hashes, verified the source commit, PostgreSQL evidence, desktop/mobile navigation and authentication protection.
+PR #18 is open at `7f7399302373b1dc7c00a6d432775d48da69eeb4`; PR #19 is stacked on it at `d0afa61e259e3e542e6d8e71645f7819c09b4440`. Runs 40802573803 and 40802657820 passed scientific contracts, refine.bio workflows and browser verification. Both protected deployments failed before hosted execution because the prebuilt queue trigger omitted its required consumer identifier. Production is unchanged. PR #17 remains separate and open; no merge is authorised.
 
-The current goal remains in progress on `validation/refinebio-workflow` from merged main `d60b408`. PR #16 contains approved commit `43eae2c`. Its actual metadata workflow passed in run 40763058912: 91 official migrations, real startup-hook registration, five constructed SRA sample-creation cases, real TSV/JSON export in ALL/EXPERIMENT/SPECIES modes and five existing export regressions per revision. Both zero cases change from empty to `0.000`; positive and missing-value controls stay unchanged. Independent artifact checks matched all 26 output-file hashes and retained TSV text. All four CI gates passed, including browser verification and protected preview deployment. The local actual-result view also passed desktop/mobile verification across 258 links.
+The local repair derives the consumer with Vercel's path-normalisation utility and validates generated configurations with the same NodejsLambda class used by deployment. The already installed build-utils version is now an explicit pinned build dependency. A negative contract check recreates the missing-consumer rejection. Both branches pass local build, contracts and formatting; the corrected hosted deployment remains pending exact-diff review and publication.
 
-A local evidence follow-up replaces pending-export descriptions and retains the actual CI results in the project and hub. This follow-up is not yet pushed and requires exact-diff review. The implementation's earlier wheel and import-directory failures remain documented; no source patch or acceptance assertion was relaxed. Sources are fetched with a partial/sparse checkout excluding test volumes. No recordings, model weights, live source calls, expression processing, dispatch/upload or populated-production upgrade are involved. The local managed container policy was not bypassed. The selected workflow runs in the personal lab's Linux CI, while local PostgreSQL 16.2 evidence remains separately recorded.
+The execution backend remains parameterized NWB baseline/patched software on Vercel Sandbox, with fresh controls and private saved outputs. The progress follow-up retains timestamped worker stages, elapsed time, reload-safe history and explicit failed/interrupted/stale states. Scientific/input-generation rules and execution bounds are unchanged. Direct Vercel scientific runs passed previously; the full deployed Queue/Sandbox/private-storage path and its progress history have not passed yet.
 
-Portfolio milestones under discussion: NWB retains its maintained round-trip CI and upstream review package; pose overlap needs a read-only boundary against actual SLEAP structures and rendered selection; movement needs rendered interaction verification and a separate decision on deletion provenance; accessibility retains its reproduction and existing upstream PR rather than a competing fix. These milestones do not authorise parallel speculative applications or extra upstream publication. Keep one implementation active while evaluating the next task.
-
-The [validation batch](research/opportunity-discovery/VALIDATION-BATCH.md) records the cross-domain findings. The [first signals exercise](research/opportunity-discovery/SIGNALS-EXERCISE.md) supports gradual neuroscience learning. Researcher benefit and upstream acceptance remain unvalidated. No outreach, new accounts, spending, research recordings or model weights. Exact-diff approval is required before pushing or creating a PR, and explicit merge authorisation is separate.
+Show the repair diff before pushing either branch. Update PR #18 first and preserve PR #19's approved progress implementation when rebasing it. Mark each exact approved commit through the contribution gate. No merge, manual deployment, outreach, spending, new accounts, real recordings or model weights. Do not download unrelated environment credentials; the rejected broad environment pull was not performed.
 
 ## Entry points
 
 - [Home](index.html): meaning, purpose and the practical-ingenuity figure.
 - [Explorations](explorations.html): project implementations, runnable examples and limits.
 - [Problems](problems.html), [sources](sources.html) and [validation](validation.html): the evidence catalogue and outcome assessment.
+- [Execution lab](lab.html): parameterized scientific jobs on Vercel.
 - [Delivery](site/DELIVERY.md): CI/CD, artifact identity and protected deployment.
 - [Licensing](README.md#licensing): default MIT terms and preserved GPL/BSD exceptions.
 
