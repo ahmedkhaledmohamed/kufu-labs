@@ -1,31 +1,74 @@
 const { Sandbox } = require("@vercel/sandbox");
-const { summarize, hash, validateCases } = require("./contracts.cjs");
-const project = "projects/nwb-stream-integrity";
-// Text imports are embedded by the backend build; no mutable remote scripts.
-const payload = {
-  "experiment.py": require("../projects/nwb-stream-integrity/experiment.py"),
-  "prepare.py": require("../projects/nwb-stream-integrity/prepare.py"),
-  "non-consuming-shape.patch": require("../projects/nwb-stream-integrity/non-consuming-shape.patch"),
-  "requirements.txt": require("../projects/nwb-stream-integrity/requirements.txt"),
-  "verification.json": JSON.stringify(
-    require("../projects/nwb-stream-integrity/verification.json"),
-  ),
+const {
+  summarize,
+  hash,
+  validateCases,
+  validateRecipe,
+} = require("./contracts.cjs");
+// Only these two reviewed payloads can run; requests supply parameters, not code.
+const recipes = {
+  nwb: {
+    project: "projects/nwb-stream-integrity",
+    patch: "non-consuming-shape.patch",
+    metadata: "verification.json",
+    checkout: "nwb",
+    sourceSuffix: "/src",
+    moduleHash: "shape_module_sha256",
+    inputKind: "Synthetic int16 signals; no neural recordings",
+    payload: {
+      "experiment.py": require("../projects/nwb-stream-integrity/experiment.py"),
+      "prepare.py": require("../projects/nwb-stream-integrity/prepare.py"),
+      "non-consuming-shape.patch": require("../projects/nwb-stream-integrity/non-consuming-shape.patch"),
+      "requirements.txt": require("../projects/nwb-stream-integrity/requirements.txt"),
+      "verification.json": JSON.stringify(
+        require("../projects/nwb-stream-integrity/verification.json"),
+      ),
+    },
+  },
+  mne: {
+    project: "projects/mne-annotation-onsets",
+    patch: "preserve-interior-onsets.patch",
+    metadata: "profile.json",
+    checkout: "mne",
+    sourceSuffix: "",
+    moduleHash: "annotations_sha256",
+    inputKind:
+      "Constructed one-channel linear ramp; no neural recordings or neural simulation",
+    payload: {
+      "experiment.py": require("../projects/mne-annotation-onsets/experiment.py"),
+      "prepare.py": require("../projects/mne-annotation-onsets/prepare.py"),
+      "preserve-interior-onsets.patch": require("../projects/mne-annotation-onsets/preserve-interior-onsets.patch"),
+      "requirements.txt": require("../projects/mne-annotation-onsets/requirements.txt"),
+      "profile.json": JSON.stringify(
+        require("../projects/mne-annotation-onsets/profile.json"),
+      ),
+    },
+  },
 };
-const upstream = JSON.parse(payload["verification.json"]);
-async function execute(cases, onProgress = async () => {}, credentials = {}) {
-  validateCases(cases);
+async function execute(
+  cases,
+  onProgress = async () => {},
+  credentials = {},
+  recipe = "nwb",
+) {
+  validateRecipe(recipe);
+  validateCases(cases, recipe);
+  const config = recipes[recipe];
+  const { project, payload } = config;
+  const upstream = JSON.parse(payload[config.metadata]);
   const started = Date.now();
   let sandbox;
   let failed = false;
   const logs = [];
   const record = {
     lab_source_commit: KUFU_SOURCE.commit,
+    recipe,
     provider: "Vercel Sandbox",
-    upstream_commit: upstream.upstream_commit,
-    patch_sha256: hash(payload["non-consuming-shape.patch"]),
+    upstream_commit: upstream.upstream_commit || upstream.source_revision,
+    patch_sha256: hash(payload[config.patch]),
     experiment_sha256: hash(payload["experiment.py"]),
     requirements_sha256: hash(payload["requirements.txt"]),
-    input_kind: "Synthetic int16 signals; no neural recordings",
+    input_kind: config.inputKind,
     cases,
   };
   async function command(label, cmd, args, env = {}) {
@@ -113,23 +156,25 @@ async function execute(cases, onProgress = async () => {}, credentials = {}) {
       "-r",
       `${project}/requirements.txt`,
     ]);
-    await command("Installing upstream package metadata", "python3", [
-      "-m",
-      "uv",
-      "pip",
-      "install",
-      "--python",
-      "/vercel/sandbox/venv/bin/python",
-      "--index-url",
-      "https://pypi.org/simple",
-      "--no-deps",
-      "-e",
-      ".external/nwb-patched",
-    ]);
+    if (recipe === "nwb") {
+      await command("Installing upstream package metadata", "python3", [
+        "-m",
+        "uv",
+        "pip",
+        "install",
+        "--python",
+        "/vercel/sandbox/venv/bin/python",
+        "--index-url",
+        "https://pypi.org/simple",
+        "--no-deps",
+        "-e",
+        `.external/${config.checkout}-patched`,
+      ]);
+    }
     await sandbox.update({ networkPolicy: "deny-all" });
     for (const mode of ["baseline", "patched"])
       await command(
-        `Running ${mode} and fresh uninspected controls`,
+        `Running ${mode} ${recipe === "mne" ? "annotation attachment and timestamp controls" : "and fresh uninspected controls"}`,
         "/vercel/sandbox/venv/bin/python",
         [
           `${project}/experiment.py`,
@@ -141,7 +186,7 @@ async function execute(cases, onProgress = async () => {}, credentials = {}) {
           `outputs/${mode}`,
         ],
         {
-          PYTHONPATH: `/vercel/sandbox/.external/nwb-${mode === "baseline" ? "clean" : "patched"}/src`,
+          PYTHONPATH: `/vercel/sandbox/.external/${config.checkout}-${mode === "baseline" ? "clean" : "patched"}${config.sourceSuffix}`,
           NWBI_SKIP_NETWORK_TESTS: "1",
         },
       );
@@ -155,13 +200,13 @@ async function execute(cases, onProgress = async () => {}, credentials = {}) {
         await sandbox.readFileToBuffer({ path: "outputs/patched/report.json" })
       ).toString(),
     );
-    record.comparisons = summarize(baseline, patched);
+    record.comparisons = summarize(baseline, patched, recipe);
     record.environment = {
       baseline: baseline.versions,
       patched: patched.versions,
       python: patched.python,
-      baseline_module_sha256: baseline.shape_module_sha256,
-      patched_module_sha256: patched.shape_module_sha256,
+      baseline_module_sha256: baseline[config.moduleHash],
+      patched_module_sha256: patched[config.moduleHash],
     };
     await sandbox.writeFiles([
       {

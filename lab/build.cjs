@@ -83,7 +83,7 @@ async function main() {
   }
   manifest.backend_files = files;
   manifest.execution =
-    "Static evidence pages plus explicitly requested NWB experiments in Vercel Sandbox via authenticated Functions and Queues.";
+    "Static evidence pages plus explicitly requested NWB and MNE experiments in Vercel Sandbox via authenticated Functions and Queues.";
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
   console.log(
     `Bundled two Vercel Functions; ${Object.keys(files).length} backend assets recorded.`,

@@ -1,6 +1,6 @@
 const { QueueClient } = require("@vercel/queue");
 const { execute } = require("./run.cjs");
-const { validId } = require("./contracts.cjs");
+const { validId, validateRecipe } = require("./contracts.cjs");
 const store = require("./store.cjs");
 const queue = new QueueClient({ region: "iad1" });
 async function processRun(message) {
@@ -14,6 +14,7 @@ async function processRun(message) {
   const submission = await store.readJSON(id, "submission.json");
   if (!submission || Date.now() - Date.parse(submission.created_at) > 900000)
     return;
+  const recipe = validateRecipe(submission.recipe);
   // Atomic immutable claim prevents duplicate delivery from launching more VMs.
   const startedAt = new Date().toISOString();
   try {
@@ -59,7 +60,7 @@ async function processRun(message) {
   }
   try {
     await report("Starting experiment");
-    const result = await execute(submission.cases, report);
+    const result = await execute(submission.cases, report, {}, recipe);
     await report("Saving result bundle");
     await store.write(
       store.key(id, "results.zip"),
@@ -69,15 +70,17 @@ async function processRun(message) {
     finish("completed");
     await store.writeJSON(id, "result.json", {
       ...result.record,
+      recipe,
       source_commit: store.build.commit,
       logs: result.logs,
       finished_at: progress.finished_at,
       progress,
     });
   } catch (error) {
-    console.error("NWB run failed", id, error.name);
+    console.error("Lab run failed", id, error.name);
     finish("failed");
     await store.writeJSON(id, "error.json", {
+      recipe,
       message:
         "The experiment could not complete. See the execution logs; no scientific result is claimed.",
       logs: error.labLogs || [],

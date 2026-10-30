@@ -507,7 +507,7 @@ def main():
         )
         assert (ROOT / demo["result"]).is_file()
         if demo["href"]:
-            assert (ROOT / demo["href"]).is_file()
+            assert (ROOT / urlsplit(demo["href"]).path).is_file()
     RECORDS.mkdir(exist_ok=True)
     for generated in RECORDS.glob("*.html"):
         generated.unlink()

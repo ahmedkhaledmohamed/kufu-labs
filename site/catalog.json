@@ -922,9 +922,9 @@
           ]
         ],
         "execution": {
-          "label": "Recorded Python crop and attachment verification",
-          "summary": "This page displays retained results. Opening it starts no Python, kernel, recording download or Vercel job. The reproduction command runs the real MNE methods and selected tests in a local isolated environment.",
-          "action": "Read the verification record"
+          "label": "Queued Vercel Sandbox experiment",
+          "summary": "This page shows retained results. Open the Execution lab to change the sampling rate, annotation sample and time origin, or generate four reference cases. Press Run to execute the actual baseline and patched MNE software on Vercel; opening the page starts no compute.",
+          "action": "Open MNE execution lab"
         },
         "related": [
           "nwb-stream-integrity",
@@ -1668,17 +1668,17 @@
     {
       "id": "mne-onsets",
       "title": "Interior annotation onset replay",
-      "runtime": "Python 3.13, pinned MNE source and isolated runtime; no Qt, recordings, hardware or model inference.",
-      "inputs": "One constructed zero-valued EEG channel, four seconds, at 300/512/1000/2048 Hz; dated and undated annotation origins.",
+      "runtime": "Complete CPython 3.13.9 in a short-lived Vercel Sandbox after explicit submission; the pinned local/CI crop replay remains available.",
+      "inputs": "Constructed one-channel ramp, four seconds, with a 100 ms annotation; editable 128–8192 Hz rate, sample 0 through twice the rate, and relative or constructed UTC origin. First-sample offset stays zero. A reference batch generates four rates at sample 1.",
       "expected": "The original sample-1 onset is preserved when entirely inside crop limits. The tested default lookup returns 1. Existing rounded lookup returns 1 before and after.",
-      "verification": "Six baseline failures and all 12 selected candidate checks passing. Upstream Ruff, ty, codespell and static-doc checks pass locally.",
-      "limits": "Selected interior-onset contract only; no general timing repair, full suite, serialization, HED-specific evaluation, physical-clock validation, real recording or user benefit. Cloud execution is pending publication.",
+      "verification": "Six baseline failures and all 12 selected candidate checks passing. Upstream Ruff, ty, codespell and static-doc checks pass locally. The parameterized Python driver passes eight local reference/boundary cases with unchanged signal/input controls; API, executor and browser checks cover both experiments. The new hosted MNE flow is pending publication and its real deployment gate.",
+      "limits": "Bounded synthetic parameters only, no uploads or arbitrary code. Interior-onset contract only; no general timing repair, full suite, serialization, HED evaluation, hardware clocks, real recordings or measured user benefit. Hosted MNE verification is pending publication.",
       "command": "python3 projects/mne-annotation-onsets/prepare.py\n# Install the documented isolated runtime first.\npython projects/mne-annotation-onsets/verify.py --checkout .external/mne-patched --expect patched --output .runs/mne/patched.json",
-      "href": null,
+      "href": "lab.html?recipe=mne",
       "record": "projects/mne-annotation-onsets/README.md",
       "result": "projects/mne-annotation-onsets/patched.json",
       "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/mne-annotation-onsets/preserve-interior-onsets.patch",
-      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/mne-annotation-onsets/verify.py",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/mne-annotation-onsets/experiment.py",
       "problem": "eeg-events",
       "verifiedRun": "site/records/projects--mne-annotation-onsets--README.html"
     }

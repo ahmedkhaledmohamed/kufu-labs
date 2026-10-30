@@ -16,6 +16,15 @@ const fixture = reports.every((file) => fs.existsSync(file))
       ),
     }
   : JSON.parse(fs.readFileSync(".runs/lab/vercel-result.json"));
+const mneReports = ["baseline", "patched"].map((mode) =>
+  JSON.parse(
+    fs.readFileSync(`.runs/contracts/mne/parameterized-${mode}/report.json`),
+  ),
+);
+const mneFixture = {
+  recipe: "mne",
+  comparisons: summarize(...mneReports, "mne"),
+};
 const server = http.createServer((req, res) => {
   const file = path.join(root, new URL(req.url, "http://localhost").pathname);
   if (
@@ -125,10 +134,16 @@ const server = http.createServer((req, res) => {
           ? {
               id,
               status: jobState,
-              ...(jobState === "completed" ? fixture : {}),
+              recipe: submitted?.recipe || "nwb",
+              cases: submitted?.cases,
+              ...(jobState === "completed"
+                ? submitted?.recipe === "mne"
+                  ? mneFixture
+                  : fixture
+                : {}),
               progress: progressFixture(),
             }
-          : { enabled: available },
+          : { enabled: available, recipes: ["nwb", "mne"] },
       });
     });
     await page.goto(base + "/lab.html");
@@ -321,6 +336,79 @@ const server = http.createServer((req, res) => {
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.screenshot({
       path: path.join(output, "desktop.png"),
+      fullPage: true,
+    });
+    const beforeMne = submissions;
+    jobState = "queued";
+    await page.goto(base + "/lab.html?recipe=mne");
+    await page.waitForFunction(
+      () => !document.querySelector("#runExperiment").disabled,
+    );
+    assert.equal(await page.locator("#experimentRecipe").inputValue(), "mne");
+    assert.equal(await page.locator("#nwbInputs").isVisible(), false);
+    await page
+      .getByLabel("Annotation time origin", { exact: true })
+      .selectOption("utc");
+    await page
+      .getByLabel("MNE experiment set", { exact: true })
+      .selectOption("reference");
+    await page.getByRole("button", { name: "Generate input plan" }).click();
+    const mnePlan = JSON.parse(await page.locator("#inputPlan").textContent());
+    assert.deepEqual(
+      mnePlan,
+      mneReports[0].cases.map((value) => value.input),
+    );
+    assert.equal(
+      submissions,
+      beforeMne,
+      "Recipe selection and planning must not submit compute",
+    );
+    await page
+      .getByRole("button", { name: "Run on Vercel", exact: true })
+      .click();
+    await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("queued"),
+    );
+    assert.equal(submitted.recipe, "mne");
+    assert.deepEqual(submitted.cases, mnePlan);
+    assert.equal(await page.locator("#experimentRecipe").isDisabled(), true);
+    jobState = "completed";
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#runResults table")?.querySelector("tbody")
+          .children.length === 3,
+    );
+    assert.equal(await page.locator("#runResults table").count(), 4);
+    assert.match(
+      await page.locator("#runResults").textContent(),
+      /Rounded lookup is an existing workaround/,
+    );
+    assert.equal(await page.locator("#downloadRun").isVisible(), true);
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector("#runStatus").textContent.includes("completed"),
+    );
+    assert.equal(submissions, beforeMne + 1, "Reloading MNE must not resubmit");
+    assert.equal(await page.locator("#experimentRecipe").inputValue(), "mne");
+    assert.equal(await page.locator('[name="origin"]').inputValue(), "utc");
+    assert.deepEqual(
+      JSON.parse(await page.locator("#inputPlan").textContent()),
+      mnePlan,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      true,
+    );
+    await page.screenshot({
+      path: path.join(output, "mne-mobile.png"),
+      fullPage: true,
+    });
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page.screenshot({
+      path: path.join(output, "mne-desktop.png"),
       fullPage: true,
     });
     available = false;

@@ -1,12 +1,14 @@
 <section class="hero">
-  <p class="eyebrow">Execution lab · NWB stream preservation</p>
+  <p class="eyebrow" id="experimentName">
+    Execution lab · NWB stream preservation
+  </p>
   <h1>Run the software with new inputs</h1>
-  <p>
+  <p id="experimentIntro">
     Generate a synthetic signal, inspect it, then write and reopen the file.
     Compare the saved values with the original input using the baseline software
     and our patch.
   </p>
-  <p>
+  <p id="experimentLinks">
     <a href="https://github.com/NeurodataWithoutBorders/nwbinspector/issues/771"
       >Original problem: NWB Inspector #771</a
     >
@@ -24,83 +26,136 @@
 <section class="lab-workspace" aria-labelledby="inputsTitle">
   <div class="lab-inputs">
     <h2 id="inputsTitle">1. Choose the input</h2>
-    <p>
+    <label
+      >Experiment
+      <select id="experimentRecipe" aria-label="Experiment">
+        <option value="nwb">NWB stream preservation</option>
+        <option value="mne">MNE annotation precision</option>
+      </select>
+    </label>
+    <p id="inputExplanation">
       These are constructed arrays, not neural recordings. A seed reproduces the
       same random values with the recorded NumPy version.
     </p>
     <form id="experimentForm">
-      <div class="lab-fields">
-        <label
-          >Rows
-          <input
-            name="rows"
-            type="number"
-            min="1"
-            max="2000"
-            value="500"
-            required
-        /></label>
-        <label
-          >Channels
-          <input
-            name="channels"
-            type="number"
-            min="1"
-            max="8"
-            value="2"
-            required
-        /></label>
-        <label
-          >Buffer rows
-          <input
-            name="buffer"
-            type="number"
-            min="1"
-            max="500"
-            value="100"
-            required
-        /></label>
-        <label
-          >Random seed
-          <input
-            name="seed"
-            type="number"
-            min="0"
-            max="2147483647"
-            value="42"
-            required
-        /></label>
-        <label
-          >Signal pattern
-          <select name="pattern">
-            <option value="ramp">Increasing positive values</option>
-            <option value="random">Seeded random positive values</option>
-            <option value="alternating">
-              Alternating positive / negative rows
-            </option>
-          </select></label
-        >
-        <label
-          >File format
-          <select name="backend">
-            <option value="hdf5">HDF5 (.nwb)</option>
-            <option value="zarr">Zarr</option>
-          </select></label
-        >
-        <label
-          >Stream iterator
-          <select name="iterator">
-            <option value="basic">DataChunkIterator</option>
-            <option value="generic">GenericDataChunkIterator</option>
-          </select></label
-        >
-        <label
-          >Experiment set
-          <select name="batch">
-            <option value="single">One case</option>
-            <option value="boundary">Boundary cases (up to four)</option>
-          </select></label
-        >
+      <div id="nwbInputs">
+        <div class="lab-fields">
+          <label
+            >Rows
+            <input
+              name="rows"
+              type="number"
+              min="1"
+              max="2000"
+              value="500"
+              required
+          /></label>
+          <label
+            >Channels
+            <input
+              name="channels"
+              type="number"
+              min="1"
+              max="8"
+              value="2"
+              required
+          /></label>
+          <label
+            >Buffer rows
+            <input
+              name="buffer"
+              type="number"
+              min="1"
+              max="500"
+              value="100"
+              required
+          /></label>
+          <label
+            >Random seed
+            <input
+              name="seed"
+              type="number"
+              min="0"
+              max="2147483647"
+              value="42"
+              required
+          /></label>
+          <label
+            >Signal pattern
+            <select name="pattern">
+              <option value="ramp">Increasing positive values</option>
+              <option value="random">Seeded random positive values</option>
+              <option value="alternating">
+                Alternating positive / negative rows
+              </option>
+            </select></label
+          >
+          <label
+            >File format
+            <select name="backend">
+              <option value="hdf5">HDF5 (.nwb)</option>
+              <option value="zarr">Zarr</option>
+            </select></label
+          >
+          <label
+            >Stream iterator
+            <select name="iterator">
+              <option value="basic">DataChunkIterator</option>
+              <option value="generic">GenericDataChunkIterator</option>
+            </select></label
+          >
+          <label
+            >Experiment set
+            <select name="batch">
+              <option value="single">One case</option>
+              <option value="boundary">Boundary cases (up to four)</option>
+            </select></label
+          >
+        </div>
+      </div>
+      <div id="mneInputs" hidden>
+        <div class="lab-fields">
+          <label
+            >Sampling rate (Hz)<input
+              name="sfreq"
+              type="number"
+              min="128"
+              max="8192"
+              value="512"
+              required
+              disabled
+          /></label>
+          <label
+            >Annotation sample index<input
+              name="sample"
+              type="number"
+              min="0"
+              max="1024"
+              value="1"
+              required
+              disabled
+          /></label>
+          <label
+            >Annotation time origin<select
+              name="origin"
+              aria-label="Annotation time origin"
+              disabled
+            >
+              <option value="relative">Relative to signal start</option>
+              <option value="utc">Constructed UTC date (2020-01-01)</option>
+            </select></label
+          >
+          <label
+            >MNE experiment set<select
+              name="mneBatch"
+              aria-label="MNE experiment set"
+              disabled
+            >
+              <option value="single">One case</option>
+              <option value="reference">Four reference rates (sample 1)</option>
+            </select></label
+          >
+        </div>
       </div>
       <p>
         <button type="button" id="generateInputs">Generate input plan</button>
@@ -118,7 +173,7 @@
   </div>
   <aside class="lab-method">
     <h2>What runs</h2>
-    <ol>
+    <ol id="methodSteps">
       <li>A queued Vercel worker starts an isolated Sandbox.</li>
       <li>
         Python generates identical inputs for fresh control and inspected runs.
@@ -137,7 +192,7 @@
       Allow a few minutes for setup and execution. Opening this page or
       generating an input plan starts no scientific compute.
     </p>
-    <p>
+    <p id="experimentLimits">
       Limit: four cases per submission, 2,000 rows × 8 channels per case, 10
       submissions per UTC day across the lab. Sandbox time is capped at four
       minutes. This validates a software property, not biological accuracy or
@@ -146,7 +201,7 @@
   </aside>
 </section>
 <section aria-labelledby="resultsTitle">
-  <h2 id="resultsTitle">2. Compare the actual saved output</h2>
+  <h2 id="resultsTitle">2. Compare the actual output</h2>
   <p id="runStatus" role="status">No experiment submitted.</p>
   <div
     id="runProgress"

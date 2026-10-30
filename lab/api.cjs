@@ -1,5 +1,5 @@
 const { QueueClient } = require("@vercel/queue");
-const { validateCases, validId } = require("./contracts.cjs");
+const { validateRecipe, validateCases, validId } = require("./contracts.cjs");
 const store = require("./store.cjs");
 const queue = new QueueClient({ region: "iad1" });
 const enabled = () =>
@@ -33,9 +33,23 @@ async function status(id) {
   const submission = await store.readJSON(id, "submission.json");
   if (!submission) return null;
   const result = await store.readJSON(id, "result.json");
-  if (result) return { id, status: "completed", ...result };
+  if (result)
+    return {
+      id,
+      status: "completed",
+      ...result,
+      recipe: validateRecipe(submission.recipe),
+      cases: submission.cases,
+    };
   const failure = await store.readJSON(id, "error.json");
-  if (failure) return { id, status: "failed", ...failure };
+  if (failure)
+    return {
+      id,
+      status: "failed",
+      ...failure,
+      recipe: validateRecipe(submission.recipe),
+      cases: submission.cases,
+    };
   const claim = await store.readJSON(id, "claim.json");
   const progress = (await store.readJSON(id, "progress.json")) || {
     created_at: submission.created_at,
@@ -66,6 +80,7 @@ async function status(id) {
   return {
     id,
     status: expired ? "interrupted" : claim ? "running" : "queued",
+    recipe: validateRecipe(submission.recipe),
     cases: submission.cases,
     created_at: submission.created_at,
     progress,
@@ -88,6 +103,7 @@ module.exports = async (req, res) => {
         source_commit: store.build.commit,
         daily_limit: 10,
         max_cases: 4,
+        recipes: ["nwb", "mne"],
       });
     if (!enabled())
       return json(res, 503, {
@@ -97,7 +113,8 @@ module.exports = async (req, res) => {
     if (req.method === "GET") {
       if (!validId(id)) return json(res, 400, { error: "Invalid run ID." });
       if (url.searchParams.get("download") === "1") {
-        if (!(await store.readJSON(id, "result.json")))
+        const result = await store.readJSON(id, "result.json");
+        if (!result)
           return json(res, 404, { error: "No completed result bundle." });
         const archive = await store.read(store.key(id, "results.zip"));
         if (!archive)
@@ -105,7 +122,7 @@ module.exports = async (req, res) => {
         res.setHeader("Content-Type", "application/zip");
         res.setHeader(
           "Content-Disposition",
-          `attachment; filename="kufu-nwb-${id}.zip"`,
+          `attachment; filename="kufu-${validateRecipe(result.recipe)}-${id}.zip"`,
         );
         return res.end(archive);
       }
@@ -136,14 +153,16 @@ module.exports = async (req, res) => {
     try {
       submission = await body(req);
       if (!validId(submission.id)) throw new Error("Invalid submission ID.");
-      submission.cases = validateCases(submission.cases);
+      submission.recipe = validateRecipe(submission.recipe);
+      submission.cases = validateCases(submission.cases, submission.recipe);
     } catch (error) {
       return json(res, 400, { error: error.message });
     }
     const previous = await store.readJSON(submission.id, "submission.json");
     if (
       previous &&
-      JSON.stringify(previous.cases) !== JSON.stringify(submission.cases)
+      (validateRecipe(previous.recipe) !== submission.recipe ||
+        JSON.stringify(previous.cases) !== JSON.stringify(submission.cases))
     )
       return json(res, 409, {
         error: "That run ID belongs to different inputs.",
@@ -156,6 +175,7 @@ module.exports = async (req, res) => {
         });
       try {
         await store.writeJSON(submission.id, "submission.json", {
+          recipe: submission.recipe,
           cases: submission.cases,
           created_at: new Date().toISOString(),
           source_commit: store.build.commit,
@@ -168,6 +188,7 @@ module.exports = async (req, res) => {
         );
         if (
           !concurrent ||
+          validateRecipe(concurrent.recipe) !== submission.recipe ||
           JSON.stringify(concurrent.cases) !== JSON.stringify(submission.cases)
         )
           return json(res, 409, {
