@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
+const { execFileSync } = require("node:child_process");
 const { DEFAULT, MNE_DEFAULT } = require("./contracts.cjs");
 const deployment = process.env.HUB_URL;
 const secret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
@@ -14,6 +15,11 @@ async function request(suffix = "", options = {}) {
     headers: { "x-vercel-protection-bypass": secret, ...options.headers },
     signal: AbortSignal.timeout(30000),
   });
+  assert.notEqual(
+    response.status,
+    429,
+    "Hosted verification reached the shared daily submission limit (HTTP 429). Rerun the failed deployment job after UTC midnight.",
+  );
   assert.ok(response.ok, `Execution API returned ${response.status}`);
   return response;
 }
@@ -116,9 +122,30 @@ async function verifyRecipe(recipe, cases) {
   );
   const output = path.resolve(".runs/deployed-lab");
   fs.mkdirSync(output, { recursive: true });
+  const resultPath = path.join(
+    output,
+    recipe === "nwb" ? "result.json" : "mne-result.json",
+  );
   fs.writeFileSync(
-    path.join(output, recipe === "nwb" ? "result.json" : "mne-result.json"),
+    resultPath,
     JSON.stringify({ deployment, ...result }, null, 2) + "\n",
+  );
+  const archivePath = path.join(output, `${recipe}-results.zip`);
+  fs.writeFileSync(archivePath, archive);
+  const evidence = execFileSync(
+    "python3",
+    [
+      path.join(__dirname, "verify_bundle.py"),
+      "--archive",
+      archivePath,
+      "--result",
+      resultPath,
+    ],
+    { encoding: "utf8", timeout: 30000 },
+  );
+  fs.writeFileSync(
+    path.join(output, `${recipe}-array-verification.json`),
+    evidence,
   );
   console.log(
     `Verified actual ${recipe} queue → Sandbox → private result → download: ${id}`,

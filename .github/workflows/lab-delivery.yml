@@ -212,8 +212,8 @@ jobs:
           npx --no-install playwright install --with-deps chromium
       - name: Lint, package and exercise the actual site
         run: |
-          ruff check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
-          ruff format --check site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
+          ruff check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
+          ruff format --check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
           ruff check projects/movement-edit-filtering/verify_workflow.py projects/movement-edit-filtering/verify_deletion.py
           ruff format --check projects/movement-edit-filtering/verify_workflow.py projects/movement-edit-filtering/verify_deletion.py
           npm run lint
@@ -221,6 +221,7 @@ jobs:
           node --check site/deploy.cjs
           npm run build
           node lab/verify.cjs
+          python3 lab/verify_bundle_checks.py
           node lab/verify-browser.cjs
           npm test
           DEMO_OUTPUT=.runs/overlap npm run test:overlap
