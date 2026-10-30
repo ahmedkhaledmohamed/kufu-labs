@@ -1,0 +1,62 @@
+{
+  "source_revision": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+  "annotations_sha256": "18ede0da9eccfc5c43f581b06965273a18aa73fc33a5abebb0bd144605f21d5a",
+  "expectation": "baseline",
+  "patch_sha256": null,
+  "tests": 12,
+  "passed": 6,
+  "failed": [
+    "test_annotations_crop[None-2048]",
+    "test_annotations_crop[None-300]",
+    "test_annotations_crop[None-512]",
+    "test_annotations_crop[orig_time1-2048]",
+    "test_annotations_crop[orig_time1-300]",
+    "test_annotations_crop[orig_time1-512]"
+  ],
+  "input_kind": "Constructed zero array; 1 EEG channel, 4 seconds; not a neural recording or simulation",
+  "observations": [
+    {
+      "sfreq_hz": 300,
+      "original_onset_seconds": 0.0033333333333333335,
+      "attached_onset_seconds": 0.003333,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 512,
+      "original_onset_seconds": 0.001953125,
+      "attached_onset_seconds": 0.001953,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 1000,
+      "original_onset_seconds": 0.001,
+      "attached_onset_seconds": 0.001,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 2048,
+      "original_onset_seconds": 0.00048828125,
+      "attached_onset_seconds": 0.000488,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    }
+  ],
+  "python": "3.13.2",
+  "elapsed_seconds": 0.645,
+  "largest_constructed_signal_bytes": 65536,
+  "runtime_versions": {
+    "mne": "1.13.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pytest": "9.1.1"
+  },
+  "version_note": "mne distribution version identifies the installed runtime wheel; imported source is the separately pinned Git revision",
+  "limits": "Unclipped interior onsets only; no hardware-clock, recording, general datetime precision or serialization claim"
+}

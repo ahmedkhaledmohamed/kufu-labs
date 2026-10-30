@@ -315,6 +315,7 @@ const url = (file) => new URL(file, base).href;
       "edit-filtering",
       "deleted-flags",
       "nwb-stream-integrity",
+      "eeg-events",
       "zero-age-metadata",
     ]) {
       await page.goto(url("problems/" + id + ".html"));
@@ -440,7 +441,7 @@ const url = (file) => new URL(file, base).href;
         "all canonical problem pages and legacy fragments",
         "compound filters/reset/empty state",
         "source-board query navigation with delayed script",
-        "five complete solution narratives and explicit runtime labels",
+        "six complete solution narratives and explicit runtime labels",
         "research candidates claim no implemented solution",
         "actual before/after export values",
         "separate interactive pose demo and contextual return links",

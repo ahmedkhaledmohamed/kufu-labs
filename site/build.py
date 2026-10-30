@@ -246,6 +246,41 @@ def problem_content(problem, data):
                             ],
                         ]
                     )
+            if problem["id"] == "eeg-events":
+                reports = [
+                    json.loads(
+                        (
+                            ROOT / f"projects/mne-annotation-onsets/{mode}.json"
+                        ).read_text()
+                    )
+                    for mode in ["baseline", "patched"]
+                ]
+                rows = [rows[0]]
+                assert len(reports[0]["observations"]) == len(
+                    reports[1]["observations"]
+                )
+                for before, after in zip(
+                    reports[0]["observations"], reports[1]["observations"]
+                ):
+                    assert before["sfreq_hz"] == after["sfreq_hz"]
+                    assert (
+                        before["sample_index_before"]
+                        == after["sample_index_before"]
+                        == 1
+                    )
+                    assert (
+                        before["sample_index_with_rounding"]
+                        == after["sample_index_with_rounding"]
+                        == 1
+                    )
+                    rows.append(
+                        [
+                            str(before["sfreq_hz"]),
+                            str(before["sample_index_after"]),
+                            str(after["sample_index_after"]),
+                            "1",
+                        ]
+                    )
             comparison = (
                 '<div class="table-scroll"><table><caption>'
                 + escape(detail["comparisonTitle"])

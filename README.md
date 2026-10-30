@@ -67,6 +67,7 @@ The lab's original code and documentation use the [MIT License](LICENSE), except
 
 - The [pose overlap inspector](projects/overlap-inspector/COPYING), including its source and generated demo, remains GPL-3.0-only.
 - The [refine.bio patch](projects/refinebio-zero-age/preserve-zero.patch) retains its [upstream BSD licence](projects/refinebio-zero-age/UPSTREAM-LICENSE).
+- The [MNE interior-onset patch](projects/mne-annotation-onsets/preserve-interior-onsets.patch) retains its [upstream BSD licence](projects/mne-annotation-onsets/UPSTREAM-LICENSE). It is an agent-assisted local experiment, with no MNE submission or endorsement.
 - The [NWB Inspector patch](projects/nwb-stream-integrity/non-consuming-shape.patch) retains its [upstream licence and enhancement clause](projects/nwb-stream-integrity/UPSTREAM-LICENSE).
 - Upstream movement code included in the filtering patch retains its [BSD-3-Clause notice](projects/movement-edit-filtering/UPSTREAM-LICENSE). The lab's original integration and verification scripts use the default MIT licence.
 

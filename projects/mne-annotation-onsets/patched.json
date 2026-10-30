@@ -1,0 +1,55 @@
+{
+  "source_revision": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+  "annotations_sha256": "5e49bc16b0c687951422d197329d0acf67aff176e8fd9cfbcfbed8419ba1a1fa",
+  "expectation": "patched",
+  "patch_sha256": "ff166011bbb3765a371d47bf21e2e59d54899b465a47ba22fa7574fb8ad18619",
+  "tests": 12,
+  "passed": 12,
+  "failed": [],
+  "input_kind": "Constructed zero array; 1 EEG channel, 4 seconds; not a neural recording or simulation",
+  "observations": [
+    {
+      "sfreq_hz": 300,
+      "original_onset_seconds": 0.0033333333333333335,
+      "attached_onset_seconds": 0.0033333333333333335,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 512,
+      "original_onset_seconds": 0.001953125,
+      "attached_onset_seconds": 0.001953125,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 1000,
+      "original_onset_seconds": 0.001,
+      "attached_onset_seconds": 0.001,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 2048,
+      "original_onset_seconds": 0.00048828125,
+      "attached_onset_seconds": 0.00048828125,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    }
+  ],
+  "python": "3.13.2",
+  "elapsed_seconds": 0.455,
+  "largest_constructed_signal_bytes": 65536,
+  "runtime_versions": {
+    "mne": "1.13.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pytest": "9.1.1"
+  },
+  "version_note": "mne distribution version identifies the installed runtime wheel; imported source is the separately pinned Git revision",
+  "limits": "Unclipped interior onsets only; no hardware-clock, recording, general datetime precision or serialization claim"
+}
