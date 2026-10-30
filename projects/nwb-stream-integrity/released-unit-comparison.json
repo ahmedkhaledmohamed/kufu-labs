@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "passed": 278,
+    "skipped": 5,
+    "failed": [
+      "test_check_dynamic_table_region_data_validity_gt_len",
+      "test_check_dynamic_table_region_data_validity_lt_zero",
+      "test_check_image_series_starting_frame_without_external_file_pass_with_external"
+    ]
+  },
+  "patched": {
+    "passed": 289,
+    "skipped": 5,
+    "failed": [
+      "test_check_dynamic_table_region_data_validity_gt_len",
+      "test_check_dynamic_table_region_data_validity_lt_zero",
+      "test_check_image_series_starting_frame_without_external_file_pass_with_external"
+    ]
+  }
+}

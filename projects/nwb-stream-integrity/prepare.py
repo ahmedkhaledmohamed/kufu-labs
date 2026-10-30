@@ -1,5 +1,6 @@
 """Prepare exact source-only baseline and patched NWB Inspector worktrees."""
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -10,15 +11,30 @@ ROOT = PROJECT.parents[1]
 
 
 def main():
-    metadata = json.loads((PROJECT / "verification.json").read_text())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--released",
+        action="store_true",
+        help="Prepare the public 0.7.2 release comparison.",
+    )
+    args = parser.parse_args()
+    metadata = json.loads(
+        (
+            PROJECT
+            / ("released-profile.json" if args.released else "verification.json")
+        ).read_text()
+    )
     revision = metadata["upstream_commit"]
-    patch = PROJECT / "non-consuming-shape.patch"
+    patch = PROJECT / (
+        "released-0.7.2-shape.patch" if args.released else "non-consuming-shape.patch"
+    )
     assert hashlib.sha256(patch.read_bytes()).hexdigest() == metadata["patch_sha256"]
     external = ROOT / ".external"
     external.mkdir(exist_ok=True)
-    source = external / "nwb-source.git"
-    baseline = external / "nwb-clean"
-    patched = external / "nwb-patched"
+    prefix = "nwb-release" if args.released else "nwb"
+    source = external / f"{prefix}-source.git"
+    baseline = external / f"{prefix}-clean"
+    patched = external / f"{prefix}-patched"
     if any(path.exists() for path in [source, baseline, patched]):
         raise RuntimeError(
             "NWB checkouts already exist; preserve them and use a fresh lab worktree"
@@ -55,6 +71,11 @@ def main():
             ["git", "-C", str(checkout), "rev-parse", "HEAD"], text=True
         ).strip()
         assert observed == revision
+    if args.released:
+        assert (
+            hashlib.sha256((baseline / "license.txt").read_bytes()).hexdigest()
+            == metadata["license_sha256"]
+        )
     git("-C", patched, "apply", patch)
     print(
         json.dumps(
