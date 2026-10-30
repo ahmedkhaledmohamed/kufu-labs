@@ -1,0 +1,23 @@
+{
+  "source_revision": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+  "patch_sha256": "ff166011bbb3765a371d47bf21e2e59d54899b465a47ba22fa7574fb8ad18619",
+  "baseline_annotations_sha256": "18ede0da9eccfc5c43f581b06965273a18aa73fc33a5abebb0bd144605f21d5a",
+  "patched_annotations_sha256": "5e49bc16b0c687951422d197329d0acf67aff176e8fd9cfbcfbed8419ba1a1fa",
+  "tests_sha256": "f4429586b0d5323d243ded395ce20e90b5a17e6411112954222db37df5c656d7",
+  "license_sha256": "adf6b228c93126d67e84c40ed7c1b1dbf1ec44f26d9fe224261e1d8592646b52",
+  "selected_tests": [
+    "test_annotations_crop",
+    "test_crop_when_negative_orig_time",
+    "test_crop_with_none",
+    "test_crop_wo_orig_time",
+    "test_allow_nan_durations"
+  ],
+  "baseline_failures": [
+    "test_annotations_crop[None-300]",
+    "test_annotations_crop[None-512]",
+    "test_annotations_crop[None-2048]",
+    "test_annotations_crop[orig_time1-300]",
+    "test_annotations_crop[orig_time1-512]",
+    "test_annotations_crop[orig_time1-2048]"
+  ]
+}

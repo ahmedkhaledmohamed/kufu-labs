@@ -1,0 +1,38 @@
+{
+  "mne_release": "1.13.2",
+  "annotations_sha256": "e9112ce2518e73ba8afd53f198699db9ec4dbc4fecf9c7b88b1973546d4e478a",
+  "observations": [
+    {
+      "sfreq_hz": 300,
+      "original_onset_seconds": 0.0033333333333333335,
+      "attached_onset_seconds": 0.003333,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 512,
+      "original_onset_seconds": 0.001953125,
+      "attached_onset_seconds": 0.001953,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 1000,
+      "original_onset_seconds": 0.001,
+      "attached_onset_seconds": 0.001,
+      "sample_index_before": 1,
+      "sample_index_after": 1,
+      "sample_index_with_rounding": 1
+    },
+    {
+      "sfreq_hz": 2048,
+      "original_onset_seconds": 0.00048828125,
+      "attached_onset_seconds": 0.000488,
+      "sample_index_before": 1,
+      "sample_index_after": 0,
+      "sample_index_with_rounding": 1
+    }
+  ]
+}

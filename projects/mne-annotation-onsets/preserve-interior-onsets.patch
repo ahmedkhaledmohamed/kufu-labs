@@ -1,0 +1,76 @@
+diff --git a/mne/annotations.py b/mne/annotations.py
+index f9c739c..985a3b0 100644
+--- a/mne/annotations.py
++++ b/mne/annotations.py
+@@ -1019,6 +1019,8 @@ class Annotations:
+             tmin, tmax, use_orig_time
+         )
+         del tmin, tmax
++        relative_tmin = (absolute_tmin - offset).total_seconds()
++        relative_tmax = (absolute_tmax - offset).total_seconds()
+         logger.debug(f"Cropping annotations {absolute_tmin} - {absolute_tmax}")
+ 
+         onsets, durations, descriptions, ch_names, extras = [], [], [], [], []
+@@ -1054,7 +1056,18 @@ class Annotations:
+                     durations.append((absolute_offset - absolute_onset).total_seconds())
+                 else:
+                     durations.append(duration)
+-                onsets.append((absolute_onset - offset).total_seconds())
++                # Preserve the original float when no clipping is needed.
++                # A datetime round trip otherwise discards sub-microsecond
++                # precision even for annotations fully inside the crop limits.
++                if (
++                    not clip_left_elem[-1]
++                    and not clip_right_elem[-1]
++                    and relative_tmin <= onset
++                    and onset + duration <= relative_tmax
++                ):
++                    onsets.append(onset)
++                else:
++                    onsets.append((absolute_onset - offset).total_seconds())
+                 logger.debug(
+                     f"  [{idx}] Keeping  "
+                     f"({absolute_onset} - {absolute_offset} -> "
+diff --git a/mne/tests/test_annotations.py b/mne/tests/test_annotations.py
+index 5ec55b7..d4d8409 100644
+--- a/mne/tests/test_annotations.py
++++ b/mne/tests/test_annotations.py
+@@ -687,7 +687,9 @@ def test_annotation_concat(with_extras):
+         a += b
+ 
+ 
+-def test_annotations_crop():
++@pytest.mark.parametrize("sfreq", [300, 512, 1000, 2048])
++@pytest.mark.parametrize("orig_time", [None, datetime(2020, 1, 1, tzinfo=UTC)])
++def test_annotations_crop(sfreq, orig_time):
+     """Test basic functionality of annotation crop."""
+     onset = np.arange(1, 10)
+     duration = np.full_like(onset, 10)
+@@ -738,6 +740,27 @@ def test_annotations_crop():
+     with pytest.warns(RuntimeWarning, match="Limited .* expanding outside"):
+         a.copy().crop(tmin=0, tmax=12, emit_warning=True)
+ 
++    # Fully interior annotations should not lose precision through datetime.
++    raw = RawArray(np.zeros((1, 4 * sfreq)), create_info(["eeg"], sfreq, "eeg"))
++    if orig_time is not None:
++        raw.set_meas_date(orig_time)
++    annotation = Annotations(raw.times[1], 0.1, "interior", orig_time=orig_time)
++    lower, upper = (
++        (0, 1) if orig_time is None else (orig_time, orig_time + timedelta(seconds=1))
++    )
++    cropped = annotation.copy().crop(lower, upper)
++    assert_array_equal(cropped.onset, annotation.onset)
++    assert_array_equal(cropped.duration, annotation.duration)
++    raw.set_annotations(annotation)
++    assert_array_equal(raw.annotations.onset, annotation.onset)
++    assert_array_equal(raw.time_as_index(raw.annotations.onset), [1])
++    assert_array_equal(raw.time_as_index(raw.annotations.onset, use_rounding=True), [1])
++
++    # Genuine clipping still uses the existing datetime-resolved limits.
++    clipped = Annotations(0.0000004, 0.000003, "clipped").crop(0.000001, 0.000002)
++    assert_array_equal(clipped.onset, [0.000001])
++    assert_array_equal(clipped.duration, [0.000001])
++
+ 
+ @testing.requires_testing_data
+ def test_events_from_annot_in_raw_objects():

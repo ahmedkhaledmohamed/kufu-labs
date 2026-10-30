@@ -33,3 +33,18 @@ The three domains remain in comparison: neuroinformatics has a technically demon
 ## Next steps
 
 Review the NWB package and the zero-age component patch. Validate the latter in the complete upstream test environment before calling the integration complete. Keep the JupyterLab findings as comparisons and potential regression evidence. Continue the gradual [learning plan](NEUROINFORMATICS-PLAN.md) with the [first signals exercise](SIGNALS-EXERCISE.md), without turning coursework into the lab's main output. Outreach and publication retain their explicit gates.
+
+## 30 October follow-up
+
+The earlier NWB, refine.bio and movement work now has maintained host/CI evidence. The next comparison deliberately looked beyond pose software. This is a bounded refresh, not a new audit of every domain in the plan.
+
+| Candidate | Fresh evidence and remaining work | Decision |
+| --- | --- | --- |
+| Jupyter toolbar focus | Existing [PR #20265](https://github.com/jupyterlab/jupyterlab/pull/20265) remains open at `78e8abdc543e9ddada3dce9658afd456b1c28ef7`. The earlier 4.6.4 reproduction is retained; this follow-up did not rebuild that PR. | Avoid a competing implementation. |
+| File-browser focus after closing a menu | [#14153](https://github.com/jupyterlab/jupyterlab/issues/14153) remains open and has a recent proposed Lumino approach. No new host/screen-reader test was run in this follow-up. | Retain for accessibility comparison; no validated new implementation selected. |
+| MNE annotation timestamp precision | [#12327](https://github.com/mne-tools/mne-python/issues/12327) reproduces in release 1.13.2 and current main. Constructed sample-1 onsets round through datetime even without clipping. Existing rounded lookup is a workaround. | A bounded candidate preserves unchanged interior onsets. Six baseline cases fail and all 12 selected candidate tests pass; the complete applicable upstream pre-commit run passes. [Source, patch and replay](../../projects/mne-annotation-onsets/README.md). |
+| MNE annotation origin/first-sample usability | [#13890](https://github.com/mne-tools/mne-python/issues/13890) is a separate report about retrieving the intended span when first-sample offsets are present. | Not reproduced or claimed fixed by this candidate. |
+
+The MNE fixtures contain only generated zeros, not recordings or a neural model. No clocks, acquisition setup, clinical use, research finding or researcher time saving was validated. Sampling intervals and float-to-sample indexing are the accompanying science concepts: a tiny rounding change can cross a floor-index boundary without representing an equally large physical time shift.
+
+MNE's pinned contribution policy requires the human to personally review and understand AI-assisted work, prohibits fully automated submissions and asks the human to write any upstream issue/PR text. This is local Kufu evidence, with no upstream submission or outreach. The complete MNE suite and real recordings remain outside this pilot. Microplates, microscopy and other research hypotheses remain unselected; no unsupported product was added merely to increase breadth.

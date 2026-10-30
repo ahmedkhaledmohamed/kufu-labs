@@ -163,6 +163,15 @@
       "scope": "Data reuse, metadata harmonisation and service operations.",
       "limit": "Separate source-discovered component defects from reported needs and production availability.",
       "access": "Pinned source and selected issues reviewed 2026-10-27"
+    },
+    {
+      "id": "mne",
+      "title": "MNE-Python issues",
+      "url": "https://github.com/mne-tools/mne-python/issues",
+      "kind": "Scientific software issue tracker",
+      "scope": "Neurophysiology IO, annotations, preprocessing and analysis reports.",
+      "limit": "Read the affected version, reproduction and associated work. An open report alone does not establish a remaining current failure.",
+      "access": "Reviewed 2026-10-30"
     }
   ],
   "problems": [
@@ -833,34 +842,95 @@
     },
     {
       "id": "eeg-events",
-      "title": "Verify EEG event markers and timing discrepancies",
+      "title": "Preserve interior EEG annotation onset precision",
       "domain": "Neuroscience",
-      "stage": "Needs gap validation",
-      "evidence": "Existing synchronisation tools",
-      "need": "Missing markers or discontinuities can compromise event alignment.",
-      "proposal": "Inspect one setup’s event stream against a permitted reference.",
-      "baseline": "LSL synchronisation and MNE realignment already exist.",
-      "integration": "MNE annotations/report or an explicit verification function.",
-      "unknown": "Physical timing may require hardware evidence; no selected failure.",
-      "next": "Define the clock and stimulus-reference contract before claiming verification.",
+      "stage": "Local candidate verified",
+      "evidence": "Reported precision defect + released/current-source replay",
+      "need": "Attaching an annotation can round an unchanged sample-aligned onset through datetime; floor-based lookup may then select the previous sample.",
+      "proposal": "Retain the original onset when no clipping is needed and its original span is wholly inside the existing crop limits.",
+      "baseline": "MNE 1.13.2 and current source 0265fc9 reproduce the sample-1 shift at 300, 512 and 2048 Hz. Existing use_rounding=True correctly locates the tested sample on both revisions.",
+      "integration": "Existing Annotations.crop and Raw.set_annotations path; no application, plugin or new API.",
+      "unknown": "This bounded candidate does not repair all datetime precision, clipping, first-sample/origin, serialization or hardware-clock issues. No real recordings, user benefit or upstream acceptance.",
+      "next": "Review the bounded mechanism and source policy; recheck upstream before further investment. No fully automated MNE submission or outreach.",
       "sources": [
         {
-          "title": "LSL time synchronisation",
-          "url": "https://labstreaminglayer.readthedocs.io/info/time_synchronization.html"
+          "title": "MNE precision report #12327",
+          "url": "https://github.com/mne-tools/mne-python/issues/12327"
         },
         {
-          "title": "MNE realignment",
-          "url": "https://mne.tools/stable/generated/mne.preprocessing.realign_raw.html"
+          "title": "Existing lookup rounding option",
+          "url": "https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw.time_as_index"
+        },
+        {
+          "title": "Separate origin/first-sample report #13890",
+          "url": "https://github.com/mne-tools/mne-python/issues/13890"
         }
       ],
       "boards": [
-        "neurostars"
+        "mne"
       ],
-      "record": "research/opportunity-discovery/README.md",
-      "reviewed": "2026-10-26",
+      "record": "projects/mne-annotation-onsets/README.md",
+      "reviewed": "2026-10-30",
       "href": "problems/eeg-events.html",
-      "audience": "Researchers aligning EEG recordings with events or stimuli.",
-      "value": "Expose a particular discrepancy in timing or markers against a known reference. Software alone cannot establish physical timing without an appropriate reference."
+      "audience": "EEG/MEG researchers using sample-aligned annotations in MNE-Python.",
+      "value": "Avoid changing an already valid interior timestamp during a crop/attachment operation. Correct software indexing does not validate an acquisition clock or biological result.",
+      "page": {
+        "title": "Preserve an unchanged EEG annotation onset",
+        "summary": "An annotation marks a point or interval in a time series. At some sampling rates, attaching it to a recording rounds its onset even though it lies inside the allowed interval. A floor-based lookup can then select the preceding sample.",
+        "solution": "The local candidate keeps the original onset only if neither boundary was clipped and the original span fits inside the datetime-resolved limits. The existing clipping path remains. It addresses this unnecessary mutation, not the full timing-precision problem.",
+        "science": "At 512 samples per second, sample 1 is at 0.001953125 seconds. Datetime rounds that to 0.001953 seconds. The 125-nanosecond change crosses a floor-index boundary; it does not show that a physical recording clock drifted by a whole sample. All tested signals are constructed zeros, not recordings or a neural model.",
+        "terms": [
+          [
+            "Sampling rate",
+            "How many samples represent each second; 512 Hz means 512 samples per second."
+          ],
+          [
+            "Annotation onset",
+            "The time at which a marked event or interval begins."
+          ],
+          [
+            "Floor versus rounded lookup",
+            "Floor chooses the lower integer sample index; nearest rounding already finds the intended sample in this tested baseline case."
+          ]
+        ],
+        "workflow": [
+          [
+            "Create a constructed time series",
+            "One zero-valued EEG channel lasting four seconds."
+          ],
+          [
+            "Mark sample 1",
+            "Use the exact generated time as an annotation onset."
+          ],
+          [
+            "Attach or crop",
+            "Run the real MNE methods, without reading recordings."
+          ],
+          [
+            "Compare values and indexes",
+            "Inspect the saved float, default floor lookup and existing rounded lookup."
+          ]
+        ],
+        "comparisonTitle": "Sample index after attaching a sample-1 annotation",
+        "comparisonNote": "Both revisions start from index 1. Rounded lookup is an existing workaround and is shown explicitly; the candidate also preserves the original interior float. These are software indexing results, not physical timing measurements.",
+        "comparison": [
+          [
+            "Rate (Hz)",
+            "Baseline floor",
+            "Candidate floor",
+            "Rounded lookup, both"
+          ]
+        ],
+        "execution": {
+          "label": "Recorded Python crop and attachment verification",
+          "summary": "This page displays retained results. Opening it starts no Python, kernel, recording download or Vercel job. The reproduction command runs the real MNE methods and selected tests in a local isolated environment.",
+          "action": "Read the verification record"
+        },
+        "related": [
+          "nwb-stream-integrity",
+          "neural-behaviour"
+        ]
+      }
     },
     {
       "id": "ml-leakage",
@@ -1427,6 +1497,15 @@
       "remaining": "No live source ingestion, expression processing, dispatch/upload, cloud deletion, populated-database upgrades, full upstream suite, affected public-sample audit, acceptance or researcher benefit.",
       "criterion": "An explicit zero annotation survives supported ingestion, harmonisation and export without changing missing-value handling; workflow relevance independently assessed.",
       "next": "Review the pinned contribution and its integration limits; further usefulness assessment remains separate and outreach is deferred."
+    },
+    {
+      "problem": "eeg-events",
+      "verdict": "Bounded interior-onset candidate passes locally",
+      "observed": "The extended existing crop test covers four rates and dated/undated origins. Six baseline cases fail; all 12 selected candidate checks pass, including four other existing crop tests. Applicable upstream pre-commit checks pass.",
+      "baseline": "MNE main 0265fc9a575f125d95c5c92f672fd0bb85cfab2d; release 1.13.2 observation is recorded separately.",
+      "remaining": "This bounded candidate does not repair all datetime precision, clipping, first-sample/origin, serialization or hardware-clock issues. No real recordings, user benefit or upstream acceptance. Cloud checks for this addition are pending publication. MNE requires personal human review before an upstream submission.",
+      "criterion": "Unchanged interior onsets retain their original value while existing crop limits and regression checks remain valid. Broader timing and research usefulness need separate evidence.",
+      "next": "Review the bounded mechanism and source policy; recheck upstream before further investment. No fully automated MNE submission or outreach."
     }
   ],
   "sourceStatus": {
@@ -1585,6 +1664,23 @@
       "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_deletion.py",
       "problem": "deleted-flags",
       "verifiedRun": "site/records/projects--movement-edit-filtering--DELETION-PROVENANCE.html"
+    },
+    {
+      "id": "mne-onsets",
+      "title": "Interior annotation onset replay",
+      "runtime": "Python 3.13, pinned MNE source and isolated runtime; no Qt, recordings, hardware or model inference.",
+      "inputs": "One constructed zero-valued EEG channel, four seconds, at 300/512/1000/2048 Hz; dated and undated annotation origins.",
+      "expected": "The original sample-1 onset is preserved when entirely inside crop limits. The tested default lookup returns 1. Existing rounded lookup returns 1 before and after.",
+      "verification": "Six baseline failures and all 12 selected candidate checks passing. Upstream Ruff, ty, codespell and static-doc checks pass locally.",
+      "limits": "Selected interior-onset contract only; no general timing repair, full suite, serialization, HED-specific evaluation, physical-clock validation, real recording or user benefit. Cloud execution is pending publication.",
+      "command": "python3 projects/mne-annotation-onsets/prepare.py\n# Install the documented isolated runtime first.\npython projects/mne-annotation-onsets/verify.py --checkout .external/mne-patched --expect patched --output .runs/mne/patched.json",
+      "href": null,
+      "record": "projects/mne-annotation-onsets/README.md",
+      "result": "projects/mne-annotation-onsets/patched.json",
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/mne-annotation-onsets/preserve-interior-onsets.patch",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/mne-annotation-onsets/verify.py",
+      "problem": "eeg-events",
+      "verifiedRun": "site/records/projects--mne-annotation-onsets--README.html"
     }
   ],
   "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"
