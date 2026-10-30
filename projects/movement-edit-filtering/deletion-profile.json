@@ -1,0 +1,17 @@
+{
+  "source_revision": "00e7a232c90ac451e27b1a72f41e7234878d0417",
+  "patch_sha256": "bf2700b0f33a18da758b0f84ce2968131e45f98ec8b0f77f96755d94eca249dd",
+  "baseline_convert_sha256": "c7d19b635b5f477a308271fc137b3734e203239195bdcd799f7f1ff761c65e97",
+  "patched_convert_sha256": "f6c904cca4a28d6812a5596e0bedfe20000ed7e27b7986803620796d8f892fc6",
+  "tests_sha256": "b81a2fefadf153515e0fec0afd525f411496751ef19ffaa636cc75c83e6e5d01",
+  "license_sha256": "fc9060ac702b48e2a1bb98170f946dbd29494d90b82745cc92db818710773d0e",
+  "constructed_cases": 15,
+  "baseline_failures": [
+    "test_deleted_flags_survive_native_reopen[False-1]",
+    "test_deleted_flags_survive_native_reopen[False-2]",
+    "test_deleted_flags_survive_native_reopen[False-4]",
+    "test_deleted_flags_survive_native_reopen[True-1]",
+    "test_deleted_flags_survive_native_reopen[True-2]",
+    "test_deleted_flags_survive_native_reopen[True-4]"
+  ]
+}

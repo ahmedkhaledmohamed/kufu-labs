@@ -215,6 +215,37 @@ def problem_content(problem, data):
                         assert len(values) == 1
                         counts.append(str(values.pop()))
                     rows.append([str(size), *counts])
+            if problem["id"] == "deleted-flags":
+                reports = [
+                    json.loads(
+                        (
+                            ROOT
+                            / f"projects/movement-edit-filtering/deletion-{mode}.json"
+                        ).read_text()
+                    )
+                    for mode in ["baseline", "patched"]
+                ]
+                rows = [rows[0]]
+                for name, label in [
+                    ("deletion_only", "Deletion only"),
+                    ("deletion_and_move", "Deletion plus move"),
+                    ("never_detected", "Never detected"),
+                ]:
+                    flags = [
+                        report["observations"][name]["flag_second"]
+                        for report in reports
+                    ]
+                    rows.append(
+                        [
+                            label,
+                            *[
+                                "No edit variable"
+                                if flag is None
+                                else str(flag).lower()
+                                for flag in flags
+                            ],
+                        ]
+                    )
             comparison = (
                 '<div class="table-scroll"><table><caption>'
                 + escape(detail["comparisonTitle"])

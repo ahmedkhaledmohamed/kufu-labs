@@ -1,0 +1,45 @@
+{
+  "source_revision": "00e7a232c90ac451e27b1a72f41e7234878d0417",
+  "expectation": "baseline",
+  "patch_sha256": null,
+  "convert_sha256": "c7d19b635b5f477a308271fc137b3734e203239195bdcd799f7f1ff761c65e97",
+  "input_kind": "Constructed poses: 4 frames, 2 keypoints, 2 individuals at 30 Hz; no recordings",
+  "tests": 15,
+  "passed": 9,
+  "failed": [
+    "test_deleted_flags_survive_native_reopen[False-1]",
+    "test_deleted_flags_survive_native_reopen[False-2]",
+    "test_deleted_flags_survive_native_reopen[False-4]",
+    "test_deleted_flags_survive_native_reopen[True-1]",
+    "test_deleted_flags_survive_native_reopen[True-2]",
+    "test_deleted_flags_survive_native_reopen[True-4]"
+  ],
+  "native_reopen_cycles": [
+    1,
+    2,
+    4
+  ],
+  "observations": {
+    "deletion_only": {
+      "flag_first": true,
+      "flag_second": null
+    },
+    "deletion_and_move": {
+      "flag_first": true,
+      "flag_second": false
+    },
+    "never_detected": {
+      "flag_first": null,
+      "flag_second": null
+    }
+  },
+  "qt_or_canvas_created": false,
+  "python": "3.13.2",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "xarray": "2026.9.0",
+    "pytest": "9.1.1"
+  },
+  "elapsed_seconds": 2.833
+}

@@ -7,11 +7,11 @@
     "validation",
     "lab"
   ],
-  "demonstrations": 4,
+  "demonstrations": 5,
   "problems": 27,
   "boards": 18,
   "explorations": 6,
   "research_pages": 23,
   "problem_pages": 27,
-  "catalog_sha256": "e52a1c8cacda803864f8733a8b604d3853bbed640d0e309a4cf6f2bb90911d61"
+  "catalog_sha256": "434f153b89447d2ae144701d54a35874d2a8ec7038b0d298217166a0a9f9fba4"
 }

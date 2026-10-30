@@ -1,10 +1,48 @@
 # Deleted-point edit provenance across repeated conversions
 
-Local diagnostic only. No fix, upstream issue, additional comment, or new publication has been made. The existing filtering patch is unchanged.
+Status, 30 October 2026: a separate local repair and 15-case regression suite now pass; nothing new has been submitted upstream. The existing filtering patch remains unchanged. The original report is [movement #1174](https://github.com/neuroinformatics-unit/movement/issues/1174).
+
+## Current implementation and evidence
+
+People proofreading animal-pose data need to distinguish a deliberate deletion from a point the tracker never detected. Both have missing coordinates, but their provenance differs. The loss happens in the existing `napari_layers_to_ds` converter after a dataset is reopened: absent live rows have no current flags, and a deletion from an earlier session is already missing at load time.
+
+The separate [repair](deletion-provenance.patch) preserves loaded flags only for points that remain missing from the live layer. Current live flags still take precedence for points present in the layer; new removals retain the existing inference. Coordinate trimming and the all-points-missing error are unchanged. This is a converter patch using existing metadata, without a new application or schema.
+
+| Scenario after reopening and converting again | Unmodified main | Local candidate |
+| --- | --- | --- |
+| Deletion only | Entire `edited` variable disappears | Deleted-point flag remains true |
+| Deletion plus moved point | Deleted-point flag becomes false | Deleted-point flag remains true |
+| Never-detected, unedited point | No edit flag | No edit flag |
+
+Both revisions use source `00e7a232c90ac451e27b1a72f41e7234878d0417`, current upstream main when checked. The [profile](deletion-profile.json) locks source, converter, test, patch and BSD licence hashes. [Baseline](deletion-baseline.json) has six failing deletion cases and nine passing controls. [Patched](deletion-patched.json) passes all 15. Native netCDF save/reopen cycles of 1, 2 and 4 compare every position, confidence and edit flag. Additional cases cover clearing a live flag, dropping entirely empty keypoints/individuals and rejecting an entirely missing dataset. These fixtures have four frames, two keypoints and two individuals at 30 Hz; they are not recordings.
+
+All 45 existing conversion tests passed in the existing Linux arm64/Python 3.13.18 CPU-Mesa/Xvfb environment. This runs real napari/Qt fixtures, excluding the root startup hook that downloads recordings. The normal macOS viewer run crashed during startup; the pure four-case existing round trip passed there, and the new suite passed on Python 3.13.2. No failed assertion was hidden. Existing pandas deprecation warnings and read-only pytest-cache warnings remain visible in local logs. Full host suite, rendered deletion gestures, re-add UI, explicit reset-button interactions, real recordings, researcher benefit and upstream acceptance remain unverified. The live-flag test clears the converter input directly; it is not a reset-button demonstration.
+
+## Existing upstream work
+
+On 29 October, [another contributor reported the same missing-point preservation approach](https://github.com/neuroinformatics-unit/movement/issues/1174#issuecomment-6501514560), with their own regression. That report precedes this local repair. No linked implementation was available in the comment and no matching open PR was found in bounded searches on 30 October. Their code has not been assessed here. Do not present the approach as a novel Kufu design or open a competing upstream PR. The useful next step is to retain independent regression evidence and recheck the existing contribution before any separately authorised discussion.
+
+## Reproduce the local candidate
+
+Use a fresh Kufu worktree and Python 3.13. The preparation command refuses to overwrite existing task checkouts. Public package installation uses the existing host constraints; no recordings or models are requested.
+
+```sh
+python3 site/prepare_movement.py --deletion
+python3.13 -m venv .external/movement-deletion-env
+.external/movement-deletion-env/bin/python -m pip install --isolated --index-url https://pypi.org/simple -c site/requirements-ci.txt -e '.external/movement-deletion-patched[napari]' pytest pytest-qt pytest-mock
+.external/movement-deletion-env/bin/python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-clean --expect baseline --output .runs/deletion/baseline.json
+.external/movement-deletion-env/bin/python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion/patched.json
+```
+
+The [runner](verify_deletion.py) checks the imported source path and hashes before execution, asserts the exact baseline failure cases, rejects skipped or errored tests, and requires the patched suite to pass. JSON is sanitised summary evidence; detailed logs and JUnit reports stay in `.runs`. The required CI addition runs both revisions and all 45 existing conversion cases, retaining results for the site. Cloud execution of this addition is pending publication. The problem page shows retained output; it does not start Qt or a Vercel experiment.
+
+Keep the [upstream BSD licence](UPSTREAM-LICENSE) with this patch. No source loader, filter API or biological interpretation changes are included.
+
+## Original diagnostic
 
 The draft below was verified using a clean, unmodified upstream worktree at the pinned revision. Its standalone snippet ran and printed the observed loss. A [three-scenario diagnostic](reproduce_deleted_flags.py) and [result](deletion-result.json) additionally cover a mixed move/delete case and an originally missing control. The diagnostic's successful exit confirms reproduction of the bug, not a repair.
 
-## Proposed upstream issue
+## Original upstream report
 
 **Title:** Deleted-point edit flags are lost after reopening and reexporting pose data
 
@@ -75,16 +113,6 @@ Positions and confidence values remain unchanged in the reproduced second conver
 
 A separate three-scenario check confirms deletion-only loss, deletion-plus-move loss, and the control case where a never-detected point correctly has no edit flag. No fix is included. Would preserving loaded edit flags for missing points fit the intended saved-edit semantics, and should this be tracked as a follow-up to #1047?
 
-## Local follow-up boundaries
+## Follow-up boundary
 
-Read the current issue/PR discussion before publishing; bounded searches found the original closed request and implementation but no specific repeated-conversion fix. That is not proof that no overlapping work exists.
-
-Potential repair direction, not implemented: use loaded edit metadata for points missing from the live layer while preserving current live flags and detecting new removals. Check explicit reset behaviour carefully; blindly OR-ing every loaded flag could reintroduce flags a live operation intentionally clears. Keep originally missing, unedited points false and retain existing coordinate-drop behaviour.
-
-Run the independent diagnostic in the pilot environment with an unmodified source worktree:
-
-```sh
-python projects/movement-edit-filtering/reproduce_deleted_flags.py --checkout /path/to/clean-pinned-movement --output /path/to/deletion-result.json
-```
-
-Only explicit approval of the exact upstream issue text authorises filing it. Any repair implementation is a separate scope decision. Do not change the approved filtering patch or add unsolicited follow-ups to the pending API question.
+Keep this candidate separate from the filtering patch. Recheck #1174 and the existing contributor's work before any upstream submission; no new issue, comment, fork push or PR is authorised by this local implementation. Preserve never-detected controls and live-flag semantics when assessing any alternative.

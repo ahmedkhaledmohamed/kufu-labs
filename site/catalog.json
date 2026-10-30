@@ -272,14 +272,14 @@
       "id": "deleted-flags",
       "title": "Preserve deleted-point provenance on repeated export",
       "domain": "Behavioural neuroscience",
-      "stage": "Reproduced defect",
-      "evidence": "Pinned workflow reproduction",
+      "stage": "Local repair verified",
+      "evidence": "Reported defect + current-source before/after regression",
       "need": "A second GUI export loses edited flags for removed points, while coordinates remain missing.",
-      "proposal": "No fix implemented; preserve and report the minimal reproduction.",
-      "baseline": "Existing movement conversion/Qt save path, separate from the filter patch.",
+      "proposal": "Preserve loaded edit flags for currently missing points in the existing converter.",
+      "baseline": "movement main 00e7a232c90ac451e27b1a72f41e7234878d0417; six deletion cases fail before the candidate, all 15 cases pass afterward.",
       "integration": "Existing movement napari converter and native netCDF.",
-      "unknown": "No coordinates were resurrected; this is provenance loss, not proven analysis damage. Diagnostic artifacts remain in separate lab PR #3.",
-      "next": "Build a narrowly scoped regression only after inspecting current conversion semantics; do not claim #1174 fixed.",
+      "unknown": "A local candidate and constructed tests do not establish researcher benefit or upstream acceptance. Another contributor has reported the same approach; their code has not been assessed.",
+      "next": "Recheck the existing upstream contribution before any separately authorised discussion; retain independent regression evidence.",
       "sources": [
         {
           "title": "Reported defect #1174",
@@ -288,16 +288,76 @@
         {
           "title": "Reproduction artifacts in lab PR #3",
           "url": "https://github.com/ahmedkhaledmohamed/kufu-labs/pull/3"
+        },
+        {
+          "title": "Existing contributor reports the same repair approach",
+          "url": "https://github.com/neuroinformatics-unit/movement/issues/1174#issuecomment-6501514560"
         }
       ],
       "boards": [
         "movement"
       ],
-      "record": "projects/movement-edit-filtering/REVIEW.md",
-      "reviewed": "2026-10-27",
+      "record": "projects/movement-edit-filtering/DELETION-PROVENANCE.md",
+      "reviewed": "2026-10-30",
       "href": "problems/deleted-flags.html",
       "audience": "Researchers saving and reopening manually corrected movement datasets.",
-      "value": "Keep a trustworthy record of deliberate deletions across editing sessions. The defect is reproduced; no fix or benefit has been established."
+      "value": "Retain the distinction between a deliberate deletion and a point that was never detected across editing sessions. No measured researcher benefit is claimed.",
+      "page": {
+        "title": "Keep manual deletion flags across pose-editing sessions",
+        "summary": "A researcher deletes an incorrect pose point and saves it. Reopening and saving again can erase the flag that identifies the deletion as a deliberate human correction, even though the coordinates remain missing.",
+        "solution": "For points absent from the live napari layer, the candidate preserves loaded edit flags as well as detecting new removals. Points still present use their current live flags. Another contributor reported the same approach first; this is independent local regression evidence, not a novel Kufu design.",
+        "science": "Animal-pose tracks describe estimated positions over time. A missing coordinate can mean the tracker never detected a point or a person deliberately removed it. Preserving that distinction supports provenance auditing; it does not establish biological correctness.",
+        "terms": [
+          [
+            "Provenance",
+            "A record of where data or a change came from."
+          ],
+          [
+            "Edit flag",
+            "A boolean recording a deliberate correction, rather than the numerical confidence of a model."
+          ],
+          [
+            "Native round trip",
+            "Save a constructed dataset as netCDF, reopen it, and pass it through the existing converter again."
+          ]
+        ],
+        "workflow": [
+          [
+            "Load constructed poses",
+            "Four frames, two keypoints and two individuals at 30 Hz."
+          ],
+          [
+            "Remove one point",
+            "The first conversion marks the deliberate removal as edited."
+          ],
+          [
+            "Save and reopen",
+            "Native netCDF is written and reopened for one, two or four cycles."
+          ],
+          [
+            "Compare provenance and values",
+            "Check every edit flag, position and confidence, including never-detected controls."
+          ]
+        ],
+        "comparisonTitle": "Deleted-point flag after a second conversion",
+        "comparisonNote": "These values come from the source-locked converter replay. Separate regression cases also save and reopen real native netCDF files. The filtering patch is not applied.",
+        "comparison": [
+          [
+            "Scenario",
+            "Unmodified upstream",
+            "Local candidate"
+          ]
+        ],
+        "execution": {
+          "label": "Recorded converter and native-file verification",
+          "summary": "This page displays retained Python results. It starts no Qt application, background job or Vercel experiment. The reproduction command runs the actual converter and native-file regression cases in your own environment.",
+          "action": "Read local verification record"
+        },
+        "related": [
+          "edit-filtering",
+          "identity-review"
+        ]
+      }
     },
     {
       "id": "pairwise-overlap",
@@ -1328,7 +1388,7 @@
       "verdict": "Technical subproblem addressed locally",
       "observed": "97 targeted synthetic filtering cases and the Qt-widget/model-event workflow passed. A CPU-rendered napari canvas replay now passes an actual Qt mouse drag, save/reload, filtering and visible result checks using constructed poses.",
       "baseline": "39ee15e29706150d7d4f60ba617aa99d2027eed7 + approved 85c1aa943993758c09ab16a1a96a1ddbfa8195fd9c8713aaaa5adcebc0c4e9c7 patch",
-      "remaining": "This is one filtering slice of #1027, not the whole dedicated-array request. Deleted-point edit flags still disappear on a second export. No upstream acceptance, release or demonstrated researcher benefit.",
+      "remaining": "This is one filtering slice of #1027, not the whole dedicated-array request. This filtering-only replay still loses deleted-point flags on a second export; a separate local candidate is described on the deletion-provenance page. No upstream acceptance, release or demonstrated researcher benefit.",
       "criterion": "A supported end-to-end host path preserves provenance and applies the intended policy; the requested API scope is confirmed and adopted. Workflow benefit requires independent task evidence.",
       "next": "Review the captured host before/after states and make the rendered replay a maintained CI check. Researcher feedback remains deferred."
     },
@@ -1343,12 +1403,12 @@
     },
     {
       "problem": "deleted-flags",
-      "verdict": "Reproduced; no fix",
-      "observed": "The pinned repeated-export reproduction loses removed-point edited flags while position/confidence values remain unchanged. This is a recorded failure, not a fixed defect.",
-      "baseline": "movement 39ee15e29706150d7d4f60ba617aa99d2027eed7, unmodified converter",
-      "remaining": "No corrective patch, accepted design or regression proving a fix.",
+      "verdict": "Local candidate passes; upstream work overlaps",
+      "observed": "Six deletion cases fail on unchanged main and all 15 cases pass with the local patch. The native-file cases compare every position, confidence and edit flag across up to four reopen cycles. All 45 existing conversion tests also passed in Linux CPU Mesa/Xvfb.",
+      "baseline": "movement 00e7a232c90ac451e27b1a72f41e7234878d0417; independent local candidate, without the filtering patch.",
+      "remaining": "No cloud run of the new check yet, full host suite, rendered deletion gestures, reset/re-add UI verification, real recordings, researcher benefit or upstream acceptance. An existing contributor has reported the same repair approach.",
       "criterion": "A pinned regression fails before and passes after the fix for deletion-only and mixed edits, without resurrecting coordinates or changing unrelated provenance.",
-      "next": "Inspect conversion/export semantics before proposing any correction; retain the separate issue and patch scope."
+      "next": "Recheck the existing upstream contribution before any separately authorised discussion; retain independent regression evidence."
     },
     {
       "problem": "nwb-stream-integrity",
@@ -1463,7 +1523,7 @@
       "title": "movement edit-aware filtering replay",
       "runtime": "Python 3.13, pinned movement checkout plus approved patch; real Qt widgets and a napari canvas rendered on CPU with Mesa/Xvfb.",
       "inputs": "Constructed pose Dataset only; moved, removed, missing and unscored points across individuals.",
-      "expected": "Explicit filtering keeps the correction and drops the unscored prediction; removed positions stay missing. Repeated export still loses deletion flags.",
+      "expected": "Explicit filtering keeps the correction and drops the unscored prediction; removed positions stay missing. Repeated export still loses deletion flags in this filtering-only replay.",
       "verification": "Pinned source/patch checks, 11 workflow invariants and a rendered Qt mouse-drag/save/reload/filter replay passed locally. The separate deletion-flag failure remains visible.",
       "limits": "Experimental filtering API; no upstream acceptance or researcher outcome study. The canvas replay uses constructed data, and filtering runs through Python between exports. It is not executed inside this website.",
       "command": "python projects/movement-edit-filtering/verify_workflow.py \\\n  --checkout /path/to/pinned-movement-with-approved-patch \\\n  --output /tmp/movement-workflow-result.json",
@@ -1508,6 +1568,23 @@
       "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/refinebio-zero-age/verify_export.py",
       "problem": "zero-age-metadata",
       "verifiedRun": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40781355752"
+    },
+    {
+      "id": "movement-deletion",
+      "title": "Saved deletion provenance replay",
+      "runtime": "Python 3.13 and source-locked movement; new cases run the converter and native netCDF IO. Existing conversion tests also passed with real Qt fixtures in Linux CPU Mesa/Xvfb.",
+      "inputs": "Constructed poses: four frames, two keypoints, two individuals at 30 Hz. Deletion-only, mixed edits, never-detected controls, live flag clearing and empty coordinates.",
+      "expected": "The saved deletion remains edited after repeated conversion; native reopen cases preserve all flags, positions and confidence.",
+      "verification": "Six baseline deletion cases fail and all 15 candidate cases pass. All 45 existing conversion tests pass on Linux. The separate upstream contributor has not supplied linked code for assessment.",
+      "limits": "Local evidence only; no full suite, rendered deletion gesture, reset/re-add UI, real recording or measured user benefit. Cloud checks for this addition are pending publication.",
+      "command": "python3 site/prepare_movement.py --deletion\n# Install the documented isolated host environment first.\npython projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion/patched.json",
+      "href": null,
+      "record": "projects/movement-edit-filtering/DELETION-PROVENANCE.md",
+      "result": "projects/movement-edit-filtering/deletion-patched.json",
+      "implementation": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/deletion-provenance.patch",
+      "verificationCode": "https://github.com/ahmedkhaledmohamed/kufu-labs/blob/main/projects/movement-edit-filtering/verify_deletion.py",
+      "problem": "deleted-flags",
+      "verifiedRun": "site/records/projects--movement-edit-filtering--DELETION-PROVENANCE.html"
     }
   ],
   "verificationRuns": "https://github.com/ahmedkhaledmohamed/kufu-labs/actions/workflows/lab-delivery.yml"

@@ -1,0 +1,146 @@
+diff --git a/movement/napari/convert.py b/movement/napari/convert.py
+index 36ee40e..1690609 100644
+--- a/movement/napari/convert.py
++++ b/movement/napari/convert.py
+@@ -325,10 +325,24 @@ def napari_layers_to_ds(
+             )
+             .astype(bool)
+         )
+-        # A point counts as edited if it was dragged in napari, or removed
+-        # by the user (i.e. is now missing but was present originally).
++        # Missing points have no live properties. Preserve their loaded
++        # edit flags without overriding flags on points still in the layer.
++        loaded_edited = xr.zeros_like(point_missing_now, dtype=bool)
++        if "edited" in properties_with_nans.columns:
++            loaded_edited = (
++                properties_with_nans.set_index(
++                    ["time", "keypoint", "individual"]
++                )["edited"]
++                .to_xarray()
++                .reindex_like(point_missing_now, fill_value=False)
++                .fillna(False)
++                .astype(bool)
++            )
++        # Newly removed detections and previously saved deletions both
++        # count as edits. Never-detected, unedited points remain false.
+         edited_da = live_das["edited"].fillna(False).astype(bool) | (
+-            point_missing_now & position_was_present_originally
++            point_missing_now
++            & (position_was_present_originally | loaded_edited)
+         )
+ 
+         ds = xr.Dataset(
+diff --git a/tests/test_deletion_provenance.py b/tests/test_deletion_provenance.py
+new file mode 100644
+index 0000000..2afd147
+--- /dev/null
++++ b/tests/test_deletion_provenance.py
+@@ -0,0 +1,108 @@
++"""Constructed conversion and native-file regressions; no recordings."""
++
++import numpy as np
++import pytest
++import xarray as xr
++
++from movement.io import load_poses, save_dataset
++from movement.napari.convert import ds_to_napari_layers, napari_layers_to_ds
++
++
++def dataset():
++    positions = np.arange(32, dtype=float).reshape(4, 2, 2, 2)
++    confidence = np.full((4, 2, 2), 0.9)
++    positions[3, :, 1, 1] = np.nan
++    confidence[3, 1, 1] = np.nan
++    return load_poses.from_numpy(
++        positions,
++        confidence,
++        individual_names=["mouse_0", "mouse_1"],
++        keypoint_names=["nose", "tail"],
++        fps=30,
++        source_software="constructed",
++    )
++
++
++def convert(ds, delete=False, move=False, clear_live=False):
++    tracks, _, full = ds_to_napari_layers(ds)
++    present = ~np.isnan(tracks[:, 2:]).any(axis=1)
++    full["position_is_nan"] = ~present
++    points = tracks[present, 1:].copy()
++    live = full.loc[present].copy().reset_index(drop=True)
++    if delete:
++        keep = ~(
++            (points[:, 0] == 1)
++            & (live["keypoint"].to_numpy() == "nose")
++            & (live["individual"].to_numpy() == "mouse_0")
++        )
++        points, live = points[keep], live.loc[keep].copy()
++    if move:
++        points[0, 1:] = [200.0, 100.0]
++        live.loc[live.index[0], "edited"] = True
++        live.loc[live.index[0], "confidence"] = np.nan
++        live["edited"] = live["edited"].fillna(False).astype(bool)
++    if clear_live:
++        live["edited"] = False
++    return napari_layers_to_ds(points, live, full, attrs=ds.attrs)
++
++
++@pytest.mark.parametrize("cycles", [1, 2, 4])
++@pytest.mark.parametrize("move", [False, True])
++def test_deleted_flags_survive_native_reopen(tmp_path, cycles, move):
++    original = dataset()
++    first = convert(original, delete=True, move=move)
++    target = {"time": 1 / 30, "keypoint": "nose", "individual": "mouse_0"}
++    assert first.edited.sel(target).item() is True
++    current = first
++    for cycle in range(cycles):
++        path = tmp_path / f"session-{cycle}.nc"
++        save_dataset(current, path)
++        with xr.open_dataset(path) as saved:
++            loaded = saved.load()
++        current = convert(loaded)
++        xr.testing.assert_equal(first.position, current.position)
++        xr.testing.assert_equal(first.confidence, current.confidence)
++        assert "edited" in current
++        xr.testing.assert_equal(first.edited, current.edited)
++    assert current.edited.sel(target).item() is True
++    assert np.isnan(
++        original.position.isel(time=3, keypoint=1, individual=1)
++    ).all()
++    assert "edited" not in original
++
++
++@pytest.mark.parametrize("cycles", [1, 2, 4])
++def test_never_detected_is_not_an_edit(cycles):
++    current = dataset()
++    for _ in range(cycles):
++        current = convert(current)
++    assert "edited" not in current
++
++
++@pytest.mark.parametrize("cycles", [1, 2, 4])
++def test_live_flags_can_be_cleared(cycles):
++    current = convert(dataset(), move=True)
++    assert current.edited.any()
++    for _ in range(cycles):
++        current = convert(current, clear_live=True)
++    assert "edited" not in current
++
++
++@pytest.mark.parametrize("dimension", ["keypoint", "individual"])
++def test_empty_coordinates_still_drop(dimension):
++    ds = dataset()
++    label = ds[dimension].values[0]
++    ds.position.loc[{dimension: label}] = np.nan
++    ds.confidence.loc[{dimension: label}] = np.nan
++    ds["edited"] = xr.ones_like(ds.confidence, dtype=bool)
++    result = convert(ds)
++    assert label not in result[dimension]
++
++
++def test_all_points_missing_still_raises():
++    ds = dataset()
++    ds.position[:] = np.nan
++    ds.confidence[:] = np.nan
++    ds["edited"] = xr.ones_like(ds.confidence, dtype=bool)
++    with pytest.raises(ValueError, match="No points found"):
++        convert(ds)
