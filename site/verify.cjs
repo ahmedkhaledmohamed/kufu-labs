@@ -164,12 +164,7 @@ const url = (file) => new URL(file, base).href;
         );
         assert.ok((await page.locator("#records a").count()) >= 3);
       } else {
-        assert.match(
-          await page.locator("#try").textContent(),
-          problem.id === "deleted-flags"
-            ? /Recorded failure; no corrective patch/
-            : /Research only/,
-        );
+        assert.match(await page.locator("#try").textContent(), /Research only/);
         assert.equal(
           await page
             .getByRole("link", { name: "View verified run", exact: true })
@@ -318,6 +313,7 @@ const url = (file) => new URL(file, base).href;
     for (const id of [
       "pairwise-overlap",
       "edit-filtering",
+      "deleted-flags",
       "nwb-stream-integrity",
       "zero-age-metadata",
     ]) {
@@ -444,7 +440,7 @@ const url = (file) => new URL(file, base).href;
         "all canonical problem pages and legacy fragments",
         "compound filters/reset/empty state",
         "source-board query navigation with delayed script",
-        "four complete solution narratives and explicit runtime labels",
+        "five complete solution narratives and explicit runtime labels",
         "research candidates claim no implemented solution",
         "actual before/after export values",
         "separate interactive pose demo and contextual return links",

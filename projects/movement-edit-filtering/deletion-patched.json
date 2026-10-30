@@ -1,0 +1,38 @@
+{
+  "source_revision": "00e7a232c90ac451e27b1a72f41e7234878d0417",
+  "expectation": "patched",
+  "patch_sha256": "bf2700b0f33a18da758b0f84ce2968131e45f98ec8b0f77f96755d94eca249dd",
+  "convert_sha256": "f6c904cca4a28d6812a5596e0bedfe20000ed7e27b7986803620796d8f892fc6",
+  "input_kind": "Constructed poses: 4 frames, 2 keypoints, 2 individuals at 30 Hz; no recordings",
+  "tests": 15,
+  "passed": 15,
+  "failed": [],
+  "native_reopen_cycles": [
+    1,
+    2,
+    4
+  ],
+  "observations": {
+    "deletion_only": {
+      "flag_first": true,
+      "flag_second": true
+    },
+    "deletion_and_move": {
+      "flag_first": true,
+      "flag_second": true
+    },
+    "never_detected": {
+      "flag_first": null,
+      "flag_second": null
+    }
+  },
+  "qt_or_canvas_created": false,
+  "python": "3.13.2",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "xarray": "2026.9.0",
+    "pytest": "9.1.1"
+  },
+  "elapsed_seconds": 2.841
+}
