@@ -47,6 +47,14 @@ def main():
             "UPSTREAM-SLEAP-LICENSE",
         ]
     ]
+    files += [
+        ROOT / "projects/movement-edit-filtering" / name
+        for name in [
+            "canvas-before.png",
+            "canvas-after-drag.png",
+            "canvas-after-filter.png",
+        ]
+    ]
     # Linked research/source artifacts are explicit, inert download types.
     tracked = (
         subprocess.check_output(
