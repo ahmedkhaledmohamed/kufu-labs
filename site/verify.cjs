@@ -371,6 +371,14 @@ const url = (file) => new URL(file, base).href;
         ) {
           target.hash = "";
           target.search = "";
+          if (/^\/api\/auth\/(signin|signout)$/.test(target.pathname)) {
+            assert.equal(
+              file,
+              "lab.html",
+              "Only the lab should link to runtime sign-in",
+            );
+            continue;
+          }
           const local =
             target.protocol === "file:"
               ? fileURLToPath(target)

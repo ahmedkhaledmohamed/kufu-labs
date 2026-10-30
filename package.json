@@ -19,6 +19,7 @@
     "vercel": "65.4.0"
   },
   "dependencies": {
+    "@auth/core": "0.41.3",
     "@vercel/blob": "2.8.2",
     "@vercel/queue": "0.8.0",
     "@vercel/sandbox": "3.8.0"

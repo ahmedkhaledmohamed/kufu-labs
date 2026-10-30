@@ -221,6 +221,7 @@ jobs:
           node --check site/deploy.cjs
           npm run build
           node lab/verify.cjs
+          node lab/verify-auth.cjs
           node lab/verify-browser.cjs
           npm test
           DEMO_OUTPUT=.runs/overlap npm run test:overlap

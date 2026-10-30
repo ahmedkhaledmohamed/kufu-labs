@@ -98,3 +98,31 @@ The local follow-up adds MNE annotation attachment to the existing worker and pr
 MNE accepts bounded sampling rate, annotation sample and constructed origin fields only. Source, patch and experiment payloads are embedded in the tested backend artifact. Networking is disabled before either scientific run. Original/attached timestamp fields and unchanged-input controls are compared, and actual input/output NumPy arrays remain in the private bundle after compute stops. There are no recording uploads, arbitrary-code submissions, new providers or new credentials.
 
 The required contracts consume freshly generated reference and boundary reports for both projects. Local browser checks use API doubles and actual scientific output, including MNE recipe selection, generation, progress, reload and download controls. The real deployed gate submits one NWB job containing HDF5/Zarr cases and one MNE job containing a precision failure and unchanged control. It verifies each download hash, source identity and stopped Sandbox before main promotion. It therefore uses two of the ten shared daily submission slots. MNE's new hosted flow remains unverified until this addition is published and that gate passes. No manual deployment substitutes for the pipeline.
+
+
+## Owner account quota exemption
+
+The local `feat/owner-quota` continuation adds application-level Sign in with Vercel alongside existing Deployment Protection. Auth.js 0.41.3 handles OIDC discovery, signature/issuer/audience validation, state, PKCE and nonce, and encrypted secure-cookie sessions with a one-hour rolling lifetime. Only `openid` is requested; no project-management, email, profile or offline-access scope is needed. The server compares the verified Vercel subject with `KUFU_OWNER_VERCEL_ID`; browser fields and identity headers are not trusted. Sign-out uses Auth.js's CSRF-protected confirmation flow.
+
+The verified owner bypasses the daily submission cap and does not consume a shared slot. Other users retain ten submissions per UTC day. Submission records retain the quota policy without copying account profile data. All case, payload, Sandbox duration, network-isolation and worker-concurrency limits remain. CI uses a separate identity and does not receive this exemption. Missing configuration or an invalid session never grants owner privileges.
+
+The additional `api/auth` Function handles the Auth.js routes; the maintained deployment helper rewrites their suffixes explicitly. Host validation permits the configured production hostname and the deployment/branch hostnames supplied by Vercel. The Execution lab displays whether the server verified the owner; sign-in is hidden until configured. Offline previews do not authenticate.
+
+### Activation settings
+
+Use Vercel's [App registration instructions](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard). Create an App in the existing personal team's Settings → Apps (no new Vercel account or paid integration). Use a descriptive name such as Kufu Labs owner sign-in. Select `client_secret_basic` client authentication, generate a client secret, and enable only `openid`.
+
+Register `https://kufu-labs.vercel.app/api/auth/callback/vercel`. For previews, use Vercel's linked-project callback option with `/api/auth/callback/vercel`, or register the exact preview callback URL before testing it. Redirect URIs must match the deployment where sign-in begins; do not add unrelated domains or broad wildcard callbacks.
+
+Set these server-only variables in the existing Kufu project's production and preview environments:
+
+| Variable | Value |
+| --- | --- |
+| `KUFU_VERCEL_CLIENT_ID` | The registered App's client ID |
+| `KUFU_VERCEL_CLIENT_SECRET` | Its generated client secret |
+| `KUFU_AUTH_SECRET` | A unique cryptographically random session secret of at least 32 bytes; keep it consistent across deployments |
+| `KUFU_OWNER_VERCEL_ID` | The existing personal owner's immutable Vercel user ID, verified with `vercel api /v2/user`; use the ID, not the username |
+
+Enter secrets directly in Vercel settings or through stdin to `vercel env add`; never place them in chat, source, command arguments or public-prefixed variables. Redeployment through the reviewed CI pipeline is required to activate new environment settings. Keep Deployment Protection enabled. After deployment, sign in as the owner, verify the exemption indicator, and confirm one submission is recorded as owner-exempt. Verify a signed-out/non-owner session remains capped and sign-out removes the exemption. No real sign-in or owner-exempt hosted job has been tested in this local continuation.
+
+`node lab/verify-auth.cjs` uses real session encryption and the built Functions to check owner/non-owner/expired/forged sessions, spoof rejection, host restrictions, CSRF, unchanged input validation, quota accounting and retries. Browser tests use local API doubles for account messages and launch no compute. Auth.js is pinned in the public-registry lockfile; credentials are not embedded in the bundle.
