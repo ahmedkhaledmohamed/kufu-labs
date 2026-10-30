@@ -1,0 +1,20 @@
+{
+  "release": "0.7.2",
+  "tag": "v0.7.2",
+  "upstream_commit": "36f3a47302f37b0c53e4e60ae1de19ebeceb1d2d",
+  "python": "3.12.12",
+  "patch_sha256": "f5b03eb469004644c004ad3fcf9501c98cf08de75029efaa08f428b591e2ad9a",
+  "baseline_shape_sha256": "edbd50b1ecdedc419a22b9b9d69cfdff0c02ac245a67efe99d1be9faffc99019",
+  "patched_shape_sha256": "ec40bbfcd113b4b793b2ef21b556cf789f1575de4fe8bbcaa21a0050f128d0b9",
+  "license_sha256": "4012db37c34384a2a8f86584b7e78b034a11a4b78365a9ba82eea7749050bbd6",
+  "reported_stack": {
+    "nwbinspector": "0.7.2",
+    "pynwb": "4.2.0",
+    "hdmf": "6.2.0"
+  },
+  "known_unit_failures": [
+    "test_check_image_series_starting_frame_without_external_file_pass_with_external",
+    "test_check_dynamic_table_region_data_validity_gt_len",
+    "test_check_dynamic_table_region_data_validity_lt_zero"
+  ]
+}

@@ -84,15 +84,47 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--expect", choices=["baseline", "patched"], required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--released",
+        action="store_true",
+        help="Verify the source-locked public 0.7.2 release on Python 3.12.12.",
+    )
     args = parser.parse_args()
     source_file = Path(_utils.__file__).resolve()
     source_commit = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=source_file.parents[3], text=True
     ).strip()
-    expected_commit = "e6d968a1e0a62aa8f6611f45f242196d9ce75ea5"
+    profile = (
+        json.loads(Path(__file__).with_name("released-profile.json").read_text())
+        if args.released
+        else None
+    )
+    expected_commit = (
+        profile["upstream_commit"]
+        if profile
+        else "e6d968a1e0a62aa8f6611f45f242196d9ce75ea5"
+    )
     assert source_commit == expected_commit, (
         "Use the documented pinned upstream checkout"
     )
+    if profile:
+        assert platform.python_version() == profile["python"], (
+            "Use the recorded released-profile Python runtime"
+        )
+        assert (
+            hashlib.sha256(source_file.read_bytes()).hexdigest()
+            == profile[f"{args.expect}_shape_sha256"]
+        ), "Loaded release helper differs from the verified baseline or patch"
+        for name, expected_version in profile["reported_stack"].items():
+            assert importlib.metadata.version(name) == expected_version, (
+                f"Released-profile {name} version differs"
+            )
+        assert (
+            hashlib.sha256(
+                Path(__file__).with_name("released-0.7.2-shape.patch").read_bytes()
+            ).hexdigest()
+            == profile["patch_sha256"]
+        )
     started = time.monotonic()
     cases = []
     for backend in ["hdf5", "zarr"]:
@@ -130,7 +162,13 @@ def main():
         "upstream_commit": source_commit,
         "shape_module_sha256": hashlib.sha256(source_file.read_bytes()).hexdigest(),
         "patch_sha256": hashlib.sha256(
-            Path(__file__).with_name("non-consuming-shape.patch").read_bytes()
+            Path(__file__)
+            .with_name(
+                "released-0.7.2-shape.patch"
+                if args.released
+                else "non-consuming-shape.patch"
+            )
+            .read_bytes()
         ).hexdigest()
         if args.expect == "patched"
         else None,

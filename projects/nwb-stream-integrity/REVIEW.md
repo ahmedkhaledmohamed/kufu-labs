@@ -16,6 +16,12 @@ The integration is the existing `inspect_nwbfile_object` call, followed by the e
 - The existing required scientific CI check now runs the actual replay and unit checks. [Main run 40613968067](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40613968067) passed all three delivery gates. Fresh results from that run were verified in the packaged and deployed website. Its source is merged main `ebe44bf6ccb1c2b92b769e7694f0acae36110e05`.
 - Independent production checks matched eleven sampled asset hashes, verified desktop/mobile navigation and confirmed authentication protection remained enabled. These verify delivery, not real-recording usefulness.
 
+## Released-version evidence
+
+The public 0.7.2 release was also tested locally on Python 3.12.12 with the PyNWB 4.2.0 and HDMF 6.2.0 versions reported in #771. Its separate [source profile](released-profile.json) and [release-context patch](released-0.7.2-shape.patch) retain the same helper substitution and regressions. The 24-case replay per revision reproduces the same loss before the patch and preserves all inspected values after it. This closes the earlier development-only coverage gap; it does not reproduce every detail of the reporter's environment.
+
+The released suite has three dependency-related failures on both the baseline and patch, with 278 and 289 tests passing respectively and 5 skipped in each. The [full comparison](released-unit-comparison.json) names those failures; the required CI addition checks their exact identities and test counts rather than describing this suite as fully passing. See the [commands and limitations](README.md#released-version-comparison). The deployed execution lab still uses the development profile. No upstream submission or acceptance is implied.
+
 ## Alternatives and ownership
 
 [Inspector #760](https://github.com/NeurodataWithoutBorders/nwbinspector/issues/760) already proposes reusing HDMF's helper. This is an existing upstream idea; Kufu's local patch must not be presented as originating it. [HDMF PR #1606](https://github.com/hdmf-dev/hdmf/pull/1606), at `10b22a4688af136ac0fd70cbdf1780cf081e6c35`, also preserves all values in the constructed replay with unmodified Inspector. Both remained open at this review.

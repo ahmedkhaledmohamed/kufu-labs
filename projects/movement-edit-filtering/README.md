@@ -49,7 +49,7 @@ QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x
 
 Three actual host screenshots are written under `.runs/rendered/canvas/`. A non-software renderer, missed click, unchanged point, unexpected visible frame, lost correction or retained unknown prediction fails the replay. The pointer-move event explicitly carries the held left button because `QTest.mouseMove` did not reliably preserve it under Xvfb; no movement model event or coordinate mutation substitutes for the rendered drag.
 
-The follow-up workflow change adds this replay to the existing required scientific-contract job, retains its captures/results, and packages those fresh CI outputs into the site. Local execution has passed; the first cloud execution of this follow-up awaits exact-diff approval and publication. Tests that require recordings or model weights remain outside this replay.
+The replay now runs in the existing required scientific-contract job, which retains its captures/results and packages those fresh CI outputs into the site. [Merged-main run 40990877466](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/40990877466) passed all four jobs and promoted the tested site to protected production. Independent authenticated reads matched the manifest and seven sampled movement/page assets; the deployment gate also completed its actual queued NWB experiment with compute stopped. Tests that require recordings or model weights remain outside this replay.
 
 ## Continue locally
 

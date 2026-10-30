@@ -1091,10 +1091,10 @@
       "evidence": "Reported data loss + pinned host replay",
       "need": "Pre-write inspection advances a wrapped single-pass iterator; later saved data can contain zeros in place of the original values.",
       "proposal": "Reuse HDMF's existing shape helper so inspection preserves the tested wrapped streams.",
-      "baseline": "Pinned NWB Inspector e6d968a with PyNWB 4.2.0 and HDMF 6.2.0; related HDMF PR #1606 remains open when checked.",
+      "baseline": "Public Inspector 0.7.2 and development e6d968a with PyNWB 4.2.0 and HDMF 6.2.0. The same constructed loss is reproduced on both; related HDMF PR #1606 remains open when checked.",
       "integration": "Existing inspect_nwbfile_object workflow; upstream utility patch, not a new application.",
       "unknown": "Real-recording coverage, full dependency matrix, preferred upstream design and adoption remain unvalidated.",
-      "next": "Review the existing-helper contribution and its tested limits; the maintained round-trip CI is already passing.",
+      "next": "Review the released-version comparison and its three pre-existing dependency test failures, then reassess the existing upstream alternatives before any authorised discussion.",
       "sources": [
         {
           "title": "NWB Inspector data-loss report #771",
@@ -1113,7 +1113,7 @@
         "nwbinspector"
       ],
       "record": "projects/nwb-stream-integrity/README.md",
-      "reviewed": "2026-10-27",
+      "reviewed": "2026-10-29",
       "href": "problems/nwb-stream-integrity.html",
       "audience": "Researchers and engineers converting streamed neurophysiology data into NWB files.",
       "value": "Preserve the original samples when software inspects them before saving. Scientific conclusions and real-recording usefulness remain unvalidated.",
@@ -1481,7 +1481,7 @@
       "runtime": "Complete CPython 3.13.9 in a short-lived Vercel Sandbox for requested experiments; the pinned local/CI replay remains available.",
       "inputs": "Synthetic int16 signals with configurable rows, channels, buffer, seed, pattern, HDF5/Zarr format and iterator type. The recorded CI matrix uses two channels and 50, 100 or 500 rows; no recordings.",
       "expected": "Baseline inspection loses 50, 100 or 300 rows; the patch preserves all values across both backends and iterator types.",
-      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release. The protected Vercel preview also passed real queued HDF5/Zarr runs, private download verification, stopped compute and retained timestamped progress.",
+      "verification": "12 inspected cases and 12 uninspected controls per revision; 341 broader unit tests passed and 5 skipped. The replay passed in the required scientific check in main run 40613968067; fresh results reached the verified protected production release. The protected Vercel preview also passed real queued HDF5/Zarr runs, private download verification, stopped compute and retained timestamped progress. A separate local Python 3.12.12 / Inspector 0.7.2 replay reproduces the same loss and preservation. Its released suite has 278 baseline passes and 289 patched passes, with the same 3 pre-existing dependency failures and 5 skips; the project record retains exact results. CI coverage for this profile is pending publication.",
       "limits": "Bounded synthetic inputs only; no uploaded recordings, arbitrary code, full version matrix, real-recording evaluation or upstream acceptance.",
       "command": "# Follow the pinned environment and patch setup in the project record.\npython projects/nwb-stream-integrity/verify.py --expect patched --output /tmp/nwb-patched.json",
       "href": "lab.html",

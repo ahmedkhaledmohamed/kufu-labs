@@ -43,6 +43,30 @@ PYTHONPATH=.external/nwb-patched/src .external/nwb-env/bin/python projects/nwb-s
 
 The [runner](verify.py) rejects a different upstream Git revision. It records the loaded utility source hash and the patch digest. Its assertions compare all array values, check the uninspected controls and require the patched inspection to avoid ERROR messages. Temporary NWB files are removed after each case. The JSON output remains in the chosen output location. The investigation pages display retained results; the separate execution lab submits explicitly requested experiments.
 
+## Released-version comparison
+
+On 29 October 2026, the same replay also passed against the public [0.7.2 release](https://github.com/NeurodataWithoutBorders/nwbinspector/releases/tag/v0.7.2), commit `36f3a47302f37b0c53e4e60ae1de19ebeceb1d2d`. Issue #771 reports Inspector 0.7.2, PyNWB 4.2.0, HDMF 6.2.0 and Python 3.12. This profile uses those three library versions and selects Python 3.12.12 for reproducibility; it does not reconstruct every package from the reporter's environment.
+
+The release-context [patch](released-0.7.2-shape.patch) makes the same existing-helper substitution and carries the same 11 regression cases. The version helpers surrounding the function differ from the development revision, so the original patch does not apply unchanged. The [profile](released-profile.json) locks the release commit, baseline/patched utility hashes, patch digest and upstream licence hash.
+
+[Released baseline results](released-baseline.json) lose values in all 12 inspected cases; [released patched results](released-patched.json) preserve all values in all 12, without Inspector ERROR messages. All 24 uninspected controls across both revisions preserve every value. The loss pattern is the same 50, 100 or 300 rows shown above. The replay took 3.028 seconds before the patch and 3.061 seconds after it on the local macOS arm64 runtime; these small fixtures do not establish recording-scale performance.
+
+The released unit suite has three pre-existing failures with this dependency stack: an external ImageSeries fixture omits `num_samples`, and two DynamicTableRegion fixtures construct out-of-range indices that current dependencies reject. The unchanged release has 278 passing tests, 3 failures and 5 skips; the patched release has 289 passing tests, the same 3 failures and 5 skips. See the [comparison](released-unit-comparison.json). This is not a fully passing release suite. The [unit comparison runner](verify_release_units.py) gates the exact known failure names, total test counts and skip counts; any different failure, collection error or missing regression fails the check. Full logs and JUnit reports remain CI artifacts.
+
+From a fresh lab worktree with Python 3.12.12:
+
+```sh
+python3 projects/nwb-stream-integrity/prepare.py --released
+python3.12 -m venv .external/nwb-release-env
+.external/nwb-release-env/bin/python -m pip install --isolated --index-url https://pypi.org/simple -r projects/nwb-stream-integrity/requirements.txt
+.external/nwb-release-env/bin/python -m pip install --isolated --index-url https://pypi.org/simple --no-deps -e .external/nwb-release-clean
+PYTHONPATH=.external/nwb-release-clean/src .external/nwb-release-env/bin/python projects/nwb-stream-integrity/verify.py --released --expect baseline --output .runs/nwb-release/baseline.json
+PYTHONPATH=.external/nwb-release-patched/src .external/nwb-release-env/bin/python projects/nwb-stream-integrity/verify.py --released --expect patched --output .runs/nwb-release/patched.json
+.external/nwb-release-env/bin/python projects/nwb-stream-integrity/verify_release_units.py --output .runs/nwb-release
+```
+
+Source preparation and patch application passed again in a fresh temporary directory. Ruff and Black passed for the changed upstream module and regression file; the existing development-profile replay also passed again unchanged. The required scientific CI job now includes this isolated released profile, and the web build copies its newly generated results. A cloud result for this addition is pending publication. The hosted execution lab continues to run its documented development pin; it does not yet offer release selection.
+
 ## Parameterized execution lab
 
 [Execution lab](../../lab.html) uses [experiment.py](experiment.py) to generate synthetic signals with editable rows, channels, buffer size, seed, pattern, file backend and iterator type. A boundary batch generates cases below, at and above the buffer size, plus a larger case. Generating the input plan is local; pressing Run submits scientific execution to Vercel.
