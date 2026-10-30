@@ -259,7 +259,7 @@
         ],
         "execution": {
           "label": "Verified CI workflow",
-          "summary": "Python and real Qt widgets execute locally or in CI with constructed data. The website displays saved evidence. It does not host a live napari window, and the offscreen test does not establish rendered mouse interaction.",
+          "summary": "Python and real Qt widgets execute locally or in CI with constructed data. A separate CPU-rendered napari replay now verifies pointer editing and the saved/filtered reload. The website displays retained evidence and host captures; it does not host a live napari window. The new rendered CI step awaits its first cloud run after publication.",
           "action": "View verified run"
         },
         "related": [
@@ -1326,11 +1326,11 @@
     {
       "problem": "edit-filtering",
       "verdict": "Technical subproblem addressed locally",
-      "observed": "97 targeted synthetic filtering cases and the real Qt-widget/model-event workflow passed. No rendered canvas test or researcher outcome study.",
+      "observed": "97 targeted synthetic filtering cases and the Qt-widget/model-event workflow passed. A CPU-rendered napari canvas replay now passes an actual Qt mouse drag, save/reload, filtering and visible result checks using constructed poses.",
       "baseline": "39ee15e29706150d7d4f60ba617aa99d2027eed7 + approved 85c1aa943993758c09ab16a1a96a1ddbfa8195fd9c8713aaaa5adcebc0c4e9c7 patch",
-      "remaining": "This is one filtering slice of #1027, not the whole dedicated-array request. No upstream acceptance, release or demonstrated benefit.",
+      "remaining": "This is one filtering slice of #1027, not the whole dedicated-array request. Deleted-point edit flags still disappear on a second export. No upstream acceptance, release or demonstrated researcher benefit.",
       "criterion": "A supported end-to-end host path preserves provenance and applies the intended policy; the requested API scope is confirmed and adopted. Workflow benefit requires independent task evidence.",
-      "next": "Replay the pinned workflow and retain the known deletion-provenance counterexample."
+      "next": "Review the captured host before/after states and make the rendered replay a maintained CI check. Researcher feedback remains deferred."
     },
     {
       "problem": "pairwise-overlap",
@@ -1461,11 +1461,11 @@
     {
       "id": "movement",
       "title": "movement edit-aware filtering replay",
-      "runtime": "Python 3.13, pinned movement checkout plus approved patch; real Qt widgets in offscreen mode.",
+      "runtime": "Python 3.13, pinned movement checkout plus approved patch; real Qt widgets and a napari canvas rendered on CPU with Mesa/Xvfb.",
       "inputs": "Constructed pose Dataset only; moved, removed, missing and unscored points across individuals.",
       "expected": "Explicit filtering keeps the correction and drops the unscored prediction; removed positions stay missing. Repeated export still loses deletion flags.",
-      "verification": "Pinned source/patch checks and eleven workflow invariants passed. The deletion-flag failure remains visible.",
-      "limits": "No rendered canvas/mouse test, accepted upstream API or researcher outcome study. Requires the pinned host environment; not executed inside this website.",
+      "verification": "Pinned source/patch checks, 11 workflow invariants and a rendered Qt mouse-drag/save/reload/filter replay passed locally. The separate deletion-flag failure remains visible.",
+      "limits": "Experimental filtering API; no upstream acceptance or researcher outcome study. The canvas replay uses constructed data, and filtering runs through Python between exports. It is not executed inside this website.",
       "command": "python projects/movement-edit-filtering/verify_workflow.py \\\n  --checkout /path/to/pinned-movement-with-approved-patch \\\n  --output /tmp/movement-workflow-result.json",
       "href": null,
       "record": "projects/movement-edit-filtering/PILOT.md",

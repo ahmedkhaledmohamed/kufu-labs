@@ -118,4 +118,4 @@ A deleted point's edit flag changes from true to false after loading the first s
 
 ## Next decision
 
-Review the complete local change before any commit or publication. If accepted, prepare the contribution record and exact-commit approval required by the personal Git workflow, then arrange separately authorised upstream review. Maintainer acceptance, real-workflow benefit, full host CI, and GUI verification remain unestablished. This pilot supports a small technical contribution; it does not establish a scientific finding.
+Review the complete local change before any commit or publication. If accepted, prepare the contribution record and exact-commit approval required by the personal Git workflow, then arrange separately authorised upstream review. A subsequent local CPU-rendered napari replay now verifies pointer editing and the visible save/reload/filter result; see the project README and rendered-result.json. Maintainer acceptance, real-workflow benefit and full host CI remain unestablished. This pilot supports a small technical contribution; it does not establish a scientific finding.
