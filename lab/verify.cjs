@@ -4,8 +4,15 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 const { Readable } = require("node:stream");
 const { NodejsLambda, sanitizeConsumerName } = require("@vercel/build-utils");
-const { DEFAULT, validateCases, summarize } = require("./contracts.cjs");
+const {
+  DEFAULT,
+  MNE_DEFAULT,
+  validateRecipe,
+  validateCases,
+  summarize,
+} = require("./contracts.cjs");
 const values = new Map();
+const files = new Map();
 let sent = 0;
 let reserved = 0;
 let executions = 0;
@@ -14,8 +21,8 @@ const store = {
   build,
   key: (id, name) => `${id}/${name}`,
   readJSON: async (id, name) => values.get(`${id}/${name}`) || null,
-  read: async () => null,
-  write: async () => {},
+  read: async (key) => files.get(key) || null,
+  write: async (key, value) => files.set(key, value),
   writeJSON: async (id, name, value) => {
     const key = `${id}/${name}`;
     if (values.has(key)) {
@@ -52,7 +59,14 @@ function load(name, extra = {}) {
                   return queue;
                 },
               }
-            : extra[key] || require(key),
+            : extra[key] ||
+              (/\.(py|patch|txt)$/.test(key)
+                ? fs.readFileSync(
+                    require("node:path").resolve(__dirname, key),
+                    "utf8",
+                  )
+                : require(key)),
+      KUFU_SOURCE: build,
       process: { env: { KUFU_LAB_ENABLED: "1", BLOB_STORE_ID: "test-store" } },
       URL,
       Buffer,
@@ -83,16 +97,25 @@ async function request(
     },
   });
   const response = {
+    statusCode: 200,
     headers: {},
     setHeader(key, value) {
       this.headers[key] = value;
     },
     end(value) {
-      this.body = value ? JSON.parse(value) : null;
+      this.body = Buffer.isBuffer(value)
+        ? value
+        : value
+          ? JSON.parse(value)
+          : null;
     },
   };
   await api(req, response);
-  return { code: response.statusCode, body: response.body };
+  return {
+    code: response.statusCode,
+    body: response.body,
+    headers: response.headers,
+  };
 }
 (async () => {
   const id = "12345678-1234-4123-8123-123456789abc";
@@ -251,6 +274,132 @@ async function request(
       ],
     }),
   );
+  assert.equal(validateRecipe(), "nwb");
+  for (const invalid of [null, "other", "__proto__"])
+    assert.throws(() => validateRecipe(invalid));
+  for (const input of [
+    { ...MNE_DEFAULT, sfreq: 127 },
+    { ...MNE_DEFAULT, sfreq: 8193 },
+    { ...MNE_DEFAULT, sample: -1 },
+    { ...MNE_DEFAULT, sample: 1025 },
+    { ...MNE_DEFAULT, sample: true },
+    { ...MNE_DEFAULT, origin: "url" },
+    { ...MNE_DEFAULT, code: "bad" },
+  ])
+    assert.throws(() => validateCases([input], "mne"));
+  assert.deepEqual(validateCases([MNE_DEFAULT], "mne"), [MNE_DEFAULT]);
+  const mneId = "12345678-1234-4123-8123-123456789aee";
+  assert.equal(
+    (
+      await request("POST", {
+        id: mneId,
+        recipe: "other",
+        cases: [MNE_DEFAULT],
+      })
+    ).code,
+    400,
+  );
+  assert.equal(
+    (await request("POST", { id: mneId, recipe: "mne", cases: [MNE_DEFAULT] }))
+      .code,
+    202,
+  );
+  assert.equal(
+    (await request("GET", null, {}, `/api/experiments?id=${mneId}`)).body
+      .recipe,
+    "mne",
+  );
+  assert.equal(
+    (await request("POST", { id: mneId, recipe: "nwb", cases: [DEFAULT] }))
+      .code,
+    409,
+  );
+  const mneWorker = load("worker", {
+    "./run.cjs": {
+      execute: async (_cases, report, _credentials, recipe) => {
+        assert.equal(recipe, "mne");
+        await report(
+          "Running patched annotation attachment and timestamp controls",
+        );
+        return {
+          archive: Buffer.from("mne-zip"),
+          record: { comparisons: [] },
+          logs: [],
+        };
+      },
+    },
+  });
+  await mneWorker.processRun({ id: mneId, source_commit: build.commit });
+  const mneDone = (
+    await request("GET", null, {}, `/api/experiments?id=${mneId}`)
+  ).body;
+  assert.equal(mneDone.status, "completed");
+  assert.equal(mneDone.recipe, "mne");
+  const download = await request(
+    "GET",
+    null,
+    {},
+    `/api/experiments?id=${mneId}&download=1`,
+  );
+  assert.equal(download.code, 200);
+  assert.match(download.headers["Content-Disposition"], /kufu-mne-/);
+  assert.equal(download.body.toString(), "mne-zip");
+  const legacyId = "12345678-1234-4123-8123-123456789aff";
+  values.set(`${legacyId}/submission.json`, {
+    cases: [DEFAULT],
+    created_at: new Date().toISOString(),
+  });
+  const slotsBeforeLegacy = reserved;
+  assert.equal(
+    (await request("POST", { id: legacyId, cases: [DEFAULT] })).code,
+    202,
+  );
+  assert.equal(reserved, slotsBeforeLegacy);
+  assert.equal(
+    (await request("GET", null, {}, `/api/experiments?id=${legacyId}`)).body
+      .recipe,
+    "nwb",
+  );
+  const mneReports = ["baseline", "patched"].map(
+    (mode) => `.runs/contracts/mne/parameterized-${mode}/report.json`,
+  );
+  if (mneReports.every((file) => fs.existsSync(file))) {
+    const reports = mneReports.map((file) => JSON.parse(fs.readFileSync(file)));
+    const comparisons = summarize(...reports, "mne");
+    assert.equal(comparisons.length, 4);
+    assert.ok(
+      comparisons.every((value) =>
+        ["patch-preserved", "both-preserved"].includes(value.outcome),
+      ),
+    );
+    const invalid = structuredClone(reports[1]);
+    invalid.cases[0].controls.signal_unchanged = false;
+    assert.equal(
+      summarize(reports[0], invalid, "mne")[0].outcome,
+      "invalid-comparison",
+    );
+    const changed = structuredClone(reports[1]);
+    changed.cases[0].attached.onset_seconds += 0.01;
+    assert.equal(
+      summarize(reports[0], changed, "mne")[0].outcome,
+      "patch-changed-data",
+    );
+    const mismatched = structuredClone(reports[1]);
+    mismatched.cases[0].input_sha256 = "other";
+    assert.throws(() => summarize(reports[0], mismatched, "mne"));
+    const edges = ["baseline", "patched"].map((mode) =>
+      JSON.parse(
+        fs.readFileSync(`.runs/contracts/mne/boundary-${mode}/report.json`),
+      ),
+    );
+    assert.ok(
+      summarize(...edges, "mne").every((value) =>
+        ["patch-preserved", "both-preserved"].includes(value.outcome),
+      ),
+      "MNE boundary cases must preserve patched timestamps and controls",
+    );
+  } else if (process.env.CI)
+    throw new Error("CI is missing actual MNE experiment reports");
   const reports = ["baseline", "patched"].map(
     (mode) => `.runs/contracts/nwb/parameterized-${mode}/report.json`,
   );
@@ -268,6 +417,102 @@ async function request(
     console.log("Four real parameterized NWB comparisons passed.");
   } else if (process.env.CI)
     throw new Error("CI is missing parameterized scientific reports");
+  for (const recipe of ["nwb", "mne"]) {
+    const paths = ["baseline", "patched"].map(
+      (mode) => `.runs/contracts/${recipe}/parameterized-${mode}/report.json`,
+    );
+    const actualReports = paths.map((file) =>
+      JSON.parse(fs.readFileSync(file)),
+    );
+    let stopped = 0;
+    let denied = false;
+    const commands = [];
+    const sandbox = {
+      name: "fixture-sandbox",
+      writeFiles: async () => {},
+      update: async ({ networkPolicy }) => {
+        denied = networkPolicy === "deny-all";
+      },
+      runCommand: async (command) => {
+        commands.push(command);
+        if (command.args.includes("--mode"))
+          assert.equal(
+            denied,
+            true,
+            "Network must be denied before scientific execution",
+          );
+        return {
+          exitCode: 0,
+          stdout: async () => "fixture",
+          stderr: async () => "",
+        };
+      },
+      readFileToBuffer: async ({ path }) =>
+        path === "results.zip"
+          ? Buffer.from("fixture-archive")
+          : Buffer.from(
+              JSON.stringify(actualReports[path.includes("baseline") ? 0 : 1]),
+            ),
+      stop: async () => {
+        stopped++;
+      },
+    };
+    const runner = load("run", {
+      "@vercel/sandbox": {
+        Sandbox: {
+          create: async (options) => {
+            assert.equal(options.persistent, false);
+            assert.equal(options.resources.vcpus, 1);
+            assert.equal(options.timeout, 240000);
+            return sandbox;
+          },
+        },
+      },
+    });
+    const inputs = actualReports[0].cases.map((value) => value.input);
+    const result = await runner.execute(inputs, async () => {}, {}, recipe);
+    assert.equal(result.record.recipe, recipe);
+    assert.equal(result.record.sandbox_stopped, true);
+    assert.equal(stopped, 1);
+    assert.equal(result.record.comparisons.length, inputs.length);
+    assert.equal(
+      commands.some((command) => command.args.includes("-e")),
+      recipe === "nwb",
+    );
+    sandbox.runCommand = async () => ({
+      exitCode: 2,
+      stdout: async () => "",
+      stderr: async () => "fixture failure",
+    });
+    await assert.rejects(
+      () => runner.execute(inputs, async () => {}, {}, recipe),
+      /failed/,
+    );
+    assert.equal(stopped, 2, "A failed setup command must stop the Sandbox");
+    sandbox.runCommand = async () => ({
+      exitCode: 0,
+      stdout: async () => "fixture",
+      stderr: async () => "",
+    });
+    await assert.rejects(
+      () =>
+        runner.execute(
+          inputs,
+          async (label) => {
+            if (label === "Stopping isolated runtime")
+              throw new Error("progress unavailable");
+          },
+          {},
+          recipe,
+        ),
+      /progress unavailable/,
+    );
+    assert.equal(
+      stopped,
+      3,
+      "A progress-storage failure must not prevent Sandbox cleanup",
+    );
+  }
   for (const name of ["experiments", "experiment-worker"]) {
     const config = JSON.parse(
       fs.readFileSync(

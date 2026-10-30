@@ -43,7 +43,25 @@ python3.13 -m venv .external/mne-env
 .external/mne-env/bin/python projects/mne-annotation-onsets/verify.py --checkout .external/mne-patched --expect patched --output .runs/mne/patched.json
 ```
 
-The [requirements](requirements.txt) lock the runtime, including the released MNE wheel for package metadata/resources. The imported implementation is independently locked to the source commit in [profile.json](profile.json); a package version alone does not identify that source. Complete array preservation or biological correctness is not inferred from a timestamp test. The webpage shows saved results and starts no Python, kernel or Vercel job.
+The [requirements](requirements.txt) lock the runtime, including the released MNE wheel for package metadata/resources. The imported implementation is independently locked to the source commit in [profile.json](profile.json); a package version alone does not identify that source. Complete array preservation or biological correctness is not inferred from a timestamp test. The problem page shows saved results; the separate Execution lab submits jobs only when Run is pressed.
+
+## Parameterized execution lab
+
+The local extension adds this case to the existing [Execution lab](../../lab.html?recipe=mne). Users can select 128–8192 Hz, an annotation sample from zero through twice the rate, and a relative or constructed UTC origin. A batch generates 300/512/1000/2048 Hz at sample 1. The signal is a deterministic four-second, one-channel linear ramp, the annotation lasts 100 ms, and `first_samp` remains zero. It is a software fixture, not a neural recording or biological simulation.
+
+[experiment.py](experiment.py) runs the real `Raw.set_annotations` path and retains the original/attached onset, duration, floor and rounded indexes. Controls compare every signal value and the original annotation, and require rounded lookup to match the chosen sample. If the original float already maps to another sample under floor lookup, the UI shows that explicitly. Preserving an onset does not solve every float-to-index ambiguity.
+
+The existing Vercel worker selects one of two fixed, embedded payloads; requests contain parameters only. It installs the pinned source/runtime, disables networking before science runs, compares both revisions, packages actual NumPy arrays and JSON/logs, and stops the Sandbox. Private results and timestamped progress use the existing storage/queue path. The shared limits stay at four cases, one worker, four minutes per Sandbox and ten submissions per UTC day across both experiments. No new service, account, paid plan or environment secret is added.
+
+Local actual-software checks cover four reference cases and four boundary cases, including 128/8192 Hz, sample zero, sample limits and both origins. A maximum four-case 8192 Hz run produced a 1,707,234-byte scientific ZIP before worker metadata/logs, within the unchanged three-MB bundle cap. Reports map both input/output roles to one array file when values and dtype are exactly equal; changed outputs get a separate file. Reopening the exported arrays verified every role's recorded hash. Signal/input controls and patched timestamps are preserved. Contract checks cover recipe validation, cross-recipe ID conflicts, legacy NWB requests, failures and cleanup; browser checks use local API doubles with those real reports. They launch no hosted compute. The deployment gate now submits an actual MNE failure case and an unchanged control, verifies progress, private download hash and stopped compute alongside the existing NWB gate. Hosted MNE verification is pending publication; no deployed result is claimed here yet.
+
+To run custom inputs locally after the source/runtime setup above:
+
+```sh
+# Write a JSON array with 1–4 objects: {"sfreq":512,"sample":1,"origin":"relative"}.
+PYTHONPATH=.external/mne-clean .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode baseline --input inputs.json --output .runs/mne-custom/baseline
+PYTHONPATH=.external/mne-patched .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode patched --input inputs.json --output .runs/mne-custom/patched
+```
 
 ## Verification and contribution boundary
 

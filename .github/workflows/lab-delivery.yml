@@ -74,6 +74,11 @@ jobs:
           .external/mne-env/bin/python -m pip install --disable-pip-version-check -r projects/mne-annotation-onsets/requirements.txt
           .external/mne-env/bin/python projects/mne-annotation-onsets/verify.py --checkout .external/mne-clean --expect baseline --output .runs/contracts/mne/baseline.json
           .external/mne-env/bin/python projects/mne-annotation-onsets/verify.py --checkout .external/mne-patched --expect patched --output .runs/contracts/mne/patched.json
+          python -c 'import json; from pathlib import Path; Path(".runs/contracts/mne/inputs.json").write_text(json.dumps([dict(sfreq=rate,sample=1,origin="utc") for rate in [300,512,1000,2048]])); Path(".runs/contracts/mne/boundaries.json").write_text(json.dumps([dict(sfreq=128,sample=0,origin="relative"),dict(sfreq=8192,sample=16384,origin="utc"),dict(sfreq=128,sample=256,origin="utc"),dict(sfreq=300,sample=7,origin="relative")]))'
+          PYTHONPATH=.external/mne-clean .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode baseline --input .runs/contracts/mne/inputs.json --output .runs/contracts/mne/parameterized-baseline
+          PYTHONPATH=.external/mne-patched .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode patched --input .runs/contracts/mne/inputs.json --output .runs/contracts/mne/parameterized-patched
+          PYTHONPATH=.external/mne-clean .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode baseline --input .runs/contracts/mne/boundaries.json --output .runs/contracts/mne/boundary-baseline
+          PYTHONPATH=.external/mne-patched .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode patched --input .runs/contracts/mne/boundaries.json --output .runs/contracts/mne/boundary-patched
       - name: Install isolated NWB runtime
         run: |
           python -m venv .external/nwb-env
