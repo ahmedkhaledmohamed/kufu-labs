@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "cases": 160,
+  "seed": 20261030,
+  "baseline_onset_changes": 60,
+  "patched_onset_changes": 0,
+  "patched_duration_changes": 0,
+  "control_failures": 0,
+  "verified_array_roles": 640,
+  "reference_floor_mismatches": 2,
+  "baseline_attachment_floor_changes": 40,
+  "patched_attachment_floor_changes": 0,
+  "baseline_floor_mismatches": 40,
+  "patched_floor_mismatches": 2,
+  "rounded_index_failures": 0,
+  "source_and_environment": {
+    "baseline": {
+      "upstream_commit": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+      "annotations_sha256": "18ede0da9eccfc5c43f581b06965273a18aa73fc33a5abebb0bd144605f21d5a",
+      "patch_sha256": null,
+      "python": "3.13.2",
+      "versions": {
+        "mne": "1.13.2",
+        "numpy": "2.5.4",
+        "scipy": "1.18.1"
+      }
+    },
+    "patched": {
+      "upstream_commit": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+      "annotations_sha256": "5e49bc16b0c687951422d197329d0acf67aff176e8fd9cfbcfbed8419ba1a1fa",
+      "patch_sha256": "ff166011bbb3765a371d47bf21e2e59d54899b465a47ba22fa7574fb8ad18619",
+      "python": "3.13.2",
+      "versions": {
+        "mne": "1.13.2",
+        "numpy": "2.5.4",
+        "scipy": "1.18.1"
+      }
+    }
+  },
+  "reference_floor_examples": [
+    {
+      "input": {
+        "sfreq": 807,
+        "sample": 51,
+        "origin": "utc"
+      },
+      "reference": {
+        "onset_seconds": 0.06319702602230483,
+        "duration_seconds": 0.1,
+        "floor_index": 50,
+        "rounded_index": 51
+      },
+      "baseline": {
+        "onset_seconds": 0.063197,
+        "duration_seconds": 0.1,
+        "floor_index": 50,
+        "rounded_index": 51,
+        "onset_equal": false,
+        "duration_equal": true
+      },
+      "patched": {
+        "onset_seconds": 0.06319702602230483,
+        "duration_seconds": 0.1,
+        "floor_index": 50,
+        "rounded_index": 51,
+        "onset_equal": true,
+        "duration_equal": true
+      }
+    },
+    {
+      "input": {
+        "sfreq": 2891,
+        "sample": 3219,
+        "origin": "utc"
+      },
+      "reference": {
+        "onset_seconds": 1.1134555517122102,
+        "duration_seconds": 0.1,
+        "floor_index": 3218,
+        "rounded_index": 3219
+      },
+      "baseline": {
+        "onset_seconds": 1.113456,
+        "duration_seconds": 0.1,
+        "floor_index": 3219,
+        "rounded_index": 3219,
+        "onset_equal": false,
+        "duration_equal": true
+      },
+      "patched": {
+        "onset_seconds": 1.1134555517122102,
+        "duration_seconds": 0.1,
+        "floor_index": 3218,
+        "rounded_index": 3219,
+        "onset_equal": true,
+        "duration_equal": true
+      }
+    }
+  ],
+  "elapsed_seconds": 30.077,
+  "limits": "Constructed ramps and supported inputs only. Onset preservation does not guarantee truncating lookup returns the requested sample. Rounded lookup is an existing workaround; no physical-clock, real-recording or researcher-benefit validation."
+}
