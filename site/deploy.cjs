@@ -103,8 +103,8 @@ function target() {
     );
   assert.equal(
     Object.keys(manifest.backend_files || {}).length,
-    4,
-    "Missing tested execution backend",
+    6,
+    "Missing tested execution and authentication backend",
   );
   for (const [file, hash] of Object.entries(manifest.backend_files))
     assert.equal(
@@ -165,6 +165,7 @@ function target() {
           },
           continue: true,
         },
+        { src: "/api/auth/(.*)", dest: "/api/auth?__kufu_auth_path=$1" },
         { handle: "filesystem" },
       ],
     }),

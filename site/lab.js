@@ -13,6 +13,7 @@
   let serviceEnabled = false;
   let capabilitiesRead = false;
   let supportedRecipes = ["nwb"];
+  let ownerOverride = false;
   const descriptions = {
     nwb: {
       name: "NWB stream preservation",
@@ -118,7 +119,7 @@
       steps.append(step);
     }
     document.querySelector("#experimentLimits").textContent =
-      `Limit: four cases per submission, 10 submissions per UTC day across both experiments. Sandbox time is capped at four minutes. ${description.bounds} This validates software properties, not biological accuracy, physical clocks or researcher benefit.`;
+      `Limit: four cases per submission, ${ownerOverride ? "your verified owner account is exempt from the daily submission cap" : "10 submissions per UTC day across both experiments"}. Sandbox time is capped at four minutes. ${description.bounds} This validates software properties, not biological accuracy, physical clocks or researcher benefit.`;
     updateAvailability();
     preview();
   }
@@ -553,10 +554,23 @@
   }
   request("/api/experiments")
     .then((data) => {
+      ownerOverride = data.access?.owner_override === true;
+      const accountStatus = document.querySelector("#accountStatus");
+      const accountAction = document.querySelector("#accountAction");
+      accountStatus.textContent = ownerOverride
+        ? "Verified Vercel owner account. Daily submission cap waived; per-run limits still apply."
+        : data.access?.signed_in
+          ? "Signed in with Vercel. The standard daily submission limit applies."
+          : "Standard daily submission limit applies.";
+      accountAction.hidden = !data.access?.sign_in_available;
+      accountAction.textContent = data.access?.signed_in
+        ? "Sign out"
+        : "Sign in with Vercel";
+      accountAction.href = `/api/auth/${data.access?.signed_in ? "signout" : "signin"}?callbackUrl=${encodeURIComponent(location.pathname + location.search)}`;
       serviceEnabled = data.enabled;
       supportedRecipes = data.recipes || ["nwb"];
       capabilitiesRead = true;
-      updateAvailability();
+      configureRecipe();
       const id = new URL(location.href).searchParams.get("run");
       if (ready && id) poll(id);
     })

@@ -221,6 +221,7 @@ jobs:
           node --check site/deploy.cjs
           npm run build
           node lab/verify.cjs
+          node lab/verify-auth.cjs
           python3 lab/verify_bundle_checks.py
           node lab/verify-browser.cjs
           npm test
