@@ -70,3 +70,18 @@ The selected baseline/candidate tests and existing crop checks pass locally with
 MNE's [contribution policy](https://github.com/mne-tools/mne-python/blob/0265fc9a575f125d95c5c92f672fd0bb85cfab2d/CONTRIBUTING.md) prohibits fully automated submissions and requires the human contributor to personally review, understand and test AI-assisted changes. It also asks that issue/PR text be written by the human. This is an agent-assisted local Kufu experiment, not an MNE contribution submission or an upstream PR draft. No outreach is authorised. A later submission would require Ahmed's own review and compliance with that policy.
 
 Retain the [MNE BSD licence](UPSTREAM-LICENSE) with the patch. Kufu's original replay scripts and documentation use the lab's MIT licence. Recheck current upstream and related work before investing further; bounded searches found no matching open precision PR, which is not proof that no overlapping work exists.
+
+
+## Generated input matrix
+
+The local [matrix runner](verify_matrix.py) exercises 160 supported cases using the actual pinned baseline and candidate: fifteen selected rates, zero/first/one-second/two-second sample positions, both origins, and forty seeded interior cases. Every comparison uses the same reference and input hash; all 640 exported input/output array roles are reopened and hash-checked. The [retained result](matrix-result.json) identifies source hashes, runtime versions, seed and resource time. No hosted quota is consumed by this local/CI check.
+
+The baseline changed 60 onsets and displaced 40 truncating indexes relative to the pre-attachment reference. The candidate preserved all onsets, durations and reference indexes; all unchanged-input and rounded-index controls passed. Two references already truncated to the preceding sample before attachment. At 807 Hz, sample 51 has onset `0.06319702602230483`; truncating lookup returns 50 even for that original float, while rounded lookup returns 51. The candidate preserves that onset and therefore preserves the original truncating result too. Onset preservation does not guarantee that truncation recovers the intended sample, and the existing rounded-lookup workaround remains relevant.
+
+Run after source preparation and dependency installation:
+
+```sh
+.external/mne-env/bin/python projects/mne-annotation-onsets/verify_matrix.py --output .runs/contracts/mne/generated-matrix
+```
+
+The output directory must be new. The maintained CI addition runs this matrix inside the existing scientific gate and copies its fresh summary into the tested site. The local result passed; this new CI integration is pending publication. Coverage is constructed four-second ramps with zero first-sample offset and a 100 ms annotation, within the existing parameter bounds. It does not validate clipped/serialized annotations, physical clocks, real recordings or researcher benefit.

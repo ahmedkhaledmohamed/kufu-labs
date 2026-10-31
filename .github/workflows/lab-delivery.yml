@@ -79,6 +79,7 @@ jobs:
           PYTHONPATH=.external/mne-patched .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode patched --input .runs/contracts/mne/inputs.json --output .runs/contracts/mne/parameterized-patched
           PYTHONPATH=.external/mne-clean .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode baseline --input .runs/contracts/mne/boundaries.json --output .runs/contracts/mne/boundary-baseline
           PYTHONPATH=.external/mne-patched .external/mne-env/bin/python projects/mne-annotation-onsets/experiment.py --mode patched --input .runs/contracts/mne/boundaries.json --output .runs/contracts/mne/boundary-patched
+          .external/mne-env/bin/python projects/mne-annotation-onsets/verify_matrix.py --output .runs/contracts/mne/generated-matrix
       - name: Install isolated NWB runtime
         run: |
           python -m venv .external/nwb-env
@@ -192,6 +193,7 @@ jobs:
         run: |
           cp .runs/contracts/mne/baseline.json projects/mne-annotation-onsets/baseline.json
           cp .runs/contracts/mne/patched.json projects/mne-annotation-onsets/patched.json
+          cp .runs/contracts/mne/generated-matrix/result.json projects/mne-annotation-onsets/matrix-result.json
           cp .runs/contracts/movement-deletion/baseline.json projects/movement-edit-filtering/deletion-baseline.json
           cp .runs/contracts/movement-deletion/patched.json projects/movement-edit-filtering/deletion-patched.json
           cp .runs/contracts/nwb/baseline.json projects/nwb-stream-integrity/baseline.json
