@@ -40,6 +40,12 @@ For a brand-new Vercel project, the first deployment can be production-targeted 
 
 Reports/screenshots/traces are GitHub Actions artifacts retained for 14 days. Their visibility follows the repository visibility; publishing the repository also exposes its Actions history. Authenticated remote traces are deliberately disabled: traces can capture request headers, so only offline traces are retained. Remote reports/screenshots contain no verification credential. Longer-term example result files in the repository are dated evidence, not an assertion that the latest cloud workflow has passed.
 
+## Dependency-cache reliability
+
+Main run [41156016312](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41156016312) completed successfully, but Node setup took about ten minutes and reported “Failed to restore: Egress is over the account limit.” The web and deployment jobs explicitly set `package-manager-cache: false` in the pinned Node setup action. Their locked `npm ci` installs, public registry selection, scientific checks, browser checks and deployment gate remain unchanged. This removes those jobs' dependency on the optional npm cache service; a published workflow run is still required to verify the change in CI. Python caching is unchanged.
+
+PR #28 merged at `80fe8e9550e9828f8fe61edf2a5a9855f6bea376`. Main run [41160760475](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41160760475) passed scientific contracts, refine.bio, local browser and deployed browser checks, then stopped at HTTP 429 during hosted experiment verification. Explicit promotion did not run; an independent authenticated canonical manifest read still reports `49c92d28e38c872116b6c407403ba155e34a91f8`. The shared ten-submission UTC daily allowance remains unchanged. A separate capped CI allowance is a pending policy choice; no counter reset, quota bypass or manual deployment was performed.
+
 ## Vercel configuration
 
 Verified target: personal scope `ahmed-khaled-mohameds-projects`, project `scientific-software-lab`. `site/deployment-config.json` contains non-secret identity constraints; the deployment script checks them before mutations. Vercel Authentication is configured for **All Deployments**, covering production and preview. No paid protection add-on, new account or purchased domain is used. Implicit Git linking is disabled so a separate integration cannot bypass the CI promotion gate.
