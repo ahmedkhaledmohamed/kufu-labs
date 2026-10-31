@@ -319,6 +319,24 @@ const url = (file) => new URL(file, base).href;
       "zero-age-metadata",
     ]) {
       await page.goto(url("problems/" + id + ".html"));
+      if (id === "deleted-flags") {
+        const row = page
+          .getByRole("row")
+          .filter({ hasText: "Qt deletion: second Save after reopening" });
+        assert.deepEqual(await row.locator("td").allTextContents(), [
+          "Qt deletion: second Save after reopening",
+          "No edit variable",
+          "true",
+        ]);
+        const loaded = page
+          .getByRole("row")
+          .filter({ hasText: "Qt deletion: flag in final loader" });
+        assert.deepEqual(await loaded.locator("td").allTextContents(), [
+          "Qt deletion: flag in final loader",
+          "false",
+          "true",
+        ]);
+      }
       await page.screenshot({ path: path.join(output, id + "-desktop.png") });
       await page
         .locator("#before-after")

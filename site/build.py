@@ -246,6 +246,37 @@ def problem_content(problem, data):
                             ],
                         ]
                     )
+                for field, label in [
+                    ("flag_after_first_save", "Qt deletion: first Save"),
+                    (
+                        "flag_after_second_save",
+                        "Qt deletion: second Save after reopening",
+                    ),
+                    ("flag_in_final_loader", "Qt deletion: flag in final loader"),
+                ]:
+                    flags = [report["rendered"][field] for report in reports]
+                    rows.append(
+                        [
+                            label,
+                            *[
+                                "No edit variable"
+                                if value is None
+                                else str(value).lower()
+                                for value in flags
+                            ],
+                        ]
+                    )
+                for mode, source, filename in [
+                    (1, "before-delete.png", "deletion-before.png"),
+                    (1, "after-delete.png", "deletion-after-delete.png"),
+                    (0, "after-reexport-reload.png", "deletion-baseline-reloaded.png"),
+                    (1, "after-reexport-reload.png", "deletion-patched-reloaded.png"),
+                ]:
+                    image = ROOT / "projects/movement-edit-filtering" / filename
+                    assert (
+                        hashlib.sha256(image.read_bytes()).hexdigest()
+                        == reports[mode]["rendered"]["captures"][source]
+                    )
             if problem["id"] == "eeg-events":
                 reports = [
                     json.loads(

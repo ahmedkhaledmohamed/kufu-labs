@@ -3,7 +3,7 @@
 Use movement's existing boolean `edited` provenance to retain explicitly corrected pose points during confidence filtering, while allowing other unscored predictions to be dropped.
 
 - [Current review package and upstream draft](REVIEW.md)
-- [Independent deletion-provenance diagnostic and issue draft](DELETION-PROVENANCE.md) (local; no fix or new issue submitted)
+- [Independent deletion-provenance candidate and rendered save/reopen comparison](DELETION-PROVENANCE.md) (local; no competing upstream submission)
 - [Executable widget-workflow demonstration](verify_workflow.py) and [observed result](workflow-result.json)
 - [Rendered canvas result](rendered-result.json): [before editing](canvas-before.png), [after the mouse drag](canvas-after-drag.png), and [filtered data reloaded](canvas-after-filter.png)
 - [Scope, implementation result, and reproduction commands](PILOT.md)
@@ -33,7 +33,7 @@ NaN marks an unavailable confidence value; by itself it cannot distinguish a man
 
 The local rendered replay passed all 11 existing workflow invariants plus actual canvas selection/movement and visible reload checks. It took 8.192 seconds with a Python-process peak RSS of 888,881,152 bytes (about 848 MiB) on Linux arm64/Python 3.13.18. The run had no network access, no GPU, a three-GiB container memory limit and two CPUs. Its four netCDF files total less than 50 KB; the runner also enforces the original one-MB fixture and four-GiB process caps. These are constructed-run measurements, not recording-scale benchmarks.
 
-The deletion case still uses napari’s existing model removal method; only the correction is dragged through the canvas. The known deletion-provenance counterexample remains: a deleted point's edit flag is true after the first export and false after the second. A [separate local repair and regression comparison](DELETION-PROVENANCE.md) now address that defect on current upstream; they are not applied in this filtering-only replay. Positions remain missing and the tested filtering decisions remain equal. This replay does not fix that defect, implement the whole dedicated-array request in #1027, add a GUI filtering button, or establish researcher benefit. The website serves retained results and captures; the Qt application runs in a local or CI environment.
+In this filtering-only replay, deletion still uses napari’s model removal method; only the correction is dragged through the canvas. The separate deletion-provenance replay now selects the point and sends the actual Delete key in the rendered host. The known deletion-provenance counterexample remains: a deleted point's edit flag is true after the first export and false after the second. A [separate local repair and regression comparison](DELETION-PROVENANCE.md) now address that defect on current upstream; they are not applied in this filtering-only replay. Positions remain missing and the tested filtering decisions remain equal. This replay does not fix that defect, implement the whole dedicated-array request in #1027, add a GUI filtering button, or establish researcher benefit. The website serves retained results and captures; the Qt application runs in a local or CI environment.
 
 ### Reproduce on Linux
 

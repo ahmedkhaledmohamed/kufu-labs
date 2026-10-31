@@ -282,7 +282,7 @@
       "title": "Preserve deleted-point provenance on repeated export",
       "domain": "Behavioural neuroscience",
       "stage": "Local repair verified",
-      "evidence": "Reported defect + current-source before/after regression",
+      "evidence": "Reported defect + source-locked converter and rendered GUI comparison",
       "need": "A second GUI export loses edited flags for removed points, while coordinates remain missing.",
       "proposal": "Preserve loaded edit flags for currently missing points in the existing converter.",
       "baseline": "movement main 00e7a232c90ac451e27b1a72f41e7234878d0417; six deletion cases fail before the candidate, all 15 cases pass afterward.",
@@ -337,19 +337,19 @@
           ],
           [
             "Remove one point",
-            "The first conversion marks the deliberate removal as edited."
+            "Select the intended point through the actual Qt canvas and send the Delete key."
           ],
           [
             "Save and reopen",
-            "Native netCDF is written and reopened for one, two or four cycles."
+            "Use real Save/Load buttons twice in the rendered replay; separate converter cases cover one, two or four native reopen cycles."
           ],
           [
             "Compare provenance and values",
             "Check every edit flag, position and confidence, including never-detected controls."
           ]
         ],
-        "comparisonTitle": "Deleted-point flag after a second conversion",
-        "comparisonNote": "These values come from the source-locked converter replay. Separate regression cases also save and reopen real native netCDF files. The filtering patch is not applied.",
+        "comparisonTitle": "Deleted-point flags across saved editing sessions",
+        "comparisonNote": "The first three rows come from converter cases. Rows marked Qt come from an actual canvas click, Delete key, Save buttons and native-file reloads. Positions and confidence remain equal across reexport; the difference is provenance. The filtering patch is not applied.",
         "comparison": [
           [
             "Scenario",
@@ -358,8 +358,8 @@
           ]
         ],
         "execution": {
-          "label": "Recorded converter and native-file verification",
-          "summary": "This page displays retained Python results. It starts no Qt application, background job or Vercel experiment. The reproduction command runs the actual converter and native-file regression cases in your own environment.",
+          "label": "Recorded rendered-GUI and native-file verification",
+          "summary": "This page shows retained values and captures. It starts no Qt application, background job or Vercel experiment. The --rendered command runs the actual plugin under Linux CPU Mesa/Xvfb in a local or CI environment.",
           "action": "Read local verification record"
         },
         "related": [
@@ -1474,9 +1474,9 @@
     {
       "problem": "deleted-flags",
       "verdict": "Local candidate passes; upstream work overlaps",
-      "observed": "Six deletion cases fail on unchanged main and all 15 cases pass with the local patch. The native-file cases compare every position, confidence and edit flag across up to four reopen cycles. All 45 existing conversion tests also passed in Linux CPU Mesa/Xvfb.",
+      "observed": "Six baseline deletion regressions fail and all 15 candidate cases pass. The new rendered local replay uses actual Qt selection, Delete, Save and reload: baseline loses the deletion flag after the second save, while the unchanged candidate preserves it through the final loader. Positions/confidence/time and never-detected/unscored controls pass. Existing conversion coverage remains separate.",
       "baseline": "movement 00e7a232c90ac451e27b1a72f41e7234878d0417; independent local candidate, without the filtering patch.",
-      "remaining": "No cloud run of the new check yet, full host suite, rendered deletion gestures, reset/re-add UI verification, real recordings, researcher benefit or upstream acceptance. An existing contributor has reported the same repair approach.",
+      "remaining": "New rendered CI integration is pending publication. Full host suite, reset/re-add UI, real recordings, researcher benefit and upstream acceptance remain unverified. Another contributor has reported the same repair approach.",
       "criterion": "A pinned regression fails before and passes after the fix for deletion-only and mixed edits, without resurrecting coordinates or changing unrelated provenance.",
       "next": "Recheck the existing upstream contribution before any separately authorised discussion; retain independent regression evidence."
     },
@@ -1651,12 +1651,12 @@
     {
       "id": "movement-deletion",
       "title": "Saved deletion provenance replay",
-      "runtime": "Python 3.13 and source-locked movement; new cases run the converter and native netCDF IO. Existing conversion tests also passed with real Qt fixtures in Linux CPU Mesa/Xvfb.",
+      "runtime": "Python 3.13 and source-locked movement in real napari/PyQt6, CPU Mesa/Xvfb. The webpage serves retained results; Qt runs locally or in CI.",
       "inputs": "Constructed poses: four frames, two keypoints, two individuals at 30 Hz. Deletion-only, mixed edits, never-detected controls, live flag clearing and empty coordinates.",
       "expected": "The saved deletion remains edited after repeated conversion; native reopen cases preserve all flags, positions and confidence.",
-      "verification": "Six baseline deletion cases fail and all 15 candidate cases pass. All 45 existing conversion tests pass on Linux. The separate upstream contributor has not supplied linked code for assessment.",
-      "limits": "Local evidence only; no full suite, rendered deletion gesture, reset/re-add UI, real recording or measured user benefit. Cloud checks for this addition are pending publication.",
-      "command": "python3 site/prepare_movement.py --deletion\n# Install the documented isolated host environment first.\npython projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion/patched.json",
+      "verification": "Six baseline deletion cases fail and all 15 candidate cases pass. In the rendered replay, actual Delete and Save/reload actions reproduce lost provenance before the patch and preserved provenance afterward, with unchanged numeric data and controls. All 45 existing conversion tests previously passed. The other contributor’s code has not been assessed.",
+      "limits": "Constructed local rendered evidence; new rendered CI integration pending publication. No full suite, reset/re-add gestures, real recordings or measured user benefit.",
+      "command": "python3 site/prepare_movement.py --deletion\n# Install the documented isolated host environment and Linux GUI libraries first.\nQT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion-gui/patched.json --rendered",
       "href": null,
       "record": "projects/movement-edit-filtering/DELETION-PROVENANCE.md",
       "result": "projects/movement-edit-filtering/deletion-patched.json",
