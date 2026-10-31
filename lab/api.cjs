@@ -1,6 +1,7 @@
 const { QueueClient } = require("@vercel/queue");
 const { validateRecipe, validateCases, validId } = require("./contracts.cjs");
 const store = require("./store.cjs");
+const { access } = require("./auth.cjs");
 const queue = new QueueClient({ region: "iad1" });
 const enabled = () =>
   process.env.KUFU_LAB_ENABLED === "1" &&
@@ -96,15 +97,18 @@ module.exports = async (req, res) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   try {
     const url = new URL(req.url, "https://lab.invalid");
-    if (req.method === "GET" && !url.searchParams.has("id"))
+    if (req.method === "GET" && !url.searchParams.has("id")) {
+      const identity = await access(req);
       return json(res, 200, {
         enabled: enabled(),
         provider: "Vercel Sandbox",
         source_commit: store.build.commit,
-        daily_limit: 10,
+        daily_limit: identity.owner_override ? null : 10,
+        access: identity,
         max_cases: 4,
         recipes: ["nwb", "mne"],
       });
+    }
     if (!enabled())
       return json(res, 503, {
         error: "Hosted experiments are not enabled for this deployment yet.",
@@ -168,7 +172,11 @@ module.exports = async (req, res) => {
         error: "That run ID belongs to different inputs.",
       });
     if (!previous) {
-      if (!(await store.reserveDailySlot(submission.id)))
+      const identity = await access(req);
+      if (
+        !identity.owner_override &&
+        !(await store.reserveDailySlot(submission.id))
+      )
         return json(res, 429, {
           error:
             "The lab's limit of 10 submissions per UTC day has been reached.",
@@ -179,6 +187,7 @@ module.exports = async (req, res) => {
           cases: submission.cases,
           created_at: new Date().toISOString(),
           source_commit: store.build.commit,
+          quota_policy: identity.owner_override ? "owner-exempt" : "daily",
         });
       } catch (error) {
         if (!store.existsError(error)) throw error;

@@ -63,6 +63,11 @@ const server = http.createServer((req, res) => {
     let submissions = 0;
     let submitted;
     let available = true;
+    let identity = {
+      sign_in_available: true,
+      signed_in: false,
+      owner_override: false,
+    };
     let failSubmitOnce = false;
     let jobState = "queued";
     const created = new Date(Date.now() - 20000).toISOString();
@@ -143,7 +148,7 @@ const server = http.createServer((req, res) => {
                 : {}),
               progress: progressFixture(),
             }
-          : { enabled: available, recipes: ["nwb", "mne"] },
+          : { enabled: available, recipes: ["nwb", "mne"], access: identity },
       });
     });
     await page.goto(base + "/lab.html");
@@ -411,6 +416,63 @@ const server = http.createServer((req, res) => {
       path: path.join(output, "mne-desktop.png"),
       fullPage: true,
     });
+    const beforeAccountChanges = submissions;
+    assert.match(
+      await page.locator("#accountAction").textContent(),
+      /Sign in with Vercel/,
+    );
+    assert.match(
+      await page.locator("#accountAction").getAttribute("href"),
+      /^\/api\/auth\/signin\?/,
+    );
+    identity = {
+      sign_in_available: true,
+      signed_in: true,
+      owner_override: true,
+    };
+    await page.goto(base + "/lab.html?recipe=mne");
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#accountStatus")
+        .textContent.includes("Daily submission cap waived"),
+    );
+    assert.match(
+      await page.locator("#experimentLimits").textContent(),
+      /exempt from the daily submission cap/,
+    );
+    assert.match(
+      await page.locator("#accountAction").textContent(),
+      /Sign out/,
+    );
+    await page.screenshot({
+      path: path.join(output, "owner-account.png"),
+      fullPage: true,
+    });
+    identity = {
+      sign_in_available: true,
+      signed_in: true,
+      owner_override: false,
+    };
+    await page.reload();
+    await page.waitForFunction(() =>
+      document
+        .querySelector("#accountStatus")
+        .textContent.includes("standard daily submission limit"),
+    );
+    assert.match(
+      await page.locator("#experimentLimits").textContent(),
+      /10 submissions per UTC day/,
+    );
+    assert.equal(
+      submissions,
+      beforeAccountChanges,
+      "Reading account state cannot submit compute",
+    );
+    identity = {
+      sign_in_available: false,
+      signed_in: false,
+      owner_override: false,
+    };
     available = false;
     await page.goto(base + "/lab.html");
     await page.waitForFunction(() =>
@@ -419,6 +481,7 @@ const server = http.createServer((req, res) => {
         .textContent.includes("not enabled"),
     );
     assert.equal(await page.locator("#runExperiment").isDisabled(), true);
+    assert.equal(await page.locator("#accountAction").isVisible(), false);
     assert.deepEqual(errors, []);
     console.log(
       "Lab browser flow passed: live queued/running stages and elapsed time, reload persistence, failed/interrupted stages, stale-status handling, generated inputs, explicit submission, actual-report rendering, downloads and mobile layout. Queue/API responses were local test doubles; this check launched no hosted compute.",

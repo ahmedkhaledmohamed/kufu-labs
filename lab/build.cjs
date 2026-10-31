@@ -20,6 +20,7 @@ async function main() {
   };
   for (const [name, entry, duration] of [
     ["experiments", "api", 30],
+    ["auth", "auth-handler", 30],
     ["experiment-worker", "worker", 300],
   ]) {
     const directory = path.join(output, "functions", "api", `${name}.func`);
@@ -86,7 +87,7 @@ async function main() {
     "Static evidence pages plus explicitly requested NWB and MNE experiments in Vercel Sandbox via authenticated Functions and Queues.";
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
   console.log(
-    `Bundled two Vercel Functions; ${Object.keys(files).length} backend assets recorded.`,
+    `Bundled three Vercel Functions; ${Object.keys(files).length} backend assets recorded.`,
   );
 }
 main().catch((error) => {

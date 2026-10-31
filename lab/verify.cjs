@@ -513,7 +513,7 @@ async function request(
       "A progress-storage failure must not prevent Sandbox cleanup",
     );
   }
-  for (const name of ["experiments", "experiment-worker"]) {
+  for (const name of ["experiments", "experiment-worker", "auth"]) {
     const config = JSON.parse(
       fs.readFileSync(
         `dist-backend/functions/api/${name}.func/.vc-config.json`,
