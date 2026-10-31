@@ -16,7 +16,32 @@ The separate [repair](deletion-provenance.patch) preserves loaded flags only for
 
 Both revisions use source `00e7a232c90ac451e27b1a72f41e7234878d0417`, current upstream main when checked. The [profile](deletion-profile.json) locks source, converter, test, patch and BSD licence hashes. [Baseline](deletion-baseline.json) has six failing deletion cases and nine passing controls. [Patched](deletion-patched.json) passes all 15. Native netCDF save/reopen cycles of 1, 2 and 4 compare every position, confidence and edit flag. Additional cases cover clearing a live flag, dropping entirely empty keypoints/individuals and rejecting an entirely missing dataset. These fixtures have four frames, two keypoints and two individuals at 30 Hz; they are not recordings.
 
-All 45 existing conversion tests passed in the existing Linux arm64/Python 3.13.18 CPU-Mesa/Xvfb environment. This runs real napari/Qt fixtures, excluding the root startup hook that downloads recordings. The normal macOS viewer run crashed during startup; the pure four-case existing round trip passed there, and the new suite passed on Python 3.13.2. No failed assertion was hidden. Existing pandas deprecation warnings and read-only pytest-cache warnings remain visible in local logs. Full host suite, rendered deletion gestures, re-add UI, explicit reset-button interactions, real recordings, researcher benefit and upstream acceptance remain unverified. The live-flag test clears the converter input directly; it is not a reset-button demonstration.
+All 45 existing conversion tests passed in the existing Linux arm64/Python 3.13.18 CPU-Mesa/Xvfb environment. This runs real napari/Qt fixtures, excluding the root startup hook that downloads recordings. The normal macOS viewer run crashed during startup; the pure four-case existing round trip passed there, and the new suite passed on Python 3.13.2. No failed assertion was hidden. Existing pandas deprecation warnings and read-only pytest-cache warnings remain visible in local logs. Full host suite, re-add UI, explicit reset-button interactions, real recordings, researcher benefit and upstream acceptance remain unverified. The rendered deletion follow-up below now covers the actual removal gesture and Save/reopen path. The live-flag test clears the converter input directly; it is not a reset-button demonstration.
+
+## Rendered deletion workflow
+
+The optional `--rendered` replay now uses the actual source-locked plugin in napari 0.9.2 and PyQt6 6.11.0. It loads four constructed frames, selects the intended nose point on frame 1 through a Qt canvas click, sends the real Delete key, and checks that exactly that point disappeared. The real Load and Save buttons write/reopen netCDF twice; only the file picker destination is replaced. No point-removal method or synthetic model event substitutes for the keyboard action.
+
+| Actual host step | Unmodified source | Existing candidate |
+| --- | --- | --- |
+| First Save after deletion | Deleted-point flag true | Deleted-point flag true |
+| Reopen, then second Save | Entire edit variable absent | Deleted-point flag true |
+| Load the second file | Loaded flag false | Loaded flag true |
+
+All positions, confidence values and time coordinates are equal across reexport; the deleted coordinate remains missing. Never-detected and unscored-but-present controls are not marked edited, and the original dataset stays unchanged. The difference is saved provenance, not a coordinate correction. These assertions accompany the existing six baseline failures and fifteen passing candidate regression cases.
+
+Inspect the actual captures: [point before deletion](deletion-before.png), [after the Delete key](deletion-after-delete.png), [baseline after reexport/reload](deletion-baseline-reloaded.png), and [candidate after reexport/reload](deletion-patched-reloaded.png). Screenshots show the real interaction and missing point; the flag difference comes from the saved-file and loader metadata recorded in the JSON results and comparison table. Geometry remains the same in both revisions. The build verifies that all four capture hashes match their source reports.
+
+Both local runs used the existing Linux arm64 CPU-Mesa image with networking disabled, two CPUs, a three-GiB memory cap, read-only source and generated-data/temp writes only. Each measured replay took about 8–9 seconds, with peak Python RSS below 850 MiB; the JSON records retain exact total/rendered timings and peak RSS. Its three netCDF files total less than 34 KB. The first container launch stalled in Xvfb before Python started; the retained successful runs use an init process. No recordings, model weights or GPU were used.
+
+After the documented source/dependency setup and Linux GUI libraries, run:
+
+```sh
+QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-clean --expect baseline --output .runs/deletion-gui/baseline.json --rendered
+QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion-gui/patched.json --rendered
+```
+
+Use a new output location: native files and captures are retained under `rendered-baseline` and `rendered-patched`. The maintained CI addition runs both inside the existing scientific job and copies its fresh results/captures into the tested site. Local replay and site checks are the publication gate; the new rendered CI integration remains pending reviewed publication. The webpage displays retained results and starts no Qt application or hosted experiment. Reset/re-add gestures, the full host suite, real recordings and researcher benefit remain unverified.
 
 ## Existing upstream work
 

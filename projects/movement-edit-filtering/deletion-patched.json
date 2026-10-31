@@ -26,13 +26,42 @@
       "flag_second": null
     }
   },
-  "qt_or_canvas_created": false,
-  "python": "3.13.2",
+  "qt_or_canvas_created": true,
+  "python": "3.13.18",
   "versions": {
     "numpy": "2.5.4",
     "pandas": "3.1.0",
     "xarray": "2026.9.0",
-    "pytest": "9.1.1"
+    "pytest": "9.2.0"
   },
-  "elapsed_seconds": 2.841
+  "elapsed_seconds": 9.011,
+  "rendered": {
+    "real_canvas_click_and_delete_key": true,
+    "real_load_and_save_buttons": true,
+    "renderer": "llvmpipe (LLVM 19.1.7, 128 bits)",
+    "flag_after_first_save": true,
+    "flag_after_second_save": true,
+    "flag_in_final_loader": true,
+    "positions_confidence_and_time_preserved_after_reexport": true,
+    "never_detected_and_unscored_controls_not_marked_edited": true,
+    "original_dataset_unchanged": true,
+    "netcdf_bytes": {
+      "original.nc": 10715,
+      "second-save.nc": 11274,
+      "first-save.nc": 11274
+    },
+    "elapsed_seconds": 5.539,
+    "peak_rss_bytes": 862011392,
+    "captures": {
+      "before-delete.png": "154fc8f04738d82b874598b4fc0af4311404844f9aac8a9f0a82d930450eabe0",
+      "after-delete.png": "84095312f451e7029031684cb9f20e06d71ec7d4f26a0243cb3437cc598eec3c",
+      "after-reexport-reload.png": "f1d066b4162ed9076ef9b01b9ead3438affed492878c52d31d5f77f40af221ac"
+    },
+    "versions": {
+      "napari": "0.9.2",
+      "PyQt6": "6.11.0",
+      "qtpy": "2.4.3",
+      "PyOpenGL": "3.1.10"
+    }
+  }
 }

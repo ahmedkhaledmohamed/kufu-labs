@@ -65,8 +65,8 @@ jobs:
           python -m pip freeze > .runs/contracts/environment.txt
       - name: Verify saved movement deletion provenance
         run: |
-          python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-clean --expect baseline --output .runs/contracts/movement-deletion/baseline.json
-          python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/contracts/movement-deletion/patched.json
+          QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-clean --expect baseline --output .runs/contracts/movement-deletion/baseline.json --rendered
+          QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/contracts/movement-deletion/patched.json --rendered
           PYTHONPATH="$PWD/.external/movement-deletion-patched" QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python -m pytest --noconftest -o addopts= -p tests.fixtures.datasets -p tests.fixtures.napari .external/movement-deletion-patched/tests/test_unit/test_napari_plugin/test_convert.py -q --junitxml=.runs/contracts/movement-deletion/existing-conversion.xml
       - name: Verify interior MNE annotation onset preservation
         run: |
@@ -196,6 +196,10 @@ jobs:
           cp .runs/contracts/mne/generated-matrix/result.json projects/mne-annotation-onsets/matrix-result.json
           cp .runs/contracts/movement-deletion/baseline.json projects/movement-edit-filtering/deletion-baseline.json
           cp .runs/contracts/movement-deletion/patched.json projects/movement-edit-filtering/deletion-patched.json
+          cp .runs/contracts/movement-deletion/rendered-patched/canvas/before-delete.png projects/movement-edit-filtering/deletion-before.png
+          cp .runs/contracts/movement-deletion/rendered-patched/canvas/after-delete.png projects/movement-edit-filtering/deletion-after-delete.png
+          cp .runs/contracts/movement-deletion/rendered-baseline/canvas/after-reexport-reload.png projects/movement-edit-filtering/deletion-baseline-reloaded.png
+          cp .runs/contracts/movement-deletion/rendered-patched/canvas/after-reexport-reload.png projects/movement-edit-filtering/deletion-patched-reloaded.png
           cp .runs/contracts/nwb/baseline.json projects/nwb-stream-integrity/baseline.json
           cp .runs/contracts/nwb/patched.json projects/nwb-stream-integrity/patched.json
           cp .runs/contracts/nwb-release/baseline.json projects/nwb-stream-integrity/released-baseline.json

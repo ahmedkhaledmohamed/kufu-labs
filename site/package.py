@@ -53,6 +53,10 @@ def main():
             "canvas-before.png",
             "canvas-after-drag.png",
             "canvas-after-filter.png",
+            "deletion-before.png",
+            "deletion-after-delete.png",
+            "deletion-baseline-reloaded.png",
+            "deletion-patched-reloaded.png",
         ]
     ]
     # Linked research/source artifacts are explicit, inert download types.
