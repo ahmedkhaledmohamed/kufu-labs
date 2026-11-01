@@ -743,7 +743,8 @@ code {
   width: 100%;
   font-size: 14px;
 }
-.problem-story .mne-workflow-comparison {
+.problem-story .mne-workflow-comparison,
+.problem-story #nwbBuildComparison {
   min-width: 760px;
 }
 .problem-story caption {

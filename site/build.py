@@ -19,6 +19,99 @@ def slug(path):
     return path.removesuffix(".md").replace("/", "--") + ".html"
 
 
+def nwb_build_downloads():
+    project = ROOT / "projects/nwb-stream-integrity"
+    result = json.loads((project / "wheel-result.json").read_text())
+    profile = json.loads((project / "released-profile.json").read_text())
+    assert result["passed"]
+    manifest = result["manifest"]
+    assert manifest["upstream_commit"] == profile["upstream_commit"]
+    assert manifest["patch_sha256"] == profile["patch_sha256"]
+    files = [
+        project / "builds" / manifest["builds"][mode]["filename"]
+        for mode in ["baseline", "patched"]
+    ]
+    available = all(file.is_file() for file in files)
+    assert available or not any(file.exists() for file in files), (
+        "Partial NWB build downloads"
+    )
+    rows = []
+    for mode, label, file in zip(
+        ["baseline", "patched"],
+        ["Baseline: reproduces data loss", "Experimental repair"],
+        files,
+    ):
+        entry = manifest["builds"][mode]
+        expected = f"0.7.2+kufu.{'baseline1' if mode == 'baseline' else 'stream1'}"
+        assert (
+            entry["version"] == expected
+            and entry["filename"] == f"nwbinspector-{expected}-py3-none-any.whl"
+        )
+        observed = result["results"][mode]
+        assert observed["installed_build"]["editable"] is False
+        assert observed["installed_build"]["source_imports"] is False
+        assert observed["installed_build"]["wheel_sha256"] == entry["sha256"]
+        if available:
+            assert hashlib.sha256(file.read_bytes()).hexdigest() == entry["sha256"]
+            label = (
+                '<a download href="../projects/nwb-stream-integrity/builds/'
+                + entry["filename"]
+                + '">'
+                + html.escape(label)
+                + "</a>"
+            )
+        else:
+            label = html.escape(label)
+        tests = observed["unit_tests"]
+        assert len(tests["failed"]) == 3 and tests["skipped"] == 5
+        rows.append(
+            "<tr><td>"
+            + label
+            + "</td><td>"
+            + html.escape(entry["version"])
+            + "</td><td>"
+            + str(observed["inspected_preserved"])
+            + "/12</td><td>"
+            + str(observed["controls_preserved"])
+            + "/12</td><td>"
+            + str(tests["passed"])
+            + " passed; 3 known failures; 5 skipped</td></tr>"
+        )
+    body = (
+        '<p id="nwbBuildStatus">Installed-wheel verification: both builds ran in fresh Python 3.12.12 environments, using the real Inspector and HDF5/Zarr writers. Installed code, configuration files, licence and import origins were checked. These are experimental Kufu builds from the pinned release, without upstream endorsement.</p>'
+        + '<div class="table-scroll"><table id="nwbBuildComparison"><caption>Data preserved after inspection, writing and reopening</caption><thead><tr>'
+        + "".join(
+            '<th scope="col">' + value + "</th>"
+            for value in [
+                "Build",
+                "Version",
+                "Inspected cases",
+                "Uninspected controls",
+                "Release unit suite",
+            ]
+        )
+        + "</tr></thead><tbody>"
+        + "".join(rows)
+        + "</tbody></table></div>"
+        + "<p>The baseline download reproduces data loss and is provided for comparison. The repaired build preserved every value in the 12 inspected constructed cases. Three pre-existing dependency-related unit failures remain on both builds. Real recordings and other environments remain unvalidated.</p>"
+    )
+    if not available:
+        body += "<p>Wheel downloads are absent from this source-only build. Run the documented wheel build to generate them; scientific CI supplies them for deployment.</p>"
+    repaired = manifest["builds"]["patched"]
+    body += (
+        '<details class="reproduction"><summary>Install the experimental repair in a separate environment</summary><p>Use the lab checkout, Python 3.12.12 and the repaired wheel downloaded above. This installs the pinned tested dependencies. Your conversion code uses the existing nwbinspector API.</p><pre><code>'
+        + html.escape(
+            "python3.12 -m venv .venv-nwb-experiment\n.venv-nwb-experiment/bin/python -m pip install --isolated --index-url https://pypi.org/simple -r projects/nwb-stream-integrity/requirements.txt ./"
+            + repaired["filename"]
+        )
+        + "</code></pre><p>Repaired wheel SHA-256: <code>"
+        + repaired["sha256"]
+        + "</code></p></details>"
+        + '<p><a href="../projects/nwb-stream-integrity/wheel-result.json">Download build identities, hashes and verification results (JSON)</a> · <a href="../projects/nwb-stream-integrity/build_wheels.py">Build and verification implementation</a></p>'
+    )
+    return body
+
+
 def mne_workflow_comparison():
     project = ROOT / "projects/mne-annotation-onsets"
     result = json.loads((project / "workflow-result.json").read_text())
@@ -428,6 +521,14 @@ def problem_content(problem, data):
                 "before-after",
             )
         )
+        if problem["id"] == "nwb-stream-integrity":
+            story.append(
+                section(
+                    "Installable experimental builds",
+                    nwb_build_downloads(),
+                    "installable-builds",
+                )
+            )
         if problem["id"] == "eeg-events":
             story.append(
                 section(

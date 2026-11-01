@@ -27,6 +27,7 @@ const url = (file) => new URL(file, base).href;
     ? {
         "x-vercel-protection-bypass":
           process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+        "x-vercel-set-bypass-cookie": "true",
       }
     : {};
   const context = await browser.newContext({
@@ -212,6 +213,51 @@ const url = (file) => new URL(file, base).href;
     await page.waitForURL(url("problems/edit-filtering.html#try"), {
       waitUntil: "load",
     });
+    await page.goto(
+      url("problems/nwb-stream-integrity.html#installable-builds"),
+    );
+    const wheelEvidence = JSON.parse(
+      fs.readFileSync(
+        path.join(root, "projects/nwb-stream-integrity/wheel-result.json"),
+        "utf8",
+      ),
+    );
+    assert.ok(await page.locator("#nwbBuildComparison").isVisible());
+    const wheelDownloads = page.locator("#nwbBuildComparison a[download]");
+    if (
+      fs.existsSync(
+        path.join(
+          root,
+          "projects/nwb-stream-integrity/builds",
+          wheelEvidence.manifest.builds.patched.filename,
+        ),
+      )
+    ) {
+      assert.equal(await wheelDownloads.count(), 2);
+      for (const [index, mode] of ["baseline", "patched"].entries()) {
+        const entry = wheelEvidence.manifest.builds[mode];
+        const [download] = await Promise.all([
+          page.waitForEvent("download"),
+          wheelDownloads.nth(index).click(),
+        ]);
+        assert.equal(download.suggestedFilename(), entry.filename);
+        const destination = path.join(output, entry.filename);
+        await download.saveAs(destination);
+        assert.equal(
+          crypto
+            .createHash("sha256")
+            .update(fs.readFileSync(destination))
+            .digest("hex"),
+          entry.sha256,
+        );
+      }
+    } else {
+      assert.equal(await wheelDownloads.count(), 0);
+      assert.match(
+        await page.locator("#installable-builds").textContent(),
+        /source-only build/,
+      );
+    }
     await page.goto(url("problems/eeg-events.html#host-workflow"));
     assert.equal(await page.locator(".mne-workflow-comparison").count(), 2);
     assert.ok(
@@ -497,6 +543,7 @@ const url = (file) => new URL(file, base).href;
         "research candidates claim no implemented solution",
         "actual before/after export values",
         "MNE save/reopen stage values and downloadable evidence",
+        "NWB wheel downloads match verified build hashes",
         "separate interactive pose demo and contextual return links",
         "unchanged filter output and explanation",
         "all mobile problem pages without overflow",

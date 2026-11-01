@@ -74,6 +74,23 @@ def main():
             or source.name in {"COPYING", "UPSTREAM-LICENSE"}
         ):
             files.append(source)
+    # Only the two reviewed, hash-verified generated NWB wheels are downloadable.
+    project = ROOT / "projects/nwb-stream-integrity"
+    builds = json.loads((project / "wheel-result.json").read_text())["manifest"][
+        "builds"
+    ]
+    wheels = []
+    for mode in ["baseline", "patched"]:
+        entry = builds[mode]
+        version = f"0.7.2+kufu.{'baseline1' if mode == 'baseline' else 'stream1'}"
+        assert entry["filename"] == f"nwbinspector-{version}-py3-none-any.whl"
+        wheel = project / "builds" / entry["filename"]
+        if wheel.exists():
+            assert not wheel.is_symlink() and wheel.stat().st_size < 1_000_000
+            assert hashlib.sha256(wheel.read_bytes()).hexdigest() == entry["sha256"]
+            wheels.append(wheel)
+    assert len(wheels) in [0, 2], "Partial NWB wheel bundle"
+    files += wheels
     checksums = {}
     for source in sorted(set(files)):
         relative = source.relative_to(ROOT)

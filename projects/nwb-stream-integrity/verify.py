@@ -89,16 +89,29 @@ def main():
         action="store_true",
         help="Verify the source-locked public 0.7.2 release on Python 3.12.12.",
     )
+    parser.add_argument(
+        "--wheel-record",
+        type=Path,
+        help="Verify a clean installed build instead of a source checkout",
+    )
     args = parser.parse_args()
+    assert not args.wheel_record or args.released
     source_file = Path(_utils.__file__).resolve()
-    source_commit = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=source_file.parents[3], text=True
-    ).strip()
     profile = (
         json.loads(Path(__file__).with_name("released-profile.json").read_text())
         if args.released
         else None
     )
+    installed = None
+    if args.wheel_record:
+        from verify_wheel import validate_installed
+
+        installed = validate_installed(args.wheel_record, args.expect)
+        source_commit = profile["upstream_commit"]
+    else:
+        source_commit = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=source_file.parents[3], text=True
+        ).strip()
     expected_commit = (
         profile["upstream_commit"]
         if profile
@@ -116,6 +129,8 @@ def main():
             == profile[f"{args.expect}_shape_sha256"]
         ), "Loaded release helper differs from the verified baseline or patch"
         for name, expected_version in profile["reported_stack"].items():
+            if installed and name == "nwbinspector":
+                expected_version = installed["version"]
             assert importlib.metadata.version(name) == expected_version, (
                 f"Released-profile {name} version differs"
             )
@@ -192,6 +207,8 @@ def main():
         "controls_preserved": len(controls),
         "inspected_preserved": sum(c["values_equal"] for c in inspected),
     }
+    if installed:
+        report["installed_build"] = installed
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({k: v for k, v in report.items() if k != "cases"}, indent=2))

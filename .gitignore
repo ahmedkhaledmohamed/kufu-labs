@@ -31,3 +31,6 @@ dist/
 dist-backend/
 artifacts/
 .env*
+
+# Generated, hash-verified NWB build downloads; source and manifests stay reviewed.
+/projects/nwb-stream-integrity/builds/
