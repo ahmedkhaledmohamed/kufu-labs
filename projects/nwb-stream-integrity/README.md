@@ -100,3 +100,44 @@ NWB organises measurements and associated metadata so they can be stored and reu
 The patch is published in the lab, with a separate local upstream-review package. The upstream [developer guide](https://github.com/NeurodataWithoutBorders/nwbinspector/blob/e6d968a1e0a62aa8f6611f45f242196d9ce75ea5/docs/developer_guide.rst) asks contributors not to open a PR before the issue is approved by its team. No approval, maintainer discussion, fork push or upstream PR is claimed. Outreach remains deferred.
 
 Retain the [upstream licence](UPSTREAM-LICENSE), including its enhancement clause, with the patch. The lab's original replay and documentation use the repository default MIT terms. The next step is review of the mechanism, integration limits and existing upstream alternatives before any authorised upstream discussion.
+
+## Installable experimental wheels
+
+The [wheel builder](build_wheels.py) now packages the pinned 0.7.2 release as two pure-Python distributions: `0.7.2+kufu.baseline1` reproduces the unchanged source, and `0.7.2+kufu.stream1` includes the existing released-profile shape repair. These are experimental Kufu builds, without upstream endorsement or acceptance. The baseline build is for comparison and reproduces data loss.
+
+The scientific patch is unchanged. Packaging changes give each build a distinct local version, embed a source/patch provenance JSON file, and explicitly include the complete upstream licence as `nwbinspector/UPSTREAM-LICENSE`. The initial build check rejected a wheel without that notice; no such build is offered for download. Every package file is checked against the pinned source before building; all installed Python/configuration files, licence, wheel hash and package import origins are verified. No source package is copied into the fresh test environments, no editable install is permitted, and the selected tests use importlib collection with a package-origin guard before and after execution.
+
+The [retained build result](wheel-result.json) identifies both wheels, hashes, exact builder versions, installed-package verification and scientific results. Each fresh Python 3.12.12 environment installs the locked dependencies and its wheel offline from a prepared local wheelhouse, followed by `pip check`. The real Inspector runs before HDF5/Zarr writing and reopening in the existing 24-case replay: two backends, two iterator types, three lengths and inspected/uninspected cases. Runtime network connections are blocked. The entire selected released unit suite and the candidate's 11 regressions run against the installed packages, retaining the same three named dependency-related failures and five skips rather than calling the suite fully passing.
+
+| Installed build | Inspected cases preserving every value | Uninspected controls | Selected release unit suite |
+| --- | --- | --- | --- |
+| Baseline | 0/12 | 12/12 | 278 passed, 3 known failures, 5 skipped |
+| Experimental repair | 12/12 | 12/12 | 289 passed, same 3 failures, 5 skipped |
+
+The complete local two-build run took 71.126 seconds, including fresh offline installs, 48 native round trips and both selected unit suites. Each wheel is below 100 KB. Negative probes verify that a source-checkout import and altered wheel bytes are rejected.
+
+The local macOS setup initially copied the standalone Python executable into a new environment, which broke its relative dynamic-library lookup. Fresh environments now use interpreter symlinks, as the normal venv command does on this platform. A first unit-collection attempt also exposed that the upstream streaming probe handles normal OS network errors, while the harness raised a different exception; the blocker now raises `OSError`, without making a connection. The same five existing network-dependent skips remain enforced. These harness changes do not alter Inspector or its expected failures.
+
+From a fresh lab worktree, prepare the source using the earlier released-profile command, then use Python 3.12.12:
+
+```sh
+python3 projects/nwb-stream-integrity/prepare.py --released
+python3.12 -m venv .external/nwb-wheel-builder
+.external/nwb-wheel-builder/bin/python -m pip install --isolated --index-url https://pypi.org/simple -r projects/nwb-stream-integrity/requirements-build.txt
+.external/nwb-wheel-builder/bin/python -m pip download --isolated --index-url https://pypi.org/simple --only-binary=:all: -r projects/nwb-stream-integrity/requirements.txt -d .external/nwb-wheelhouse
+.external/nwb-wheel-builder/bin/python projects/nwb-stream-integrity/build_wheels.py --runtime-root .external/nwb-wheel-runtimes --wheelhouse .external/nwb-wheelhouse --output .runs/nwb-wheels
+```
+
+The output and runtime locations must be new; existing environments are preserved. Output contains both wheels, a complete package-file manifest, installed replay JSON, logs and JUnit reports. Dependencies and environments remain outside the published artifacts. Build tools are pinned in [requirements-build.txt](requirements-build.txt); wheel timestamps use a fixed source-date epoch for stable packaging. Cross-platform byte reproducibility is not claimed. The builder verifies source files, never modifies the pinned source worktrees, and preserves the upstream licence and attribution.
+
+Scientific CI now builds and tests the wheels and supplies its fresh results/downloads to the site. The site packager accepts only the two expected wheel names, hashes and size bounds. Generated wheels are ignored by Git; source and result manifests are reviewed. A source-only site build without generated wheels displays reproduction instructions instead of broken download links. The public build addition has not run in CI yet.
+
+After downloading the repaired wheel from the problem page into a lab checkout, install it separately:
+
+```sh
+python3.12 -m venv .venv-nwb-experiment
+.venv-nwb-experiment/bin/python -m pip install --isolated --index-url https://pypi.org/simple -r projects/nwb-stream-integrity/requirements.txt ./nwbinspector-0.7.2+kufu.stream1-py3-none-any.whl
+.venv-nwb-experiment/bin/python -c "import nwbinspector; print(nwbinspector.__version__)"
+```
+
+Compare the download's SHA-256 with the build result or problem page before installation. Use the existing `inspect_nwbfile_object` API in that environment; no wrapper API or runtime monkey patch is introduced. These checks establish the tested installation and data-preservation behavior, not recording-scale safety, recovery of already damaged files, arbitrary dependency compatibility, scientific validity or researcher benefit. No package-registry publication, upstream PR or outreach is included.
