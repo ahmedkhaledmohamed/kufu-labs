@@ -878,7 +878,7 @@
         "title": "Preserve an unchanged EEG annotation onset",
         "summary": "An annotation marks a point or interval in a time series. At some sampling rates, attaching it to a recording rounds its onset even though it lies inside the allowed interval. A floor-based lookup can then select the preceding sample.",
         "solution": "The local candidate keeps the original onset only if neither boundary was clipped and the original span fits inside the datetime-resolved limits. The existing clipping path remains. It addresses this unnecessary mutation, not the full timing-precision problem.",
-        "science": "At 512 samples per second, sample 1 is at 0.001953125 seconds. Datetime rounds that to 0.001953 seconds. The 125-nanosecond change crosses a floor-index boundary; it does not show that a physical recording clock drifted by a whole sample. All tested signals are constructed zeros, not recordings or a neural model.",
+        "science": "At 512 samples per second, sample 1 is at 0.001953125 seconds. Datetime rounds that to 0.001953 seconds. The 125-nanosecond change crosses a floor-index boundary; it does not show that a physical recording clock drifted by a whole sample. The original regression uses constructed zeros; the parameterized and complete host workflows use distinguishable ramps. None are recordings or a neural model.",
         "terms": [
           [
             "Sampling rate",
@@ -923,7 +923,7 @@
         ],
         "execution": {
           "label": "Queued Vercel Sandbox experiment",
-          "summary": "This page shows retained results. Open the Execution lab to change the sampling rate, annotation sample and time origin, or generate four reference cases. Press Run to execute the actual baseline and patched MNE software on Vercel; opening the page starts no compute.",
+          "summary": "This page shows retained results. Open the Execution lab to change the sampling rate, annotation sample and time origin, or generate four reference cases. Press Run to execute the actual baseline and patched MNE software on Vercel; opening the page starts no compute. The separate FIF save/reopen and epoch comparison below is retained local/CI evidence; that complete workflow is not a hosted recipe.",
           "action": "Open MNE execution lab"
         },
         "related": [
@@ -1503,7 +1503,7 @@
       "verdict": "Bounded interior-onset candidate passes locally",
       "observed": "The extended existing crop test covers four rates and dated/undated origins. Six baseline cases fail; all 12 selected candidate checks pass, including four other existing crop tests. Applicable upstream pre-commit checks pass.",
       "baseline": "MNE main 0265fc9a575f125d95c5c92f672fd0bb85cfab2d; release 1.13.2 observation is recorded separately.",
-      "remaining": "This bounded candidate does not repair all datetime precision, clipping, first-sample/origin, serialization or hardware-clock issues. No real recordings, user benefit or upstream acceptance. Pinned scientific checks passed in PR #25 CI. MNE requires personal human review before an upstream submission.",
+      "remaining": "A local 32-case-per-revision host workflow now covers selected nonzero first-sample offsets and relative/UTC origins through FIF save/reopen and epochs. Default rounded event selection already works on both revisions. The candidate does not preserve exact FIF timestamps or repair explicit truncation in every case. No broad offset/rate, clipping, physical-clock, real-recording, user-benefit or upstream-acceptance claim. New workflow CI is pending publication; MNE requires personal human review before submission.",
       "criterion": "Unchanged interior onsets retain their original value while existing crop limits and regression checks remain valid. Broader timing and research usefulness need separate evidence.",
       "next": "Review the bounded mechanism and source policy; recheck upstream before further investment. No fully automated MNE submission or outreach."
     }

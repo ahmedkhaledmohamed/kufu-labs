@@ -19,6 +19,99 @@ def slug(path):
     return path.removesuffix(".md").replace("/", "--") + ".html"
 
 
+def mne_workflow_comparison():
+    project = ROOT / "projects/mne-annotation-onsets"
+    result = json.loads((project / "workflow-result.json").read_text())
+    profile = json.loads((project / "profile.json").read_text())
+    assert result["passed"] and result["cases_per_revision"] == 32
+    assert result["verified_arrays"] == 256
+    for mode in ["baseline", "patched"]:
+        source = result["source_and_environment"][mode]
+        assert source["upstream_commit"] == profile["source_revision"]
+        assert source["annotations_sha256"] == profile[f"{mode}_annotations_sha256"]
+        assert source["patch_sha256"] == profile["patch_sha256"]
+        assert result["counts"][mode]["default_event_mismatches"] == 0
+        assert result["counts"][mode]["epoch_mismatches"] == 0
+    assert result["counts"]["patched"]["attachment_onset_changes"] == 0
+    counts = result["counts"]
+    body = (
+        '<p id="mneWorkflowStatus">Actual MNE attachment → FIF save → reopen → event extraction → four-sample epochs: '
+        + str(result["cases_per_revision"])
+        + " constructed cases per revision, with zero/nonzero recording offsets and relative/UTC origins. "
+        + str(result["verified_arrays"])
+        + " exported signal/epoch arrays were reopened and checked.</p>"
+        + "<p>Attachment changed "
+        + str(counts["baseline"]["attachment_onset_changes"])
+        + " baseline onsets and "
+        + str(counts["patched"]["attachment_onset_changes"])
+        + " candidate onsets. FIF serialization still changed "
+        + str(counts["patched"]["serialization_onset_changes"])
+        + " candidate onsets. Default rounded events and epoch contents were correct on both revisions. "
+        + "This shows the precision fix's boundary; it does not demonstrate better epoch selection than the existing default.</p>"
+        + "<p>FIF annotation timestamps use float32 independently of the signal's double-precision storage. "
+        + "Explicit truncation can still select an earlier sample after reopening. Some nonzero-offset UTC cases "
+        + "already truncate incorrectly for the unchanged reference float. The existing default rounds event indexes.</p>"
+    )
+    for example in result["examples"]:
+        case = example["baseline"]["input"]
+        assert example["patched"]["input"] == case
+        expected = example["baseline"]["expected_event_sample"]
+        rows = []
+        for mode, label in [("baseline", "Baseline"), ("patched", "Candidate")]:
+            report = example[mode]
+            assert report["expected_event_sample"] == expected
+            for stage, title in [
+                ("attached", "Attached"),
+                ("fif_stored", "Stored in FIF"),
+                ("reopened", "Reopened"),
+            ]:
+                values = report["stages"][stage]
+                rows.append(
+                    "<tr>"
+                    + "".join(
+                        "<td>" + html.escape(str(value)) + "</td>"
+                        for value in [
+                            label,
+                            title,
+                            repr(values["onset_seconds"]),
+                            values.get("default_event_sample", "Not extracted"),
+                            values.get("truncating_event_sample", "Not extracted"),
+                            "Exact match"
+                            if values.get("epoch_matches_expected")
+                            else "Not extracted",
+                        ]
+                    )
+                    + "</tr>"
+                )
+        body += (
+            '<div class="table-scroll"><table class="mne-workflow-comparison"><caption>'
+            + html.escape(
+                f"{case['sfreq']} Hz; local sample {case['sample']}; first sample {case['first_samp']}; {case['origin']} origin. Expected event sample: {expected}."
+            )
+            + "</caption><thead><tr>"
+            + "".join(
+                '<th scope="col">' + value + "</th>"
+                for value in [
+                    "Revision",
+                    "Stage",
+                    "Onset (seconds)",
+                    "Default event",
+                    "Truncating event",
+                    "Epoch data",
+                ]
+            )
+            + "</tr></thead><tbody>"
+            + "".join(rows)
+            + "</tbody></table></div>"
+        )
+    return (
+        body
+        + "<p>These are retained local/CI results. This workflow is not a hosted Execution lab recipe; opening this page starts no job.</p>"
+        + '<p><a href="../projects/mne-annotation-onsets/workflow-result.json">Download workflow evidence (JSON)</a> · '
+        + '<a href="../projects/mne-annotation-onsets/verify_workflow.py">Workflow implementation</a></p>'
+    )
+
+
 def refinebio_comparison(prefix=""):
     project = ROOT / "projects/refinebio-zero-age"
     reports = [
@@ -335,6 +428,14 @@ def problem_content(problem, data):
                 "before-after",
             )
         )
+        if problem["id"] == "eeg-events":
+            story.append(
+                section(
+                    "Save, reopen and select analysis samples",
+                    mne_workflow_comparison(),
+                    "host-workflow",
+                )
+            )
         execution = detail["execution"]
         actions = link(
             execution["action"],
