@@ -123,10 +123,10 @@ def run_mode(mode, output):
                         ("fif_stored", stored),
                         ("reopened", reloaded.annotations),
                     ]:
-                        stages[name] = dict(
-                            onset_seconds=float(value.onset[0]),
-                            duration_seconds=float(value.duration[0]),
-                        )
+                        stages[name] = {
+                            "onset_seconds": float(value.onset[0]),
+                            "duration_seconds": float(value.duration[0]),
+                        }
                     for name, value in [("attached", raw), ("reopened", reloaded)]:
                         default, event_id = mne.events_from_annotations(
                             value, verbose=False
@@ -173,40 +173,40 @@ def run_mode(mode, output):
                         allow_pickle=False,
                     )
                     results.append(
-                        dict(
-                            input=dict(
-                                sfreq=rate,
-                                sample=sample,
-                                first_samp=offset,
-                                origin=origin_kind,
-                            ),
-                            reference_onset_seconds=reference_onset,
-                            expected_event_sample=offset + sample,
-                            reference_truncating_event_sample=reference_truncated,
-                            signal_sha256=digest(signal.tobytes()),
-                            stages=stages,
-                            artifacts={
+                        {
+                            "input": {
+                                "sfreq": rate,
+                                "sample": sample,
+                                "first_samp": offset,
+                                "origin": origin_kind,
+                            },
+                            "reference_onset_seconds": reference_onset,
+                            "expected_event_sample": offset + sample,
+                            "reference_truncating_event_sample": reference_truncated,
+                            "signal_sha256": digest(signal.tobytes()),
+                            "stages": stages,
+                            "artifacts": {
                                 p.name: digest(p.read_bytes())
                                 for p in directory.iterdir()
                             },
-                        )
+                        }
                     )
                     raw.close()
                     reloaded.close()
-    report = dict(
-        mode=mode,
-        upstream_commit=revision,
-        annotations_sha256=digest(source.read_bytes()),
-        patch_sha256=profile["patch_sha256"],
-        host_sha256=host_hashes,
-        python=platform.python_version(),
-        versions={
+    report = {
+        "mode": mode,
+        "upstream_commit": revision,
+        "annotations_sha256": digest(source.read_bytes()),
+        "patch_sha256": profile["patch_sha256"],
+        "host_sha256": host_hashes,
+        "python": platform.python_version(),
+        "versions": {
             name: importlib.metadata.version(name) for name in ["mne", "numpy", "scipy"]
         },
-        peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        "peak_rss_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         * (1 if sys.platform == "darwin" else 1024),
-        cases=results,
-    )
+        "cases": results,
+    }
     (output / "report.json").write_text(json.dumps(report, indent=2) + "\n")
 
 
@@ -243,17 +243,17 @@ def compare(args):
     counts = {}
     verified_arrays = 0
     for mode, report in reports.items():
-        counts[mode] = dict(
-            attachment_onset_changes=0,
-            serialization_onset_changes=0,
-            reopen_onset_changes=0,
-            default_event_mismatches=0,
-            truncating_event_mismatches=0,
-            epoch_mismatches=0,
-            reference_truncating_mismatches=0,
-            attachment_truncating_changes=0,
-            reopen_truncating_changes=0,
-        )
+        counts[mode] = {
+            "attachment_onset_changes": 0,
+            "serialization_onset_changes": 0,
+            "reopen_onset_changes": 0,
+            "default_event_mismatches": 0,
+            "truncating_event_mismatches": 0,
+            "epoch_mismatches": 0,
+            "reference_truncating_mismatches": 0,
+            "attachment_truncating_changes": 0,
+            "reopen_truncating_changes": 0,
+        }
         for index, case in enumerate(report["cases"]):
             folder = args.output / mode / str(index)
             for name, checksum in case["artifacts"].items():
@@ -321,20 +321,20 @@ def compare(args):
     )
     assert artifact_bytes < 10_000_000
     assert all(report["peak_rss_bytes"] < 1_073_741_824 for report in reports.values())
-    result = dict(
-        passed=True,
-        cases_per_revision=32,
-        verified_arrays=verified_arrays,
-        counts=counts,
-        examples=examples,
-        source_and_environment={
+    result = {
+        "passed": True,
+        "cases_per_revision": 32,
+        "verified_arrays": verified_arrays,
+        "counts": counts,
+        "examples": examples,
+        "source_and_environment": {
             mode: {k: v for k, v in report.items() if k != "cases"}
             for mode, report in reports.items()
         },
-        artifact_bytes=artifact_bytes,
-        elapsed_seconds=round(time.monotonic() - started, 3),
-        limits="Constructed four-second ramps, four rates, two interior samples, zero/nonzero offsets and relative/UTC origins. Default events and four-sample epochs are checked. Exact FIF timestamps are not preserved; truncating lookup remains vulnerable. No clipping, long-recording, physical-clock or researcher-benefit validation.",
-    )
+        "artifact_bytes": artifact_bytes,
+        "elapsed_seconds": round(time.monotonic() - started, 3),
+        "limits": "Constructed four-second ramps, four rates, two interior samples, zero/nonzero offsets and relative/UTC origins. Default events and four-sample epochs are checked. Exact FIF timestamps are not preserved; truncating lookup remains vulnerable. No clipping, long-recording, physical-clock or researcher-benefit validation.",
+    }
     (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result))
 
