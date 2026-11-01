@@ -212,6 +212,32 @@ const url = (file) => new URL(file, base).href;
     await page.waitForURL(url("problems/edit-filtering.html#try"), {
       waitUntil: "load",
     });
+    await page.goto(url("problems/eeg-events.html#host-workflow"));
+    assert.equal(await page.locator(".mne-workflow-comparison").count(), 2);
+    assert.ok(
+      (await page.locator("#host-workflow").textContent()).includes(
+        "Default rounded events and epoch contents were correct on both revisions.",
+      ),
+    );
+    const reopenedCandidate = page
+      .locator(".mne-workflow-comparison")
+      .first()
+      .locator("tbody tr")
+      .last();
+    assert.deepEqual(await reopenedCandidate.locator("td").allTextContents(), [
+      "Candidate",
+      "Reopened",
+      "2.0266666412353516",
+      "608",
+      "607",
+      "Exact match",
+    ]);
+    await page
+      .getByRole("link", { name: "Download workflow evidence (JSON)" })
+      .click();
+    await page.waitForURL(
+      url("projects/mne-annotation-onsets/workflow-result.json"),
+    );
     await page.goto(url("validation.html"));
     assert.equal(
       await page.locator("#validationList article").count(),
@@ -470,6 +496,7 @@ const url = (file) => new URL(file, base).href;
         "six complete solution narratives and explicit runtime labels",
         "research candidates claim no implemented solution",
         "actual before/after export values",
+        "MNE save/reopen stage values and downloadable evidence",
         "separate interactive pose demo and contextual return links",
         "unchanged filter output and explanation",
         "all mobile problem pages without overflow",

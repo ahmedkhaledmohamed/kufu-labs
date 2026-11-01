@@ -14,7 +14,7 @@ The existing `use_rounding=True` lookup maps this tested case to sample 1 on bot
 
 The [patch](preserve-interior-onsets.patch) changes the existing `Annotations.crop` method. If an annotation was not clipped on either side and its original float span is wholly within the datetime-resolved crop limits, retain the original onset. Otherwise retain the existing clipping path. The duration, channel metadata, descriptions and extras follow the existing implementation. No API, parameter, dependency, sample-based time model or global datetime replacement is added.
 
-The supported integration is the existing `Annotations.crop` and `Raw.set_annotations` path. No application or plugin is required. This does not resolve every precision issue in #12327: clipped annotations still use datetime-resolved boundaries. Nonzero `first_samp`, arbitrary absolute clocks, serialization, HED-specific behavior and other callers need further evaluation. The separate origin/first-sample usability report [#13890](https://github.com/mne-tools/mne-python/issues/13890) is not claimed fixed.
+The supported integration is the existing `Annotations.crop` and `Raw.set_annotations` path. No application or plugin is required. This does not resolve every precision issue in #12327: clipped annotations still use datetime-resolved boundaries. The complete workflow below now evaluates selected nonzero `first_samp` values and FIF serialization. Broad offset coverage, arbitrary absolute clocks, HED-specific behavior and other callers still need evaluation. The separate origin/first-sample usability report [#13890](https://github.com/mne-tools/mne-python/issues/13890) is not claimed fixed.
 
 ## Before and after
 
@@ -85,3 +85,37 @@ Run after source preparation and dependency installation:
 ```
 
 The output directory must be new. The maintained CI addition runs this matrix inside the existing scientific gate and copies its fresh summary into the tested site. The local result passed; this new CI integration is pending publication. Coverage is constructed four-second ramps with zero first-sample offset and a 100 ms annotation, within the existing parameter bounds. It does not validate clipped/serialized annotations, physical clocks, real recordings or researcher benefit.
+
+## Complete save/reopen analysis workflow
+
+The [workflow runner](verify_workflow.py) now runs the pinned source through actual `Raw.set_annotations`, `Raw.save(fmt="double")`, `read_annotations`, `read_raw_fif`, `events_from_annotations` and `Epochs`. No method is mocked. Each revision processes 32 cases: 300/512/1000/2048 Hz, local sample 1 or rate + 1, first-sample offset zero or twice the rate + 7, and relative or constructed UTC origins. Four-second ramps make every sample distinguishable. Epochs start at the event and contain four samples, with no baseline correction, projection or annotation rejection.
+
+The [retained result](workflow-result.json) records source/environment hashes, representative stage values, counts and resource measurements. Source locks cover the annotation patch and unchanged Raw, FIF reader and Epochs implementations. Baseline and candidate receive identical arrays and references. Scientific execution blocks Python network connections after importing the pinned host; setup is separate. Source, runtime and licence pins are unchanged.
+
+| Check | Baseline | Candidate |
+| --- | --- | --- |
+| Onset changed during attachment, out of 32 | 22 | 0 |
+| Onset changed during FIF serialization, out of 32 | 30 | 16 |
+| Onset changed again while reopening, out of 32 | 30 | 0 |
+| Wrong default rounded event, across attachment and reopening | 0 | 0 |
+| Wrong explicitly truncating event, across 64 stage observations | 52 | 20 |
+| Wrong default-event epoch contents, across 64 epochs | 0 | 0 |
+
+This establishes the precision repair's limits, not an improvement over MNE's existing default event selection. All default rounded events and their epochs were already correct on the baseline. Eight exact-reference cases already truncate to an unintended sample before attachment because of float/origin arithmetic. The candidate preserves that reference behavior; it does not repair it. Attachment changes 18 baseline truncating indexes relative to the reference and zero candidate indexes; saving/reopening changes eight candidate truncating indexes relative to attachment.
+
+At 300 Hz, local sample 1 with first sample 607 has expected event sample 608. The candidate attaches onset `2.026666666666667`, writes `2.0266666412353516`, and reloads that stored value. Explicit truncation returns 608 before saving and 607 after reopening; default rounding returns 608 throughout. At 512 Hz, local sample 1 with first sample 1031 and UTC origin, the candidate preserves its exact onset `2.015625` throughout, but explicit truncation returns 1031 rather than expected 1032 even before serialization. Default rounding remains correct.
+
+The pinned [FIF annotation writer](https://github.com/mne-tools/mne-python/blob/0265fc9a575f125d95c5c92f672fd0bb85cfab2d/mne/annotations.py#L2026) writes onsets and ends as float32 independently of `Raw.save`'s signal precision. The runner verifies the exact float32 conversion before Raw reopening can apply another crop. A new serialization format or a global timing redesign is not justified by this bounded attachment patch. The implementation remains unchanged; the practical tested workflow uses the existing default rounded event extraction. No claim of exact FIF timestamp preservation is made.
+
+After the existing source/runtime setup, reproduce with:
+
+```sh
+.external/mne-env/bin/python projects/mne-annotation-onsets/verify_workflow.py --output .runs/mne-workflow
+# Optional: --clean-checkout /path/to/baseline --patched-checkout /path/to/candidate
+```
+
+The output directory must be new. It contains per-revision logs/reports, native constructed FIF files, input/reopened signal arrays and attached/reopened epoch arrays. The parent process reopens and verifies all 256 arrays and hashes every native file. The local run used Python 3.13.2, NumPy 2.5.4 and SciPy 1.18.1, took about two seconds, generated about 6.2 MB and used less than 80 MiB peak RSS per scientific process. The runner caps each subprocess at 90 seconds, peak RSS at one GiB and retained artifacts at ten MB. These are measured tiny-fixture results, not recording-scale benchmarks.
+
+The maintained CI workflow runs this comparison inside its existing scientific job, retains native fixtures/arrays with the scientific evidence artifact and copies its fresh summary into the site. This CI addition has not been published or run in the cloud yet. The problem page derives stage tables from that summary and links the implementation and evidence; it does not start this workflow. The existing hosted recipe still tests attachment only. No hosted quota is consumed by this local/CI comparison.
+
+Clipping, long recordings, all sampling rates/offsets, real recordings, physical clocks and researcher benefit remain unvalidated. Upstream submission remains outside this work and requires MNE's personal human review process.

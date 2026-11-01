@@ -1,0 +1,240 @@
+{
+  "passed": true,
+  "cases_per_revision": 32,
+  "verified_arrays": 256,
+  "counts": {
+    "baseline": {
+      "attachment_onset_changes": 22,
+      "serialization_onset_changes": 30,
+      "reopen_onset_changes": 30,
+      "default_event_mismatches": 0,
+      "truncating_event_mismatches": 52,
+      "epoch_mismatches": 0,
+      "reference_truncating_mismatches": 8,
+      "attachment_truncating_changes": 18,
+      "reopen_truncating_changes": 0
+    },
+    "patched": {
+      "attachment_onset_changes": 0,
+      "serialization_onset_changes": 16,
+      "reopen_onset_changes": 0,
+      "default_event_mismatches": 0,
+      "truncating_event_mismatches": 20,
+      "epoch_mismatches": 0,
+      "reference_truncating_mismatches": 8,
+      "attachment_truncating_changes": 0,
+      "reopen_truncating_changes": 8
+    }
+  },
+  "examples": [
+    {
+      "baseline": {
+        "input": {
+          "sfreq": 300,
+          "sample": 1,
+          "first_samp": 607,
+          "origin": "relative"
+        },
+        "reference_onset_seconds": 2.026666666666667,
+        "expected_event_sample": 608,
+        "reference_truncating_event_sample": 608,
+        "signal_sha256": "f272402e40b1ba76a44596e785a6eb2c6a7471427438470452ac369ea509a7fc",
+        "stages": {
+          "attached": {
+            "onset_seconds": 2.0266663333333335,
+            "duration_seconds": 0.1,
+            "default_event_sample": 608,
+            "truncating_event_sample": 607,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "68891a656a0038d78911893e2c68524066ea5572e5cb4f92c10a90ae8f7f639a"
+          },
+          "fif_stored": {
+            "onset_seconds": 2.0266664028167725,
+            "duration_seconds": 0.09999990463256836
+          },
+          "reopened": {
+            "onset_seconds": 2.0266663333333335,
+            "duration_seconds": 0.09999990463256836,
+            "default_event_sample": 608,
+            "truncating_event_sample": 607,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "68891a656a0038d78911893e2c68524066ea5572e5cb4f92c10a90ae8f7f639a"
+          }
+        },
+        "artifacts": {
+          "reopened-epoch.npy": "0b958011ad85843ff1582feb91b3ded1758519cf005aa9c237a3cd7128d47aa8",
+          "reopened-signal.npy": "0d3e2fdeab6973e7ce65d270d881ee5a2fd11ee26ec338fe9eec183c12452c45",
+          "signal.npy": "0d3e2fdeab6973e7ce65d270d881ee5a2fd11ee26ec338fe9eec183c12452c45",
+          "constructed_raw.fif": "7fe7ee07c1fb062354752d07f7a59e291cf899f2ece87ed3852ad6117b4b5bfc",
+          "attached-epoch.npy": "0b958011ad85843ff1582feb91b3ded1758519cf005aa9c237a3cd7128d47aa8"
+        }
+      },
+      "patched": {
+        "input": {
+          "sfreq": 300,
+          "sample": 1,
+          "first_samp": 607,
+          "origin": "relative"
+        },
+        "reference_onset_seconds": 2.026666666666667,
+        "expected_event_sample": 608,
+        "reference_truncating_event_sample": 608,
+        "signal_sha256": "f272402e40b1ba76a44596e785a6eb2c6a7471427438470452ac369ea509a7fc",
+        "stages": {
+          "attached": {
+            "onset_seconds": 2.026666666666667,
+            "duration_seconds": 0.1,
+            "default_event_sample": 608,
+            "truncating_event_sample": 608,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "68891a656a0038d78911893e2c68524066ea5572e5cb4f92c10a90ae8f7f639a"
+          },
+          "fif_stored": {
+            "onset_seconds": 2.0266666412353516,
+            "duration_seconds": 0.10000014305114746
+          },
+          "reopened": {
+            "onset_seconds": 2.0266666412353516,
+            "duration_seconds": 0.10000014305114746,
+            "default_event_sample": 608,
+            "truncating_event_sample": 607,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "68891a656a0038d78911893e2c68524066ea5572e5cb4f92c10a90ae8f7f639a"
+          }
+        },
+        "artifacts": {
+          "reopened-epoch.npy": "0b958011ad85843ff1582feb91b3ded1758519cf005aa9c237a3cd7128d47aa8",
+          "reopened-signal.npy": "0d3e2fdeab6973e7ce65d270d881ee5a2fd11ee26ec338fe9eec183c12452c45",
+          "signal.npy": "0d3e2fdeab6973e7ce65d270d881ee5a2fd11ee26ec338fe9eec183c12452c45",
+          "constructed_raw.fif": "b6e057627e6be72a58ec8973caa6ead21ba432bdf13e7154060ef5413c121085",
+          "attached-epoch.npy": "0b958011ad85843ff1582feb91b3ded1758519cf005aa9c237a3cd7128d47aa8"
+        }
+      }
+    },
+    {
+      "baseline": {
+        "input": {
+          "sfreq": 512,
+          "sample": 1,
+          "first_samp": 1031,
+          "origin": "utc"
+        },
+        "reference_onset_seconds": 2.015625,
+        "expected_event_sample": 1032,
+        "reference_truncating_event_sample": 1031,
+        "signal_sha256": "3536e9844b101d2cb54aa325717dee1ff6e91582cd15283aa878effcd51fc79c",
+        "stages": {
+          "attached": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.1,
+            "default_event_sample": 1032,
+            "truncating_event_sample": 1031,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "e186f0d2cda36da722ef807dbaf94c575794fcb2433c84da4b4ac252d612fe7e"
+          },
+          "fif_stored": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.09999990463256836
+          },
+          "reopened": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.09999990463256836,
+            "default_event_sample": 1032,
+            "truncating_event_sample": 1031,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "e186f0d2cda36da722ef807dbaf94c575794fcb2433c84da4b4ac252d612fe7e"
+          }
+        },
+        "artifacts": {
+          "reopened-epoch.npy": "919d8b9dfda35f9006e2c6a816ffe75acb11d171daa764a605b032dcbcd27bf2",
+          "reopened-signal.npy": "451282feb7f0e75228694cd733bdeb9ff7afbedbb0cfa945de0ee58f2e1e684c",
+          "signal.npy": "451282feb7f0e75228694cd733bdeb9ff7afbedbb0cfa945de0ee58f2e1e684c",
+          "constructed_raw.fif": "caeede1b71ce42268a989a1f4d4b3482776f3df65d8ad7595185ff1e556545c3",
+          "attached-epoch.npy": "919d8b9dfda35f9006e2c6a816ffe75acb11d171daa764a605b032dcbcd27bf2"
+        }
+      },
+      "patched": {
+        "input": {
+          "sfreq": 512,
+          "sample": 1,
+          "first_samp": 1031,
+          "origin": "utc"
+        },
+        "reference_onset_seconds": 2.015625,
+        "expected_event_sample": 1032,
+        "reference_truncating_event_sample": 1031,
+        "signal_sha256": "3536e9844b101d2cb54aa325717dee1ff6e91582cd15283aa878effcd51fc79c",
+        "stages": {
+          "attached": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.1,
+            "default_event_sample": 1032,
+            "truncating_event_sample": 1031,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "e186f0d2cda36da722ef807dbaf94c575794fcb2433c84da4b4ac252d612fe7e"
+          },
+          "fif_stored": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.09999990463256836
+          },
+          "reopened": {
+            "onset_seconds": 2.015625,
+            "duration_seconds": 0.09999990463256836,
+            "default_event_sample": 1032,
+            "truncating_event_sample": 1031,
+            "epoch_matches_expected": true,
+            "epoch_sha256": "e186f0d2cda36da722ef807dbaf94c575794fcb2433c84da4b4ac252d612fe7e"
+          }
+        },
+        "artifacts": {
+          "reopened-epoch.npy": "919d8b9dfda35f9006e2c6a816ffe75acb11d171daa764a605b032dcbcd27bf2",
+          "reopened-signal.npy": "451282feb7f0e75228694cd733bdeb9ff7afbedbb0cfa945de0ee58f2e1e684c",
+          "signal.npy": "451282feb7f0e75228694cd733bdeb9ff7afbedbb0cfa945de0ee58f2e1e684c",
+          "constructed_raw.fif": "caeede1b71ce42268a989a1f4d4b3482776f3df65d8ad7595185ff1e556545c3",
+          "attached-epoch.npy": "919d8b9dfda35f9006e2c6a816ffe75acb11d171daa764a605b032dcbcd27bf2"
+        }
+      }
+    }
+  ],
+  "source_and_environment": {
+    "baseline": {
+      "mode": "baseline",
+      "upstream_commit": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+      "annotations_sha256": "18ede0da9eccfc5c43f581b06965273a18aa73fc33a5abebb0bd144605f21d5a",
+      "patch_sha256": "ff166011bbb3765a371d47bf21e2e59d54899b465a47ba22fa7574fb8ad18619",
+      "host_sha256": {
+        "mne/io/base.py": "272d1e4074d33cf89dd23b48904b8db5dbe64514a5617eefd24f6f4a2118d855",
+        "mne/io/fiff/raw.py": "d68ef931b653648f499eb750385f9c335586b474808c4b41d2a9809b999b5d0b",
+        "mne/epochs.py": "2a0ea272eeca4a2408c4d754f96d60cfd35a4f954f75e3efeb94872f76ec84f1"
+      },
+      "python": "3.13.2",
+      "versions": {
+        "mne": "1.13.2",
+        "numpy": "2.5.4",
+        "scipy": "1.18.1"
+      },
+      "peak_rss_bytes": 69206016
+    },
+    "patched": {
+      "mode": "patched",
+      "upstream_commit": "0265fc9a575f125d95c5c92f672fd0bb85cfab2d",
+      "annotations_sha256": "5e49bc16b0c687951422d197329d0acf67aff176e8fd9cfbcfbed8419ba1a1fa",
+      "patch_sha256": "ff166011bbb3765a371d47bf21e2e59d54899b465a47ba22fa7574fb8ad18619",
+      "host_sha256": {
+        "mne/io/base.py": "272d1e4074d33cf89dd23b48904b8db5dbe64514a5617eefd24f6f4a2118d855",
+        "mne/io/fiff/raw.py": "d68ef931b653648f499eb750385f9c335586b474808c4b41d2a9809b999b5d0b",
+        "mne/epochs.py": "2a0ea272eeca4a2408c4d754f96d60cfd35a4f954f75e3efeb94872f76ec84f1"
+      },
+      "python": "3.13.2",
+      "versions": {
+        "mne": "1.13.2",
+        "numpy": "2.5.4",
+        "scipy": "1.18.1"
+      },
+      "peak_rss_bytes": 69419008
+    }
+  },
+  "artifact_bytes": 6120035,
+  "elapsed_seconds": 1.804,
+  "limits": "Constructed four-second ramps, four rates, two interior samples, zero/nonzero offsets and relative/UTC origins. Default events and four-sample epochs are checked. Exact FIF timestamps are not preserved; truncating lookup remains vulnerable. No clipping, long-recording, physical-clock or researcher-benefit validation."
+}

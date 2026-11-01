@@ -743,6 +743,9 @@ code {
   width: 100%;
   font-size: 14px;
 }
+.problem-story .mne-workflow-comparison {
+  min-width: 760px;
+}
 .problem-story caption {
   text-align: left;
   font-weight: bold;
