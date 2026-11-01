@@ -1,4 +1,5 @@
 const { put, get, BlobPreconditionFailedError } = require("@vercel/blob");
+const { CI_LIMIT } = require("./ci-policy.cjs");
 const { validId } = require("./contracts.cjs");
 const build = KUFU_SOURCE;
 const namespace = () =>
@@ -41,12 +42,13 @@ async function writeProgress(id, value) {
     cacheControlMaxAge: 60,
   });
 }
-async function reserveDailySlot(id) {
+async function reserveDailySlot(id, pool = "daily") {
+  if (!["daily", "ci"].includes(pool)) throw new Error("Invalid quota pool");
   const date = new Date().toISOString().slice(0, 10);
-  for (let slot = 0; slot < 10; slot++) {
+  for (let slot = 0; slot < (pool === "ci" ? CI_LIMIT : 10); slot++) {
     try {
       await write(
-        `kufu-lab/budget/${date}/${slot}.json`,
+        `kufu-lab/${pool === "ci" ? "ci-budget" : "budget"}/${date}/${slot}.json`,
         JSON.stringify({ id }),
       );
       return true;

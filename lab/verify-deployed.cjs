@@ -6,21 +6,35 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
 const { DEFAULT, MNE_DEFAULT } = require("./contracts.cjs");
+const { ciToken } = require("./ci-token.cjs");
+const { CI_LIMIT } = require("./ci-policy.cjs");
 const deployment = process.env.HUB_URL;
 const secret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 const manifest = require("../dist/build-info.json");
 async function request(suffix = "", options = {}) {
   const response = await fetch(`${deployment}/api/experiments${suffix}`, {
     ...options,
-    headers: { "x-vercel-protection-bypass": secret, ...options.headers },
+    headers: {
+      "x-vercel-protection-bypass": secret,
+      "x-kufu-ci-token": await ciToken(),
+      ...options.headers,
+    },
     signal: AbortSignal.timeout(30000),
   });
   assert.notEqual(
     response.status,
     429,
-    "Hosted verification reached the shared daily submission limit (HTTP 429). Rerun the failed deployment job after UTC midnight.",
+    "Hosted verification reached the verified-CI daily submission limit (HTTP 429). Rerun the failed deployment job after UTC midnight.",
   );
-  assert.ok(response.ok, `Execution API returned ${response.status}`);
+  if (!response.ok) {
+    const failure = await response.json().catch(() => ({}));
+    const reason =
+      typeof failure.ci_error === "string" &&
+      /^[a-z-]{1,50}$/.test(failure.ci_error)
+        ? ` (${failure.ci_error})`
+        : "";
+    throw new Error(`Execution API returned ${response.status}${reason}`);
+  }
   return response;
 }
 async function verifyRecipe(recipe, cases) {
@@ -47,6 +61,9 @@ async function verifyRecipe(recipe, cases) {
     "The Vercel queue did not finish within the deadline",
   );
   assert.equal(result.recipe, recipe);
+  assert.equal(result.quota_policy, "ci-daily");
+  assert.equal(result.ci_identity.run_id, process.env.GITHUB_RUN_ID);
+  assert.equal(result.ci_identity.run_attempt, process.env.GITHUB_RUN_ATTEMPT);
   assert.equal(result.provider, "Vercel Sandbox");
   assert.equal(result.source_commit, manifest.source_commit);
   assert.equal(result.lab_source_commit, manifest.source_commit);
@@ -164,7 +181,8 @@ async function verifyRecipe(recipe, cases) {
   );
   assert.equal(capability.source_commit, manifest.source_commit);
   assert.deepEqual(capability.recipes, ["nwb", "mne"]);
-  assert.equal(capability.daily_limit, 10);
+  assert.equal(capability.daily_limit, CI_LIMIT);
+  assert.equal(capability.ci_verified, true);
   await verifyRecipe("nwb", [
     DEFAULT,
     {

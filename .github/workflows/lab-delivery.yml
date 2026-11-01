@@ -239,6 +239,7 @@ jobs:
           npm run build
           node lab/verify.cjs
           node lab/verify-auth.cjs
+          node lab/verify-ci.cjs
           python3 lab/verify_bundle_checks.py
           node lab/verify-browser.cjs
           npm test
@@ -270,6 +271,9 @@ jobs:
 
   deploy:
     name: Protected Vercel deployment
+    permissions:
+      contents: read
+      id-token: write
     needs: [contracts, refinebio, web]
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
