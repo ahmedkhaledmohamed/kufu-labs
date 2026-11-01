@@ -2,6 +2,7 @@ const { QueueClient } = require("@vercel/queue");
 const { validateRecipe, validateCases, validId } = require("./contracts.cjs");
 const store = require("./store.cjs");
 const { access } = require("./auth.cjs");
+const { ciAccess, CI_LIMIT } = require("./ci.cjs");
 const queue = new QueueClient({ region: "iad1" });
 const enabled = () =>
   process.env.KUFU_LAB_ENABLED === "1" &&
@@ -33,12 +34,17 @@ async function body(req) {
 async function status(id) {
   const submission = await store.readJSON(id, "submission.json");
   if (!submission) return null;
+  const quota = {
+    quota_policy: submission.quota_policy || "daily",
+    ...(submission.ci_identity ? { ci_identity: submission.ci_identity } : {}),
+  };
   const result = await store.readJSON(id, "result.json");
   if (result)
     return {
       id,
       status: "completed",
       ...result,
+      ...quota,
       recipe: validateRecipe(submission.recipe),
       cases: submission.cases,
     };
@@ -48,6 +54,7 @@ async function status(id) {
       id,
       status: "failed",
       ...failure,
+      ...quota,
       recipe: validateRecipe(submission.recipe),
       cases: submission.cases,
     };
@@ -81,6 +88,7 @@ async function status(id) {
   return {
     id,
     status: expired ? "interrupted" : claim ? "running" : "queued",
+    ...quota,
     recipe: validateRecipe(submission.recipe),
     cases: submission.cases,
     created_at: submission.created_at,
@@ -97,13 +105,15 @@ module.exports = async (req, res) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   try {
     const url = new URL(req.url, "https://lab.invalid");
+    const ci = await ciAccess(req, store.build.commit, process.env.VERCEL_ENV);
     if (req.method === "GET" && !url.searchParams.has("id")) {
       const identity = await access(req);
       return json(res, 200, {
         enabled: enabled(),
         provider: "Vercel Sandbox",
         source_commit: store.build.commit,
-        daily_limit: identity.owner_override ? null : 10,
+        daily_limit: ci ? CI_LIMIT : identity.owner_override ? null : 10,
+        ci_verified: Boolean(ci),
         access: identity,
         max_cases: 4,
         recipes: ["nwb", "mne"],
@@ -174,12 +184,13 @@ module.exports = async (req, res) => {
     if (!previous) {
       const identity = await access(req);
       if (
-        !identity.owner_override &&
-        !(await store.reserveDailySlot(submission.id))
+        (ci || !identity.owner_override) &&
+        !(await store.reserveDailySlot(submission.id, ci ? "ci" : "daily"))
       )
         return json(res, 429, {
-          error:
-            "The lab's limit of 10 submissions per UTC day has been reached.",
+          error: ci
+            ? "The CI limit of 20 submissions per UTC day has been reached."
+            : "The lab's limit of 10 submissions per UTC day has been reached.",
         });
       try {
         await store.writeJSON(submission.id, "submission.json", {
@@ -187,7 +198,12 @@ module.exports = async (req, res) => {
           cases: submission.cases,
           created_at: new Date().toISOString(),
           source_commit: store.build.commit,
-          quota_policy: identity.owner_override ? "owner-exempt" : "daily",
+          quota_policy: ci
+            ? "ci-daily"
+            : identity.owner_override
+              ? "owner-exempt"
+              : "daily",
+          ...(ci ? { ci_identity: ci } : {}),
         });
       } catch (error) {
         if (!store.existsError(error)) throw error;
@@ -213,6 +229,8 @@ module.exports = async (req, res) => {
     );
     return json(res, 202, { id: submission.id, status: "queued" });
   } catch (error) {
+    if (error.name === "CiIdentityError")
+      return json(res, 403, { error: error.message, ci_error: error.reason });
     console.error("Lab API request failed", error.name);
     return json(res, 503, {
       error:
