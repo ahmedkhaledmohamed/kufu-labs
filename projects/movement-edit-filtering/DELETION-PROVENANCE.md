@@ -1,6 +1,6 @@
 # Deleted-point edit provenance across repeated conversions
 
-Status, 30 October 2026: a separate local repair and 15-case regression suite now pass; nothing new has been submitted upstream. The existing filtering patch remains unchanged. The original report is [movement #1174](https://github.com/neuroinformatics-unit/movement/issues/1174).
+Status, 3 November 2026: the maintainer acknowledges the missing deletion round-trip coverage and has invited the existing contributor to submit their fix. No linked fix PR was found when checked. Our separate local repair and 15-case regression suite remain independent evidence; the filtering patch is unchanged. The original report is [movement #1174](https://github.com/neuroinformatics-unit/movement/issues/1174).
 
 ## Current implementation and evidence
 
@@ -45,7 +45,15 @@ Use a new output location: native files and captures are retained under `rendere
 
 ## Existing upstream work
 
-On 29 October, [another contributor reported the same missing-point preservation approach](https://github.com/neuroinformatics-unit/movement/issues/1174#issuecomment-6501514560), with their own regression. That report precedes this local repair. No linked implementation was available in the comment and no matching open PR was found in bounded searches on 30 October. Their code has not been assessed here. Do not present the approach as a novel Kufu design or open a competing upstream PR. The useful next step is to retain independent regression evidence and recheck the existing contribution before any separately authorised discussion.
+On 29 October, [devanshc777 independently reproduced the bug and reported a small fix with a regression test](https://github.com/neuroinformatics-unit/movement/issues/1174#issuecomment-6501514560). Their reported missing-point preservation approach precedes this local repair. Kufu's contribution is the original reproducible issue report and independent converter/rendered regression evidence; the repair approach is not a novel Kufu design.
+
+On 3 November, [maintainer anna-teruel acknowledged that the existing round-trip test covers moved points but misses removed ones](https://github.com/neuroinformatics-unit/movement/issues/1174#issuecomment-6611020419), and invited that contributor to open a PR. This supports the reported bug and confirms maintainer interest in a fix. It is not acceptance or release of our local candidate, and no researcher outcome has been measured.
+
+The maintainer also clarified that adding points is not supported yet and belongs to [movement #1060](https://github.com/neuroinformatics-unit/movement/issues/1060). Adding a deleted point back should therefore stay outside this deletion-preservation fix rather than become a prerequisite for it.
+
+The issue remained open with two comments when checked on 3 November. Its cross-reference timeline and a repository PR search for `1174` showed no linked implementation PR; these bounded checks cannot exclude unlinked work. The contributor's code remains unavailable for assessment here. Do not open a competing upstream PR or post a new comment without separate authorisation.
+
+When their PR is available, pin its base and head independently and assess the diff before execution. Compare deletion-only and mixed move/delete cases, repeated native save/reopen cycles, never-detected controls and current live-flag behavior against our existing regression evidence. Check every position and confidence value as well as edit flags. Report any gaps in that comparison separately from upstream review, merge, release and researcher benefit. No upstream-code validation has occurred yet.
 
 ## Reproduce the local candidate
 
@@ -59,7 +67,7 @@ python3.13 -m venv .external/movement-deletion-env
 .external/movement-deletion-env/bin/python projects/movement-edit-filtering/verify_deletion.py --checkout .external/movement-deletion-patched --expect patched --output .runs/deletion/patched.json
 ```
 
-The [runner](verify_deletion.py) checks the imported source path and hashes before execution, asserts the exact baseline failure cases, rejects skipped or errored tests, and requires the patched suite to pass. JSON is sanitised summary evidence; detailed logs and JUnit reports stay in `.runs`. The required CI addition runs both revisions and all 45 existing conversion cases, retaining results for the site. Cloud execution of this addition is pending publication. The problem page shows retained output; it does not start Qt or a Vercel experiment.
+The [runner](verify_deletion.py) checks the imported source path and hashes before execution, asserts the exact baseline failure cases, rejects skipped or errored tests, and requires the patched suite to pass. JSON is sanitised summary evidence; detailed logs and JUnit reports stay in `.runs`. The required CI addition runs both revisions and all 45 existing conversion cases, retaining results for the site. The problem page shows retained output; it does not start Qt or a Vercel experiment.
 
 Keep the [upstream BSD licence](UPSTREAM-LICENSE) with this patch. No source loader, filter API or biological interpretation changes are included.
 
