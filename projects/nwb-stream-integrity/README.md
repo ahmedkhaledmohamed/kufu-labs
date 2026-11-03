@@ -79,7 +79,7 @@ Local parameterized verification also covers one row, three channels with Zarr, 
 
 The execution page also displays timestamped progress reported by the worker: queue wait, environment setup, baseline/patched runs, output packaging, compute shutdown and saving the result bundle. Running snapshots are private; completed and failed results retain the final history. Elapsed time is calculated from those timestamps, with no estimated completion percentage. Reloading reads the same run, and interrupted or unavailable status is displayed explicitly. Hosted progress also passed on merged main. Production run `9ebc0340-6763-4a6f-b05f-973270fde296` retained all 13 stages; an independent audit verified its private archive hash, stopped Sandbox and protected API.
 
-Bounds are four cases per submission, 2,000 rows × 8 channels per case, four minutes per Sandbox, one concurrent queued worker and ten submissions per UTC day shared by preview, production and deployment verification. Reusing a request ID and a claimed queue message prevents duplicate VM launches. Interrupted workers become an explicit interrupted status. Completed runs remain in private storage; no automatic retention cleanup is installed. The existing Hobby project uses the private `kufu-experiments` store in deployed previews and production. Main CI promoted the tested artifact to the protected production URL. No paid plan upgrade or new provider account was created.
+Bounds are four cases per submission, 2,000 rows × 8 channels per case, four minutes per Sandbox, one concurrent queued worker and ten ordinary submissions per UTC day shared by preview and production; authenticated delivery CI uses a separate twenty-submission pool. Reusing a request ID and a claimed queue message prevents duplicate VM launches. Interrupted workers become an explicit interrupted status. Completed runs remain in private storage; no automatic retention cleanup is installed. The existing Hobby project uses the private `kufu-experiments` store in deployed previews and production. Main CI promoted the tested artifact to the protected production URL. No paid plan upgrade or new provider account was created.
 
 ## Verification and limits
 
@@ -130,7 +130,7 @@ python3.12 -m venv .external/nwb-wheel-builder
 
 The output and runtime locations must be new; existing environments are preserved. Output contains both wheels, a complete package-file manifest, installed replay JSON, logs and JUnit reports. Dependencies and environments remain outside the published artifacts. Build tools are pinned in [requirements-build.txt](requirements-build.txt); wheel timestamps use a fixed source-date epoch for stable packaging. Cross-platform byte reproducibility is not claimed. The builder verifies source files, never modifies the pinned source worktrees, and preserves the upstream licence and attribution.
 
-Scientific CI now builds and tests the wheels and supplies its fresh results/downloads to the site. The site packager accepts only the two expected wheel names, hashes and size bounds. Generated wheels are ignored by Git; source and result manifests are reviewed. A source-only site build without generated wheels displays reproduction instructions instead of broken download links. Scientific CI passed in [PR #31 run 41314310305](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41314310305). Independent checks verified both Linux wheel archives and all package-file hashes; they match the local wheel bytes. The protected preview gate then timed out on native browser downloading: the request omits Playwright context authentication headers. The verifier now requests Vercel’s documented automation bypass cookie in its existing authenticated browser context. A local HTTP probe verifies the cookie-authenticated download and exact bytes without a custom download header. This correction awaits reviewed publication and cloud verification; Deployment Protection remains enabled.
+Scientific CI now builds and tests the wheels and supplies its fresh results/downloads to the site. The site packager accepts only the two expected wheel names, hashes and size bounds. Generated wheels are ignored by Git; source and result manifests are reviewed. A source-only site build without generated wheels displays reproduction instructions instead of broken download links. Scientific CI passed in [PR #31 run 41314310305](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41314310305). Independent checks verified both Linux wheel archives and all package-file hashes; they match the local wheel bytes. The protected preview gate then timed out on native browser downloading: the request omits Playwright context authentication headers. The verifier now requests Vercel’s documented automation bypass cookie in its existing authenticated browser context. A local HTTP probe verifies the cookie-authenticated download and exact bytes without a custom download header. This correction passed protected preview and production verification after PR #32 in [main run 41352041534](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41352041534). Deployment Protection remains enabled.
 
 After downloading the repaired wheel from the problem page into a lab checkout, install it separately:
 
@@ -141,3 +141,35 @@ python3.12 -m venv .venv-nwb-experiment
 ```
 
 Compare the download's SHA-256 with the build result or problem page before installation. Use the existing `inspect_nwbfile_object` API in that environment; no wrapper API or runtime monkey patch is introduced. These checks establish the tested installation and data-preservation behavior, not recording-scale safety, recovery of already damaged files, arbitrary dependency compatibility, scientific validity or researcher benefit. No package-registry publication, upstream PR or outreach is included.
+
+## Electrode recording conversion example
+
+A converter must preserve which electrode each column represents, how acquisition counts become volts and when each sample occurred, as well as the values themselves. The runnable [ElectricalSeries example](ecephys.py) follows the [existing PyNWB workflow](https://pynwb.readthedocs.io/en/stable/tutorials/domain/ecephys.html) and uses the installed experimental wheels. It does not introduce a new converter or change the scientific patch.
+
+The source generates signed integer patterns for 16 constructed channels, including legitimate zeros. Each column references an electrode-table row in deliberately reversed order. The file stores a fictional calibration of 0.1 microvolt per count, separate channel factors, a 20,000 Hz sampling rate (50 microseconds between samples) and a 0.25-second start time. These values and electrode identities are software fixtures, not recordings or a biological simulation.
+
+The script generates 4,096 rows per buffer, calls the real Inspector, writes HDF5 NWB and reopens it. Readback compares every value in blocks and independently checks electrode IDs and labels, column links, voltage conversion, channel factors, offset, start time and rate. PyNWB schema validation is an additional structural check: both baseline and repair files pass it, even though the baseline values differ from the input.
+
+The [retained result](ecephys-result.json) contains 12 separate-process conversions: baseline and repaired wheels, inspected and uninspected controls, at 0.5, 16 and 128 MiB of generated sample data. All repaired conversions and all uninspected controls preserve every value. Inspection consumes three baseline buffers before writing, changing 12,288 rows at every tested size. In the small case, the first channel's first count should be 12,514; the baseline saves zero and the repair saves 12,514. A zero alone is not evidence of corruption because zeros also occur in the source.
+
+Electrode links, voltage scale and timing remain correct on both revisions. Baseline inspection produces three ERROR messages; repaired inspection produces none, although other metadata recommendations remain. Shape and schema validity alone would therefore miss this value loss. No claim about acquisition quality, biological validity, real-recording safety or researcher benefit follows from these checks.
+
+After installing the repaired wheel as described above, run from the lab checkout:
+
+```sh
+.venv-nwb-experiment/bin/python projects/nwb-stream-integrity/ecephys.py --expect patched --retain --output .runs/ecephys-example
+```
+
+The output directory must be new. It contains `constructed_ecephys.nwb` and `result.json`. The same script can run in an existing notebook whose kernel uses this environment; open the native file with PyNWB or an NWB-compatible viewer. `--rows`, `--channels` and `--buffer` permit bounded variations; `--skip-inspection` runs the control. Use `--expect baseline` only in the separate baseline wheel environment. Without `--wheel-record`, the example verifies the installed version, package origin, shape-helper hash and reported PyNWB/HDMF versions. The complete comparison additionally verifies all installed package files against the wheel manifest.
+
+After the earlier wheel-build command, run the complete installed-wheel comparison:
+
+```sh
+python3 projects/nwb-stream-integrity/verify_ecephys.py --runtime-root .external/nwb-wheel-runtimes --wheel-record .runs/nwb-wheels/wheel-manifest.json --output .runs/ecephys-comparison
+```
+
+The comparison times out each case after 120 seconds and rejects results at or above 512 MiB peak process RSS or a 160 MiB generated file. Those resource checks occur after generation; they are acceptance bounds, not operating-system memory limits. Generation and readback use bounded blocks, but total process memory includes dependencies and HDF5 caches and rose with input size. The retained local run completed in 14.258 seconds with a maximum process RSS of 197.0 MiB; this does not establish constant-memory behavior or recording-scale performance.
+
+The runner removes larger files after validation and retains four small native files in a hash-checked `ecephys-example.zip` with comparison results. Scientific CI repeats the 12 conversions using its installed wheel environments and supplies fresh JSON and this generated download to the problem page. The archive is ignored by Git, explicitly size/hash checked by the site packager and verified through an actual browser download. A source-only site build offers reproduction instructions instead of a broken archive link.
+
+The problem page displays retained local/CI evidence. This full electrode example runs in Python; the existing hosted Execution lab still runs its separate generic stream recipe. No hosted recipe, recording upload or new compute allocation is introduced.

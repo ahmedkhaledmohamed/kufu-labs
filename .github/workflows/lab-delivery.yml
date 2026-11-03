@@ -117,6 +117,8 @@ jobs:
           .external/nwb-wheel-builder/bin/python -m pip install --disable-pip-version-check -r projects/nwb-stream-integrity/requirements-build.txt
           .external/nwb-wheel-builder/bin/python -m pip download --disable-pip-version-check --only-binary=:all: -r projects/nwb-stream-integrity/requirements.txt -d .external/nwb-wheelhouse
           .external/nwb-wheel-builder/bin/python projects/nwb-stream-integrity/build_wheels.py --runtime-root .external/nwb-wheel-runtimes --wheelhouse .external/nwb-wheelhouse --output .runs/contracts/nwb-release/installable
+      - name: Verify installed electrophysiology conversion workflow
+        run: .external/nwb-wheel-builder/bin/python projects/nwb-stream-integrity/verify_ecephys.py --output .runs/contracts/nwb-release/ecephys
       - name: Retain scientific evidence and logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -214,8 +216,10 @@ jobs:
           cp .runs/contracts/nwb-release/patched.json projects/nwb-stream-integrity/released-patched.json
           cp .runs/contracts/nwb-release/unit-comparison.json projects/nwb-stream-integrity/released-unit-comparison.json
           cp .runs/contracts/nwb-release/installable/result.json projects/nwb-stream-integrity/wheel-result.json
+          cp .runs/contracts/nwb-release/ecephys/result.json projects/nwb-stream-integrity/ecephys-result.json
           mkdir -p projects/nwb-stream-integrity/builds
           cp .runs/contracts/nwb-release/installable/wheels/*.whl projects/nwb-stream-integrity/builds/
+          cp .runs/contracts/nwb-release/ecephys/ecephys-example.zip projects/nwb-stream-integrity/builds/
           cp .runs/refinebio/postgres-baseline.json projects/refinebio-zero-age/postgres-baseline.json
           cp .runs/refinebio/postgres-patched.json projects/refinebio-zero-age/postgres-patched.json
           cp .runs/contracts/rendered/result.json projects/movement-edit-filtering/rendered-result.json
@@ -229,8 +233,8 @@ jobs:
           npx --no-install playwright install --with-deps chromium
       - name: Lint, package and exercise the actual site
         run: |
-          ruff check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/nwb-stream-integrity/build_wheels.py projects/nwb-stream-integrity/verify_wheel.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
-          ruff format --check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/nwb-stream-integrity/build_wheels.py projects/nwb-stream-integrity/verify_wheel.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
+          ruff check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/nwb-stream-integrity/build_wheels.py projects/nwb-stream-integrity/verify_wheel.py projects/nwb-stream-integrity/ecephys.py projects/nwb-stream-integrity/verify_ecephys.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
+          ruff format --check lab/verify_bundle*.py site/build.py site/package.py site/prepare_movement.py projects/overlap-inspector/generate.py projects/nwb-stream-integrity/prepare.py projects/nwb-stream-integrity/verify.py projects/nwb-stream-integrity/verify_release_units.py projects/nwb-stream-integrity/experiment.py projects/nwb-stream-integrity/build_wheels.py projects/nwb-stream-integrity/verify_wheel.py projects/nwb-stream-integrity/ecephys.py projects/nwb-stream-integrity/verify_ecephys.py projects/refinebio-zero-age/*.py projects/mne-annotation-onsets/*.py
           ruff check projects/movement-edit-filtering/verify_workflow.py projects/movement-edit-filtering/verify_deletion.py
           ruff format --check projects/movement-edit-filtering/verify_workflow.py projects/movement-edit-filtering/verify_deletion.py
           npm run lint

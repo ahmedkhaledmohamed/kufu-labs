@@ -1,0 +1,1334 @@
+{
+  "runner_sha256": "766b0f417930c6bf30bfae75a7f0a77ebc3b9ca59716ecc166703c777610a0e8",
+  "passed": true,
+  "cases": [
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 16384,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 4,
+      "expected_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "saved_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 1.06915,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 4
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 524288,
+      "file_bytes": 725848,
+      "peak_rss_bytes": 124731392,
+      "elapsed_seconds": 0.182,
+      "file_retained": true,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      },
+      "retained_file": "baseline-16384-control/constructed_ecephys.nwb",
+      "retained_file_sha256": "65cc6efe011780dc6497e967c864db38a574ba997ba5d9995e99fc09a1d22fc9"
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 16384,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": false,
+      "changed_rows": 12288,
+      "changed_values": 196605,
+      "legitimate_zero_values": 4,
+      "expected_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "saved_sha256": "62146e5d1e1fb0877a6ab2b6891c2738d258a4e54163a359542965ea11e20dc0",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 1.06915,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 3,
+        "writing": 1
+      },
+      "first_requested_row": {
+        "inspection": 0,
+        "writing": 12288
+      },
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ],
+      "inspection_message_count": 10,
+      "schema_validation_errors": 0,
+      "array_bytes": 524288,
+      "file_bytes": 332632,
+      "peak_rss_bytes": 124502016,
+      "elapsed_seconds": 0.178,
+      "file_retained": true,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      },
+      "retained_file": "baseline-16384-inspected/constructed_ecephys.nwb",
+      "retained_file_sha256": "400e0792bb0152ac4f251f3d92bb943c11048778d1cd1c9ccd8906516baf4bbe"
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 16384,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 4,
+      "expected_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "saved_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 1.06915,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 4
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 524288,
+      "file_bytes": 725848,
+      "peak_rss_bytes": 124665856,
+      "elapsed_seconds": 0.171,
+      "file_retained": true,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      },
+      "retained_file": "patched-16384-control/constructed_ecephys.nwb",
+      "retained_file_sha256": "1dcafa02987694d0820147874fa937bf7d9528024b8d9b0f51a14acb78b80ea3"
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 16384,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 4,
+      "expected_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "saved_sha256": "047194404cdd4622e385474a21f25d899475c1eb6f1364c89f3d2cfe1e544825",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 1.06915,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 4
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 7,
+      "schema_validation_errors": 0,
+      "array_bytes": 524288,
+      "file_bytes": 725848,
+      "peak_rss_bytes": 124616704,
+      "elapsed_seconds": 0.207,
+      "file_retained": true,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      },
+      "retained_file": "patched-16384-inspected/constructed_ecephys.nwb",
+      "retained_file_sha256": "56d0c474df384684e12931ae275cee96e5536b6c450c44c456efcb97686b4f85"
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 524288,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 140,
+      "expected_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "saved_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 26.46435,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 128
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 16777216,
+      "file_bytes": 17002320,
+      "peak_rss_bytes": 158793728,
+      "elapsed_seconds": 0.244,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 524288,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": false,
+      "changed_rows": 12288,
+      "changed_values": 196605,
+      "legitimate_zero_values": 140,
+      "expected_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "saved_sha256": "ad72f7bd85d03b1749772a1cb10438124a82e75994c24463b068da6cabe799f7",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 26.46435,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 3,
+        "writing": 125
+      },
+      "first_requested_row": {
+        "inspection": 0,
+        "writing": 12288
+      },
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ],
+      "inspection_message_count": 10,
+      "schema_validation_errors": 0,
+      "array_bytes": 16777216,
+      "file_bytes": 16609104,
+      "peak_rss_bytes": 156794880,
+      "elapsed_seconds": 0.247,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 524288,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 140,
+      "expected_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "saved_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 26.46435,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 128
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 16777216,
+      "file_bytes": 17002320,
+      "peak_rss_bytes": 155418624,
+      "elapsed_seconds": 0.251,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 524288,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 140,
+      "expected_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "saved_sha256": "81bf64c973fc77355101de45bf6ec46aa6365f72b5ef96697b6faa73c8a409e6",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 26.46435,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 128
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 7,
+      "schema_validation_errors": 0,
+      "array_bytes": 16777216,
+      "file_bytes": 17002320,
+      "peak_rss_bytes": 163495936,
+      "elapsed_seconds": 0.251,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 4194304,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 1118,
+      "expected_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "saved_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 209.96515,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 1024
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 134217728,
+      "file_bytes": 134612872,
+      "peak_rss_bytes": 206585856,
+      "elapsed_seconds": 0.836,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "baseline",
+      "installed_version": "0.7.2+kufu.baseline1",
+      "installed_build": {
+        "version": "0.7.2+kufu.baseline1",
+        "wheel_sha256": "18150d45d85faab12a4c77e3bd59751ba8b16b49fb1146c8323641c249f8efcb",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 4194304,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": false,
+      "changed_rows": 12288,
+      "changed_values": 196605,
+      "legitimate_zero_values": 1118,
+      "expected_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "saved_sha256": "75d08b4a17248f0a5f6e72670ffdce03ae38bd2094b07e6736dc731d1c20f9b0",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 209.96515,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 3,
+        "writing": 1021
+      },
+      "first_requested_row": {
+        "inspection": 0,
+        "writing": 12288
+      },
+      "inspection_errors": [
+        "During evaluation of 'check_data_orientation' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_rate_is_not_zero' - <class 'TypeError'>: 'DataChunk' object is not iterable",
+        "During evaluation of 'check_time_series_duration' - <class 'TypeError'>: 'DataChunk' object is not iterable"
+      ],
+      "inspection_message_count": 10,
+      "schema_validation_errors": 0,
+      "array_bytes": 134217728,
+      "file_bytes": 134219656,
+      "peak_rss_bytes": 187187200,
+      "elapsed_seconds": 0.793,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 4194304,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": false,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 1118,
+      "expected_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "saved_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 209.96515,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 1024
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 0,
+      "schema_validation_errors": 0,
+      "array_bytes": 134217728,
+      "file_bytes": 134612872,
+      "peak_rss_bytes": 206307328,
+      "elapsed_seconds": 0.787,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    },
+    {
+      "example_sha256": "a9bf37c37745c4495a6fa7327c9e5380ff52551764d33fa6d45b63550cfb203e",
+      "expectation": "patched",
+      "installed_version": "0.7.2+kufu.stream1",
+      "installed_build": {
+        "version": "0.7.2+kufu.stream1",
+        "wheel_sha256": "38210252632261145f63bd791c194750ac1f4d4a04f88fe147a4644b5634a006",
+        "installed_python_files_verified": 50,
+        "installed_files_verified": 55,
+        "editable": false,
+        "source_imports": false
+      },
+      "input_kind": "Constructed signed ADC counts including valid zeros; not a recording or biological simulation",
+      "input": {
+        "rows": 4194304,
+        "channels": 16,
+        "buffer_rows": 4096
+      },
+      "inspected": true,
+      "values_preserved": true,
+      "changed_rows": 0,
+      "changed_values": 0,
+      "legitimate_zero_values": 1118,
+      "expected_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "saved_sha256": "e8f5e8262e05e86d6f9d87ce0172157648ca058c3d1f58b8e5846fc9fe80ca05",
+      "metadata": {
+        "column_electrode_ids": [
+          1015,
+          1014,
+          1013,
+          1012,
+          1011,
+          1010,
+          1009,
+          1008,
+          1007,
+          1006,
+          1005,
+          1004,
+          1003,
+          1002,
+          1001,
+          1000
+        ],
+        "unit": "volts",
+        "conversion_volts_per_count": 1e-07,
+        "channel_conversion": [
+          1.0,
+          1.01,
+          1.02,
+          1.03,
+          1.04,
+          1.05,
+          1.06,
+          1.0699999999999998,
+          1.0799999999999998,
+          1.0899999999999999,
+          1.0999999999999999,
+          1.1099999999999999,
+          1.1199999999999999,
+          1.13,
+          1.14,
+          1.15
+        ],
+        "starting_time_seconds": 0.25,
+        "rate_hz": 20000.0,
+        "last_sample_time_seconds": 209.96515,
+        "preserved": true
+      },
+      "first_sample_example": {
+        "expected_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ],
+        "saved_counts": [
+          12514,
+          12413,
+          12312,
+          12211
+        ]
+      },
+      "iterator_buffers_requested": {
+        "setup": 0,
+        "inspection": 0,
+        "writing": 1024
+      },
+      "first_requested_row": {
+        "writing": 0
+      },
+      "inspection_errors": [],
+      "inspection_message_count": 7,
+      "schema_validation_errors": 0,
+      "array_bytes": 134217728,
+      "file_bytes": 134612872,
+      "peak_rss_bytes": 191299584,
+      "elapsed_seconds": 0.789,
+      "file_retained": false,
+      "python": "3.12.12",
+      "versions": {
+        "pynwb": "4.2.0",
+        "hdmf": "6.2.0",
+        "numpy": "2.5.4",
+        "h5py": "3.16.0"
+      }
+    }
+  ],
+  "sizes_bytes": [
+    524288,
+    16777216,
+    134217728
+  ],
+  "verification": "Every saved value compared in bounded blocks; electrode links, voltage scale, timing and schema checked separately.",
+  "retained_small_files": 4,
+  "peak_rss_bytes": 206585856,
+  "elapsed_seconds": 14.258,
+  "limits": "Generated 16-channel patterns, HDF5, fixed 20 kHz sampling and 4096-row buffers, pinned installed wheels and dependencies. Larger files are removed after validation; small files are retained. No recordings, neural model, recording-scale guarantee or researcher-benefit validation.",
+  "small_archive": {
+    "filename": "ecephys-example.zip",
+    "bytes": 1707171,
+    "sha256": "a93d2fe0f69c1ca4ebc470f316dcc1b500795618db37ed1a8dea98e3fe04ce4a",
+    "nwb_files": {
+      "baseline-control.nwb": "65cc6efe011780dc6497e967c864db38a574ba997ba5d9995e99fc09a1d22fc9",
+      "baseline-inspected.nwb": "400e0792bb0152ac4f251f3d92bb943c11048778d1cd1c9ccd8906516baf4bbe",
+      "patched-control.nwb": "1dcafa02987694d0820147874fa937bf7d9528024b8d9b0f51a14acb78b80ea3",
+      "patched-inspected.nwb": "56d0c474df384684e12931ae275cee96e5536b6c450c44c456efcb97686b4f85"
+    }
+  }
+}

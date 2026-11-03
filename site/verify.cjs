@@ -258,6 +258,65 @@ const url = (file) => new URL(file, base).href;
         /source-only build/,
       );
     }
+    await page.goto(
+      url("problems/nwb-stream-integrity.html#electrode-conversion"),
+    );
+    const ecephys = JSON.parse(
+      fs.readFileSync(
+        path.join(root, "projects/nwb-stream-integrity/ecephys-result.json"),
+        "utf8",
+      ),
+    );
+    const comparison = page.locator("#ecephysComparison");
+    assert.ok(await comparison.isVisible());
+    assert.deepEqual(
+      await comparison
+        .locator("tbody tr")
+        .nth(2)
+        .locator("td")
+        .allTextContents(),
+      ["Rows with changed values", "12288", "0"],
+    );
+    assert.match(
+      await page.locator("#ecephysResultMeaning").textContent(),
+      /Legitimate zeros/,
+    );
+    const exampleDownload = page.locator("#ecephysArchive");
+    if (
+      fs.existsSync(
+        path.join(
+          root,
+          "projects/nwb-stream-integrity/builds/ecephys-example.zip",
+        ),
+      )
+    ) {
+      const [download] = await Promise.all([
+        page.waitForEvent("download"),
+        exampleDownload.click(),
+      ]);
+      assert.equal(
+        download.suggestedFilename(),
+        ecephys.small_archive.filename,
+      );
+      const destination = path.join(output, ecephys.small_archive.filename);
+      await download.saveAs(destination);
+      assert.equal(
+        crypto
+          .createHash("sha256")
+          .update(fs.readFileSync(destination))
+          .digest("hex"),
+        ecephys.small_archive.sha256,
+      );
+    } else {
+      assert.equal(await exampleDownload.count(), 0);
+      assert.match(
+        await page.locator("#electrode-conversion").textContent(),
+        /source-only build/,
+      );
+    }
+    await page
+      .locator("#electrode-conversion")
+      .screenshot({ path: path.join(output, "ecephys-walkthrough.png") });
     await page.goto(url("problems/eeg-events.html#host-workflow"));
     assert.equal(await page.locator(".mne-workflow-comparison").count(), 2);
     assert.ok(
@@ -544,6 +603,7 @@ const url = (file) => new URL(file, base).href;
         "actual before/after export values",
         "MNE save/reopen stage values and downloadable evidence",
         "NWB wheel downloads match verified build hashes",
+        "Electrode conversion comparison and native-file download match measured results",
         "separate interactive pose demo and contextual return links",
         "unchanged filter output and explanation",
         "all mobile problem pages without overflow",
