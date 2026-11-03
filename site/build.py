@@ -19,6 +19,137 @@ def slug(path):
     return path.removesuffix(".md").replace("/", "--") + ".html"
 
 
+def ecephys_walkthrough():
+    project = ROOT / "projects/nwb-stream-integrity"
+    result = json.loads((project / "ecephys-result.json").read_text())
+    assert result["passed"] and len(result["cases"]) == 12
+    assert (
+        result["runner_sha256"]
+        == hashlib.sha256((project / "verify_ecephys.py").read_bytes()).hexdigest()
+    )
+    example_hash = hashlib.sha256((project / "ecephys.py").read_bytes()).hexdigest()
+    assert all(case["example_sha256"] == example_hash for case in result["cases"])
+    small = {
+        case["expectation"]: case
+        for case in result["cases"]
+        if case["input"]["rows"] == 16384 and case["inspected"]
+    }
+    before, after = small["baseline"], small["patched"]
+    assert before["expected_sha256"] == after["expected_sha256"]
+    assert before["metadata"] == after["metadata"] and after["values_preserved"]
+    body = (
+        "<p>A recording converter needs to preserve both the samples and their meaning: which electrode each column belongs to, how integer acquisition counts become volts, and when each sample occurred. This example follows PyNWB’s existing ElectricalSeries workflow using 16 constructed channels. The values and electrode identities are software fixtures, not neural recordings.</p>"
+        + "<h3>Understand the inputs</h3><ul>"
+        + "<li><strong>Electrodes and channels:</strong> each data column references an electrode-table row. The example deliberately uses reversed table order, so the check verifies the actual links.</li>"
+        + "<li><strong>Acquisition counts and volts:</strong> stored integers are multiplied by a voltage conversion and a per-channel factor. The chosen fixture scale is 0.1 microvolt per count; it is not a real device calibration.</li>"
+        + "<li><strong>Sampling rate:</strong> 20,000 samples per second gives a 50-microsecond interval. The file stores that rate and a 0.25-second start time.</li>"
+        + "<li><strong>Buffers:</strong> the source generates 4,096 time rows at a time. Inspection should ask about its shape while leaving those rows available for writing.</li></ul>"
+        + "<h3>Follow the conversion</h3><p>The script creates electrode metadata and a buffered integer source, runs the installed Inspector, writes a real HDF5 NWB file, then reopens it. Every value is compared in blocks, and electrode links, voltage factors and timing are checked separately.</p>"
+    )
+    rows = [
+        [
+            "Buffers consumed during inspection",
+            *[
+                case["iterator_buffers_requested"]["inspection"]
+                for case in [before, after]
+            ],
+        ],
+        [
+            "Writer’s first row index",
+            *[case["first_requested_row"]["writing"] for case in [before, after]],
+        ],
+        ["Rows with changed values", before["changed_rows"], after["changed_rows"]],
+        ["Electrode links, voltage scale and timing", "Preserved", "Preserved"],
+        [
+            "Inspector ERROR messages",
+            len(before["inspection_errors"]),
+            len(after["inspection_errors"]),
+        ],
+        [
+            "File-schema errors after writing",
+            before["schema_validation_errors"],
+            after["schema_validation_errors"],
+        ],
+    ]
+    body += (
+        '<div class="table-scroll"><table id="ecephysComparison"><caption>16,384 time rows × 16 channels after inspection, writing and reopening</caption><thead><tr><th scope="col">Check</th><th scope="col">Baseline wheel</th><th scope="col">Experimental repair</th></tr></thead><tbody>'
+        + "".join(
+            "<tr>"
+            + "".join("<td>" + html.escape(str(value)) + "</td>" for value in row)
+            + "</tr>"
+            for row in rows
+        )
+        + "</tbody></table></div>"
+    )
+    original = after["first_sample_example"]["expected_counts"][0]
+    body += (
+        '<p id="ecephysResultMeaning">Both files still have all 16,384 row positions. However, baseline inspection consumes three buffers before the writer starts, and '
+        + str(before["changed_rows"])
+        + " rows contain different values. For the first channel at row zero, the generated count is "
+        + str(original)
+        + ", the baseline saves "
+        + str(before["first_sample_example"]["saved_counts"][0])
+        + ", and the repair saves "
+        + str(after["first_sample_example"]["saved_counts"][0])
+        + ". Legitimate zeros also occur in the input, so a zero alone is not treated as evidence of corruption.</p>"
+        + "<p>Both files pass schema validation, which checks the file’s structure. The separate value comparison establishes whether this conversion preserved the generated input. Neither check establishes that a biological experiment is valid.</p>"
+    )
+    scaling = []
+    for size in result["sizes_bytes"]:
+        cases = {
+            case["expectation"]: case
+            for case in result["cases"]
+            if case["array_bytes"] == size and case["inspected"]
+        }
+        scaling.append(
+            [
+                f"{size / 1048576:g}",
+                cases["baseline"]["changed_rows"],
+                cases["patched"]["changed_rows"],
+                f"{cases['patched']['peak_rss_bytes'] / 1048576:.1f}",
+            ]
+        )
+    body += (
+        '<details class="reproduction"><summary>Memory measurements with larger generated inputs</summary><p>Generation and readback use bounded blocks. Total process memory also includes Python, NumPy, PyNWB and HDF5. Memory rose with input size; these measurements do not establish constant-memory behavior or a guarantee for larger recordings.</p><div class="table-scroll"><table><caption>Separate-process measurements with inspected inputs</caption><thead><tr>'
+        + "".join(
+            '<th scope="col">' + value + "</th>"
+            for value in [
+                "Array size (MiB)",
+                "Baseline changed rows",
+                "Repair changed rows",
+                "Repair peak RSS (MiB)",
+            ]
+        )
+        + "</tr></thead><tbody>"
+        + "".join(
+            "<tr>"
+            + "".join("<td>" + html.escape(str(value)) + "</td>" for value in row)
+            + "</tr>"
+            for row in scaling
+        )
+        + "</tbody></table></div><p>The comparison runner allows 120 seconds per case and rejects results with peak process RSS at or above 512 MiB or generated files at or above 160 MiB. Larger files are removed after comparison; the four small files are retained.</p></details>"
+    )
+    archive = result["small_archive"]
+    assert (
+        archive["filename"] == "ecephys-example.zip" and len(archive["nwb_files"]) == 4
+    )
+    file = project / "builds" / archive["filename"]
+    if file.exists():
+        assert hashlib.sha256(file.read_bytes()).hexdigest() == archive["sha256"]
+        body += '<p><a id="ecephysArchive" download href="../projects/nwb-stream-integrity/builds/ecephys-example.zip">Download the four small constructed NWB files and results</a></p>'
+    else:
+        body += "<p>The source-only build has no generated file bundle. The local command below creates a constructed NWB file.</p>"
+    body += (
+        '<h3>Run the example</h3><p><a href="#installable-builds">Install the experimental repaired wheel</a> in a separate environment, then run this from the lab checkout. The same script can run in an existing notebook whose kernel uses that environment. The output directory must be new.</p><div class="reproduction"><pre><code>'
+        + html.escape(
+            ".venv-nwb-experiment/bin/python projects/nwb-stream-integrity/ecephys.py --expect patched --retain --output .runs/ecephys-example"
+        )
+        + "</code></pre></div><p>The output includes constructed_ecephys.nwb and result.json. Open the native file with PyNWB or an NWB-compatible viewer. This page displays retained local/CI results; the complete electrode conversion runs in Python, while the existing hosted lab remains the separate generic stream replay.</p>"
+        + '<p><a href="../projects/nwb-stream-integrity/ecephys.py">Runnable conversion example</a> · <a href="../projects/nwb-stream-integrity/verify_ecephys.py">Comparison runner</a> · <a href="../projects/nwb-stream-integrity/ecephys-result.json">Download all measured results (JSON)</a> · <a href="https://pynwb.readthedocs.io/en/stable/tutorials/domain/ecephys.html">PyNWB electrophysiology guide</a></p>'
+    )
+    return body
+
+
 def nwb_build_downloads():
     project = ROOT / "projects/nwb-stream-integrity"
     result = json.loads((project / "wheel-result.json").read_text())
@@ -521,6 +652,14 @@ def problem_content(problem, data):
                 "before-after",
             )
         )
+        if problem["id"] == "nwb-stream-integrity":
+            story.append(
+                section(
+                    "Electrode recording conversion example",
+                    ecephys_walkthrough(),
+                    "electrode-conversion",
+                )
+            )
         if problem["id"] == "nwb-stream-integrity":
             story.append(
                 section(
