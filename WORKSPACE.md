@@ -2,15 +2,16 @@
 
 ## Current task
 
-PR #32 merged at `a1707967766bfcb07e62d7366a905c4952d5a39c`; main run 41352041534 passed and deployed the protected site. PR #33 contains the approved installed-wheel electrode conversion example at `4a1061fc59c9f6378deeca00ac91b5c543abb333`. It is open; publication was authorised, merge was not. Its scientific and refine.bio checks passed; remaining delivery checks were still running when last checked.
+PR #33 merged at `2b31e3bf8bf9697b37b5451f54abf47da306aee5` after all four preview checks passed, including protected deployment verification. Its main delivery [run 41703525428](https://github.com/ahmedkhaledmohamed/kufu-labs/actions/runs/41703525428) is in progress; production promotion is not yet verified. PR #32 previously deployed in main run 41352041534. The separate twenty-submission CI allowance, ordinary ten and owner exemption remain unchanged.
 
-The approved follow-up is `docs/movement-maintainer-response`. On 3 November the movement maintainer acknowledged missing deletion round-trip coverage in #1174 and invited the existing contributor’s PR. That contributor independently reproduced the issue and reported a fix on 29 October, before our local candidate. Issue timeline cross-references and a PR search for 1174 show no linked fix yet; unlinked work cannot be excluded. No upstream code has been validated. Adding points back belongs to separate #1060 work and should not block this bounded fix.
+The installed-wheel electrode conversion example is now on main. Its 12 separate-process HDF5 conversions cover 0.5, 16 and 128 MiB generated arrays: all repaired/control values survive, while inspected baseline conversions change 12,288 rows. Electrode links, voltage factors, timing and schema are checked separately. The page explains these results and supplies a runnable Python example and four small generated NWB files. It displays retained local/CI evidence; the hosted generic stream recipe is unchanged. Memory measurements do not establish constant-memory behavior, and biological validity or researcher benefit remain untested.
 
-The evidence update links the two public comments, credits the report/reproduction and existing contributor accurately, and defines comparison against our deletion-only, mixed-edit, repeated native save/reopen, never-detected and live-flag cases once code is available. Local tests and patch results are unchanged. This task makes no scientific implementation change and posts no upstream reply. Exact-diff approval is required before push/PR; merge requires separate authorisation.
+PR #34 contains the approved movement evidence follow-up. On 3 November the maintainer acknowledged missing deletion round-trip coverage in #1174 and invited the existing contributor’s PR. That contributor independently reproduced the issue and reported a fix on 29 October, before our local candidate. Issue timeline cross-references and a bounded PR search still show no linked implementation; unlinked work cannot be excluded. No upstream code has been validated. Adding points back belongs to separate #1060 work.
 
-Local build, lint and desktop/mobile checks passed across all 27 problem pages and 625 local links. Scientific implementations and prior result artifacts are unchanged; scientific replays were not rerun for this evidence-only update.
+The update credits the report, independent reproduction and existing contributor accurately, and defines comparison against deletion-only, mixed-edit, repeated native save/reopen, never-detected and live-flag cases once code is available. Scientific implementations and prior result artifacts are unchanged. Combined-branch build, lint and desktop/mobile checks passed across all 27 problem pages and 632 local links, including the NWB native-file download hash. The user authorised both PR merges; the new conflict-resolution commit requires exact-diff approval before push under the repository publication rule.
 
-No outreach, spending, accounts, recordings or model weights. Preserve existing research worktrees and licences.
+No outreach, spending, accounts, recordings, model weights or new hosted recipe. Preserve research worktrees and licences.
+
 
 ## Entry points
 

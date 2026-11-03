@@ -91,6 +91,13 @@ def main():
             wheels.append(wheel)
     assert len(wheels) in [0, 2], "Partial NWB wheel bundle"
     files += wheels
+    example = json.loads((project / "ecephys-result.json").read_text())["small_archive"]
+    assert example["filename"] == "ecephys-example.zip"
+    archive = project / "builds" / example["filename"]
+    if archive.exists():
+        assert not archive.is_symlink() and archive.stat().st_size < 4_000_000
+        assert hashlib.sha256(archive.read_bytes()).hexdigest() == example["sha256"]
+        files.append(archive)
     checksums = {}
     for source in sorted(set(files)):
         relative = source.relative_to(ROOT)
