@@ -1,6 +1,6 @@
 # Deleted-point edit provenance across repeated conversions
 
-Status, 3 November 2026: the maintainer acknowledges the missing deletion round-trip coverage and has invited the existing contributor to submit their fix. No linked fix PR was found when checked. Our separate local repair and 15-case regression suite remain independent evidence; the filtering patch is unchanged. The original report is [movement #1174](https://github.com/neuroinformatics-unit/movement/issues/1174).
+Status, 3 November 2026: devanshc777 has opened draft movement PR #1190. Independent local checks of its exact base/head confirm that its head passes all 15 existing Kufu cases, all 49 selected upstream conversion cases and the real Qt deletion/save/reopen replay. The PR is not merged or released. Our local candidate remains separate, and the filtering patch is unchanged. The original report is [movement #1174](https://github.com/neuroinformatics-unit/movement/issues/1174).
 
 ## Current implementation and evidence
 
@@ -51,9 +51,49 @@ On 3 November, [maintainer anna-teruel acknowledged that the existing round-trip
 
 The maintainer also clarified that adding points is not supported yet and belongs to [movement #1060](https://github.com/neuroinformatics-unit/movement/issues/1060). Adding a deleted point back should therefore stay outside this deletion-preservation fix rather than become a prerequisite for it.
 
-The issue remained open with two comments when checked on 3 November. Its cross-reference timeline and a repository PR search for `1174` showed no linked implementation PR; these bounded checks cannot exclude unlinked work. The contributor's code remains unavailable for assessment here. Do not open a competing upstream PR or post a new comment without separate authorisation.
+The contributor subsequently opened [draft PR #1190](https://github.com/neuroinformatics-unit/movement/pull/1190). Its base is `96733f808885300cc3d86b11e2c5189997671b65`; the assessed head is `78e41a2c726ddd4733f9ca46a78034a5a23c8d47`. The diff adds missing-point preservation in the converter and four parameterized regression cases. The base converter hash is identical to our earlier baseline. No Kufu patch was applied to either revision.
 
-When their PR is available, pin its base and head independently and assess the diff before execution. Compare deletion-only and mixed move/delete cases, repeated native save/reopen cycles, never-detected controls and current live-flag behavior against our existing regression evidence. Check every position and confidence value as well as edit flags. Report any gaps in that comparison separately from upstream review, merge, release and researcher benefit. No upstream-code validation has occurred yet.
+## Independent validation of draft PR #1190
+
+The [profile](upstream-1190-profile.json) locks the base/head source, converter, PR test file, reused Kufu test source and BSD licence hashes. The [comparison runner](verify_upstream_1190.py) checks clean source/import origins and extracts the exact existing 15-case Kufu suite without applying the local implementation. It runs the head's selected upstream conversion module against both source revisions, loading only the required constructed-data and Qt fixtures. The upstream root startup hook that downloads recordings is excluded; unexpected failures, errors or skips reject the run.
+
+| Check | PR base | Draft head |
+| --- | --- | --- |
+| Existing Kufu deletion/control cases | 9 pass, 6 expected deletion failures | 15 pass |
+| Selected upstream conversion module, including four PR regressions | 45 pass, 4 expected new-test failures | 49 pass |
+| Deleted-point flag after second real Qt Save | Entire edit variable absent | true |
+| Deleted-point flag after final real Qt Load | false | true |
+
+The existing independent cases cover deletion-only and mixed move/delete edits through one, two and four native netCDF reopen cycles, never-detected controls, live-flag clearing and empty coordinates. The rendered replay selects the target through an actual canvas click, sends Delete, and uses the real Save/Load buttons twice. All positions, confidence values and time coordinates remain correct across reexport, the original dataset stays unchanged, and never-detected/unscored controls remain unedited. The head preserves the deleted-point flag through final loading. These are provenance checks, not changes to tracking coordinates or a biological finding.
+
+The retained [base result](upstream-1190-base.json) and [head result](upstream-1190-head.json) identify Python 3.13.18, NumPy 2.5.4, pandas 3.1.0, xarray 2026.9.0, pytest 9.2.0, napari 0.9.2 and PyQt6 6.11.0. The cached Linux arm64 CPU-Mesa image is locked by digest in the profile. Both containers had networking disabled, read-only source, two CPUs, a three-GiB memory cap and temporary/output writes only. Base/head runs took 25.590/25.326 seconds; rendered process peak RSS was approximately 895/893 MiB. The three small native files and rendered captures remain local run artifacts with hashes in the reports.
+
+Two harness setup attempts were rejected before a valid comparison: one omitted the Qt fixture plugins, and another requested an unused plugin absent from the cached image. Explicitly loading only required plugins resolved collection without enabling the recording hook. A subsequent log-stream lifetime issue did not change assertions; the runner now keeps logs open through rendering. Both final runs were repeated cleanly after that correction. Existing dependency warnings remain in logs.
+
+### Reproduce the pinned comparison
+
+Prepare new source-only directories; preserve any existing checkout. From the lab root, run the following once for each mode using the corresponding revision in the profile:
+
+```sh
+git clone --filter=blob:none --sparse --no-checkout https://github.com/neuroinformatics-unit/movement.git .external/movement-1190-base
+git -C .external/movement-1190-base sparse-checkout set movement tests/test_unit/test_napari_plugin tests/fixtures
+git -C .external/movement-1190-base checkout --detach 96733f808885300cc3d86b11e2c5189997671b65
+git clone --filter=blob:none --sparse --no-checkout https://github.com/neuroinformatics-unit/movement.git .external/movement-1190-head
+git -C .external/movement-1190-head sparse-checkout set movement tests/test_unit/test_napari_plugin tests/fixtures
+git -C .external/movement-1190-head fetch origin refs/pull/1190/head
+git -C .external/movement-1190-head checkout --detach 78e41a2c726ddd4733f9ca46a78034a5a23c8d47
+```
+
+In the recorded Linux environment with those dependencies and CPU Mesa/Xvfb available:
+
+```sh
+QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_upstream_1190.py --expect base --rendered --output .runs/upstream-1190/base
+QT_QPA_PLATFORM=xcb LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1400x1000x24' python projects/movement-edit-filtering/verify_upstream_1190.py --expect head --rendered --output .runs/upstream-1190/head
+```
+
+Output directories must be new. For the cached local image, use its immutable digest with the same network-disabled, read-only, two-CPU/three-GiB settings recorded above, mount the lab at `/lab` and only `.runs/upstream-1190` writable. This comparison is retained local evidence, not a new hosted experiment or an automatically repeated CI scientific job. The webpage verifies source/report hashes before displaying the result.
+
+The contributor reports a broader napari suite run in their PR; our independent assessment covers the 49 selected conversion tests and 15 Kufu cases above. Full-suite compatibility, reset/re-add UI, recordings, researcher benefit, upstream review, merge and release remain unverified here. Follow the draft's changes and rerun against any updated head before relying on these results for that version. No upstream reply or competing PR is authorised by this validation.
 
 ## Reproduce the local candidate
 

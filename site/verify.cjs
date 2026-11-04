@@ -451,6 +451,30 @@ const url = (file) => new URL(file, base).href;
     ]) {
       await page.goto(url("problems/" + id + ".html"));
       if (id === "deleted-flags") {
+        const upstream = page.locator("#movementUpstreamComparison");
+        assert.deepEqual(
+          await upstream
+            .locator("tbody tr")
+            .nth(0)
+            .locator("td")
+            .allTextContents(),
+          ["Existing Kufu deletion/control cases", "9/15 pass", "15/15 pass"],
+        );
+        assert.deepEqual(
+          await upstream
+            .locator("tbody tr")
+            .nth(1)
+            .locator("td")
+            .allTextContents(),
+          [
+            "Selected upstream conversion tests, including the PR’s four new cases",
+            "45/49 pass",
+            "49/49 pass",
+          ],
+        );
+        await page.locator("#upstream-validation").screenshot({
+          path: path.join(output, "movement-upstream-draft.png"),
+        });
         const row = page
           .getByRole("row")
           .filter({ hasText: "Qt deletion: second Save after reopening" });

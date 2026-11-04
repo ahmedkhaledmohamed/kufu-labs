@@ -19,6 +19,75 @@ def slug(path):
     return path.removesuffix(".md").replace("/", "--") + ".html"
 
 
+def movement_upstream_comparison():
+    project = ROOT / "projects/movement-edit-filtering"
+    profile = json.loads((project / "upstream-1190-profile.json").read_text())
+    results = [
+        json.loads((project / f"upstream-1190-{mode}.json").read_text())
+        for mode in ["base", "head"]
+    ]
+    for mode, result in zip(["base", "head"], results):
+        assert result["source_revision"] == profile[f"{mode}_revision"]
+        assert result["convert_sha256"] == profile[f"{mode}_convert_sha256"]
+        assert (
+            result["runner_sha256"]
+            == hashlib.sha256(
+                (project / "verify_upstream_1190.py").read_bytes()
+            ).hexdigest()
+        )
+        assert (
+            result["profile_sha256"]
+            == hashlib.sha256(
+                (project / "upstream-1190-profile.json").read_bytes()
+            ).hexdigest()
+        )
+        assert result["local_patch_applied"] is False
+        assert result["rendered"][
+            "positions_confidence_and_time_preserved_after_reexport"
+        ]
+        assert result["rendered"][
+            "never_detected_and_unscored_controls_not_marked_edited"
+        ]
+    rows = []
+    for suite, label in [
+        ("independent", "Existing Kufu deletion/control cases"),
+        (
+            "upstream_conversion",
+            "Selected upstream conversion tests, including the PR’s four new cases",
+        ),
+    ]:
+        rows.append(
+            [
+                label,
+                *[
+                    f"{r['suites'][suite]['passed']}/{r['suites'][suite]['tests']} pass"
+                    for r in results
+                ],
+            ]
+        )
+    rows.append(
+        ["Deleted-point flag after the second Qt Save", "Edit variable absent", "true"]
+    )
+    rows.append(["Deleted-point flag in final Qt loader", "false", "true"])
+    assert results[0]["rendered"]["flag_after_second_save"] is None
+    assert results[0]["rendered"]["flag_in_final_loader"] is False
+    assert results[1]["rendered"]["flag_after_second_save"] is True
+    assert results[1]["rendered"]["flag_in_final_loader"] is True
+    return (
+        '<p>On 3 November, devanshc777 opened <a href="https://github.com/neuroinformatics-unit/movement/pull/1190">draft movement PR #1190</a>. Kufu tested its exact base and head independently, without applying the local Kufu repair. The PR head passes all 64 selected cases and the rendered deletion/save/reopen replay. This is local verification of a draft, not a merged or released fix.</p>'
+        + '<div class="table-scroll"><table id="movementUpstreamComparison"><caption>Pinned upstream base versus contributor’s draft head</caption><thead><tr><th scope="col">Check</th><th scope="col">PR base</th><th scope="col">PR head</th></tr></thead><tbody>'
+        + "".join(
+            "<tr>"
+            + "".join("<td>" + html.escape(value) + "</td>" for value in row)
+            + "</tr>"
+            for row in rows
+        )
+        + "</tbody></table></div><p>The base fails six independent deletion cases and the four new upstream regression cases. The head preserves provenance through one, two and four native reopen cycles, including mixed edits, while preserving numeric data and never-detected controls. The rendered run uses an actual canvas click, Delete key and Save/Load buttons.</p>"
+        + "<p>The comparison used a cached Linux arm64 CPU runtime with network access disabled. It does not cover the full napari suite, reset/re-add interactions, recordings or measured researcher benefit. Re-adding points remains separate issue #1060 work.</p>"
+        + '<p><a href="../projects/movement-edit-filtering/upstream-1190-base.json">Base results</a> · <a href="../projects/movement-edit-filtering/upstream-1190-head.json">Draft-head results</a> · <a href="../projects/movement-edit-filtering/upstream-1190-profile.json">Pinned source and licence identities</a> · <a href="../projects/movement-edit-filtering/verify_upstream_1190.py">Comparison implementation</a></p>'
+    )
+
+
 def ecephys_walkthrough():
     project = ROOT / "projects/nwb-stream-integrity"
     result = json.loads((project / "ecephys-result.json").read_text())
@@ -652,6 +721,14 @@ def problem_content(problem, data):
                 "before-after",
             )
         )
+        if problem["id"] == "deleted-flags":
+            story.append(
+                section(
+                    "Upstream draft validation",
+                    movement_upstream_comparison(),
+                    "upstream-validation",
+                )
+            )
         if problem["id"] == "nwb-stream-integrity":
             story.append(
                 section(
